@@ -1,0 +1,39 @@
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+  - url: /$
+    static_files: www/index.html
+    upload: www/index.html
+    secure: always
+
+  - url: /images
+    static_dir: public/images
+    http_headers:
+      Access-Control-Allow-Origin: "*"
+    secure: always
+
+  - url: /cv.json
+    mime_type: application/json
+    static_dir: public/cv.json
+    http_headers:
+      Access-Control-Allow-Origin: "*"
+    secure: always
+
+  - url: /cv/
+    static_files: www/index.html
+    upload: www/index.html
+    secure: always
+
+  - url: /synth/
+    static_files: www/index.html
+    upload: www/index.html
+    secure: always
+
+  - url: /(.+)
+    static_files: www/\1
+    upload: www/(.+)
+    http_headers:
+      Access-Control-Allow-Origin: "*"
+    secure: always

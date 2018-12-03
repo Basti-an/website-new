@@ -1,0 +1,21 @@
+{
+  "name": "enterjs",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@material-ui/core": "^3.5.1",
+    "@material-ui/icons": "^1.1.0",
+    "axios": "^0.18.0",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-scripts": "1.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build:node": "react-scripts build && rm -rf ../backend_node/build && cp ./build ../backend_node",
+    "build:python": "react-scripts build && rm -rf ../backend_python/www && cp ./build ../backend_python/www && cp ../backend_python/cv.json ../backend_python/www",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "dev": "env=dev react-scripts start"
+  }
+}

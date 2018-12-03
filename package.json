@@ -1,0 +1,26 @@
+{
+  "name": "template-full-stack",
+  "scripts": {
+    "setup": "yarn && cd app && yarn && cd ../backend_node && yarn && cd .. && yarn build",
+    "dev:app": "cd app && yarn run dev",
+    "dev:api": "cd backend_node && node server.js",
+    "start": "concurrently -r --kill-others \"yarn run dev:app\" \"yarn run dev:api\"",
+    "cleanup": "rm -rf ./backend_python/www && rm -rf ./backend_node/build && rm -rf ./backend_python/public && rm -rf ./backend_node/public",
+    "copy:build": "cp -r ./app/build ./backend_python/www && cp -r ./app/build ./backend_node/build",
+    "copy:public": "cp -r ./public ./backend_python/ && cp -r ./public ./backend_node/ && cp ./public/cv.json ./backend_python/www",
+    "build": "cd ./app && react-scripts build && cd .. && yarn cleanup && yarn copy:build && yarn copy:public",
+    "start:node": "cd ./backend_node && yarn start",
+    "start:python": "cd ./backend_python && yarn start",
+    "deploy": "cd ./backend_python && gcloud app deploy app.yaml",
+    "deploy:v1": "cd ./backend_python && gcloud app deploy app.yaml --version=v1"
+  },
+  "dependencies": {
+    "concurrently": "^3.6.0",
+    "internal-ip": "^3.0.1",
+    "public-ip": "^2.4.0",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "^1.1.4",
+    "tone": "^0.12.80",
+    "zingtouch": "^1.0.6"
+  }
+}

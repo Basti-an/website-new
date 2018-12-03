@@ -1,0 +1,82 @@
+{
+  "2016": [
+    {
+      "duration": "09/2016 - heute",
+      "title": "Software Developer (Google Cloud & Webapps)",
+      "url": "https://www.cloudpilots.com",
+      "image": {
+        "title": "CLOUDPILOTS Software & Consulting GmbH",
+        "fullWidth": false,
+        "url": "Cloudpilots.jpg"
+      },
+      "description": "Entwickeln von Cloud-basierten Lösungen für Kunden im GSuite Software-Ökosystem"
+    }
+  ],
+  "2015": [
+    {
+      "duration": "06/2015 - 08/2015",
+      "title": "Web-Frontend Praktikum",
+      "url": "https://www.sevenval.com/",
+      "image": {
+        "title": "Sevenval Technologies GmbH",
+        "fullWidth": false,
+        "url": "sevenval.png"
+      }
+    },
+    {
+      "duration": "09/2015 - 05/2016",
+      "title": "Software Developer (Webshops)",
+      "url": "https://www.latzko-websoftware.de",
+      "image": {
+        "title": "Latzko Websoftware GmbH",
+        "fullWidth": false,
+        "url": "latzko.gif"
+      },
+      "description": "Umsetzung von Webshops (z.B [myonbelle.de](https://www.myonbelle.de)) Mit JS (jQuery), CSS3 und HTML5 im Frontend und PHP, Shopware, und ExtJS im Backend"
+    }
+  ],
+  "2014": [
+    {
+      "duration": "03/2014 - 09/2014",
+      "title": "Systemintegrator, Megabyte Systemhaus",
+      "url": "http://www.megabyte-rs.de/de/",
+      "image": {
+        "title": "Megabyte Systemhaus Remscheid",
+        "url": "megabyte.jpg",
+        "fullWidth": true
+      }
+    },
+    {
+      "duration": "09/2014 - 10/2015",
+      "title": "Studium \"Praktische Informatik\"",
+      "image": {
+        "title": "Fachhochschule Dortmund",
+        "url": "fh_dortmund.png",
+        "fullWidth": false
+      },
+      "url": "https://www.fh-dortmund.de/de/fb/4/index.php"
+    }
+  ],
+  "2013": [
+    {
+      "title": "Studium der Angewandten Informatik",
+      "duration": "10/2013-03/2014",
+      "image": {
+        "url": "rub.jpg",
+        "title": "Ruhr Universität Bochum",
+        "fullWidth": false
+      },
+      "url": "http://studienangebot.ruhr-uni-bochum.de/de/angewandte-informatik/bachelor-1-fach"
+    },
+    {
+      "title": "Abitur am Gymnasium Wermelskirchen",
+      "duration": "10/2013-03/2014",
+      "image": {
+        "url": "gymnasium.jpg",
+        "title": "Gymnasium Wermelskirchen",
+        "fullWidth": true
+      },
+      "url": "http://www.staedtisches-gymnasium-wermelskirchen.de/"
+    }
+  ]
+}

@@ -21,9 +21,8 @@ import Ampmodule from "../components/modules/vca.js";
 
 const styles = () => ({
   title: {
-    marginRight: "auto",
-    marginLeft: "auto",
-    color: "#fff"
+    color: "#fff",
+    margin: "1rem auto"
   },
   synth: {},
   erebusBox: {
@@ -37,6 +36,9 @@ const styles = () => ({
     borderRadius: "1rem",
     boxShadow:
       "0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08)"
+  },
+  error: {
+    fontWeight: 500
   }
 });
 
@@ -146,36 +148,45 @@ class Synth extends Component {
       <div className={classes.synth}>
         <div className={classes.erebusBox}>
           <Typography variant="title" color="inherit" className={classes.title}>
-            Dreadbox Erebus Clone
+            Dreadbox Erebus Clone (Work in progress)
           </Typography>
-          <Typography variant="subheading" color="error">
-            Currently Not Working properly on Mobile! Known Bugs: Clipping when
-            triggering AmplitudeEnvelope. VCA Attack somehow disconnects after
-            few keypresses (ToneJS bug?).
+          <Typography
+            className={classes.error}
+            variant="subheading"
+            color="error"
+          >
+            Currently Not Working on Mobile! Implementation is buggy at the
+            moment.
           </Typography>
           <Typography
             variant="subheading"
             color="inherit"
             className={classes.title}
           >
-            Oscillator controls, Envelope generator and modular patching yet to
-            be implemented.
+            Oscillator controls and styling, Envelope generator and modular
+            patching yet to be implemented.
           </Typography>
           <Typography
             variant="subheading"
             color="inherit"
             className={classes.title}
           >
-            Change the parameters of the synth by clicking and dragging on the
-            knobs. Play the keys by clicking or by pressing keys on your
-            keyboard (a-k, w-z).
+            Sound parameter are changed by clicking and dragging on the knobs.
+          </Typography>
+          <Typography
+            variant="subheading"
+            color="inherit"
+            className={classes.title}
+          >
+            Sounds can be played by clicking on the keyboard or by pressing keys
+            on your keyboard (a-k for white keys, w-z for black keys).
           </Typography>
         </div>
         <link
           href="https://fonts.googleapis.com/css?family=Comfortaa:700"
           rel="stylesheet"
         />
-        <div className={classes.erebusBox}>
+        <div style={{ minWidth: 510 }} className={classes.erebusBox}>
           <div className="spacer">
             <LFOmodule lfo={this.state.lfo} input={this.state.lfoInput} />
             <DelayModule delay={this.state.feedbackDelay} />

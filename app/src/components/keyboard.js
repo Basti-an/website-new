@@ -4,42 +4,44 @@ import React from "react";
 
 class Keyboard extends React.Component {
   state = {
-    notes: [
-      "C2",
-      "C#2",
-      "D2",
-      "D#2",
-      "E2",
-      "F2",
-      "F#2",
-      "G2",
-      "G#2",
-      "A2",
-      "A#2",
-      "B2",
-      "C3"
-    ],
     noteJSX: [],
-    noteKeyMap: {
-      65: "C2",
-      87: "C#2",
-      83: "D2",
-      69: "D#2",
-      68: "E2",
-      70: "F2",
-      84: "F#2",
-      71: "G2",
-      90: "G#2",
-      72: "A2",
-      85: "A#2",
-      74: "B2",
-      75: "C3"
-    },
     pressedKeys: {}
   };
 
+  notes = [
+    "C2",
+    "C#2",
+    "D2",
+    "D#2",
+    "E2",
+    "F2",
+    "F#2",
+    "G2",
+    "G#2",
+    "A2",
+    "A#2",
+    "B2",
+    "C3"
+  ];
+
+  noteKeyMap = {
+    65: "C2",
+    87: "C#2",
+    83: "D2",
+    69: "D#2",
+    68: "E2",
+    70: "F2",
+    84: "F#2",
+    71: "G2",
+    90: "G#2",
+    72: "A2",
+    85: "A#2",
+    74: "B2",
+    75: "C3"
+  };
+
   createNotes = () => {
-    const noteJSX = this.state.notes.map(value => {
+    const noteJSX = this.notes.map(value => {
       if (value.indexOf("#") !== -1) {
         return (
           <div
@@ -81,11 +83,11 @@ class Keyboard extends React.Component {
     document.onkeydown = e => {
       e = e || window.event;
       var charCode = e.keyCode;
-      const pressedKey = this.state.noteKeyMap[charCode];
+      const pressedKey = this.noteKeyMap[charCode];
       if (pressedKey && this.state.pressedKeys[pressedKey] === undefined) {
         // control oscillator
         this.props.sendGate(true);
-        this.props.sendCV(this.state.noteKeyMap[charCode]);
+        this.props.sendCV(this.noteKeyMap[charCode]);
 
         this.setState(prevState => {
           let pressedKeys = prevState.pressedKeys;

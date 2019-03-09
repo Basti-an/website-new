@@ -12,7 +12,8 @@
     "start:node": "cd ./backend_node && yarn start",
     "start:python": "cd ./backend_python && yarn start",
     "deploy": "cd ./backend_python && gcloud app deploy app.yaml",
-    "deploy:v1": "cd ./backend_python && gcloud app deploy app.yaml --version=v1"
+    "deploy:v1": "cd ./backend_python && gcloud app deploy app.yaml --version=v1",
+    "deploy:test": "cd ./backend_python && gcloud app deploy app.yaml --version=test"
   },
   "dependencies": {
     "concurrently": "^3.6.0",

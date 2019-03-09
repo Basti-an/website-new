@@ -1,7 +1,7 @@
 {
   "2016": [
     {
-      "duration": "09/2016 - heute",
+      "duration": "09/2016 - today",
       "title": "Software Developer (Google Cloud & Webapps)",
       "url": "https://www.cloudpilots.com",
       "image": {
@@ -9,13 +9,13 @@
         "fullWidth": false,
         "url": "Cloudpilots.jpg"
       },
-      "description": "Entwickeln von Cloud-basierten Lösungen für Kunden im GSuite Software-Ökosystem"
+      "description": "Developing Cloud-based solutions in the GSuite Eco-system. Full-stack development using Node, Python, JS and React"
     }
   ],
   "2015": [
     {
       "duration": "06/2015 - 08/2015",
-      "title": "Web-Frontend Praktikum",
+      "title": "Frontend Development Internship",
       "url": "https://www.sevenval.com/",
       "image": {
         "title": "Sevenval Technologies GmbH",
@@ -25,20 +25,20 @@
     },
     {
       "duration": "09/2015 - 05/2016",
-      "title": "Software Developer (Webshops)",
+      "title": "Software Developer (Shopware)",
       "url": "https://www.latzko-websoftware.de",
       "image": {
         "title": "Latzko Websoftware GmbH",
         "fullWidth": false,
         "url": "latzko.gif"
       },
-      "description": "Umsetzung von Webshops (z.B [myonbelle.de](https://www.myonbelle.de)) Mit JS (jQuery), CSS3 und HTML5 im Frontend und PHP, Shopware, und ExtJS im Backend"
+      "description": "Developing Webshops (e.g. [myonbelle.de](https://www.myonbelle.de)) with JS, CSS3, HTML5, PHP, Shopware and ExtJS"
     }
   ],
   "2014": [
     {
       "duration": "03/2014 - 09/2014",
-      "title": "Systemintegrator, Megabyte Systemhaus",
+      "title": "Systems Integrator, Megabyte Systemhaus",
       "url": "http://www.megabyte-rs.de/de/",
       "image": {
         "title": "Megabyte Systemhaus Remscheid",
@@ -48,7 +48,7 @@
     },
     {
       "duration": "09/2014 - 10/2015",
-      "title": "Studium \"Praktische Informatik\"",
+      "title": "Study of \"Practical Computer Science\"",
       "image": {
         "title": "Fachhochschule Dortmund",
         "url": "fh_dortmund.png",
@@ -59,7 +59,7 @@
   ],
   "2013": [
     {
-      "title": "Studium der Angewandten Informatik",
+      "title": "Study of \"Applied Computer Science\"",
       "duration": "10/2013-03/2014",
       "image": {
         "url": "rub.jpg",
@@ -69,8 +69,8 @@
       "url": "http://studienangebot.ruhr-uni-bochum.de/de/angewandte-informatik/bachelor-1-fach"
     },
     {
-      "title": "Abitur am Gymnasium Wermelskirchen",
-      "duration": "10/2013-03/2014",
+      "title": "Abitur at Gymnasium Wermelskirchen",
+      "duration": "06/2013",
       "image": {
         "url": "gymnasium.jpg",
         "title": "Gymnasium Wermelskirchen",

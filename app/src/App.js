@@ -38,7 +38,9 @@ const styles = theme => ({
     height: "100%"
   },
   headline: {
-    marginBottom: theme.spacing.unit * 2
+    marginBottom: theme.spacing.unit * 2,
+    fontSize: "1.7rem",
+    color: theme.palette.primary.main
   },
   grid: {
     // scrollSnapAlign: "center"
@@ -50,6 +52,9 @@ const styles = theme => ({
     paddingLeft: 0,
     listStyle: "none",
     marginBottom: theme.spacing.unit * 10
+  },
+  nav: {
+    fontWeight: 500
   }
 });
 
@@ -69,7 +74,7 @@ class App extends Component {
       <div className={classNames("App", classes.root)}>
         <Router>
           <MuiThemeProvider theme={theme}>
-            <AppBar className={classes.titlebar} position="sticky">
+            <AppBar className={classes.titlebar} position="static">
               <Toolbar>
                 <Typography
                   variant="title"
@@ -94,10 +99,7 @@ class App extends Component {
                       >
                         Welcome to my personal homepage.
                       </Typography>
-                      <Typography
-                        className={classes.headline}
-                        variant="subheading"
-                      >
+                      <Typography className={classes.nav} variant="subheading">
                         <div>
                           <nav>
                             <ul className={classes.links}>

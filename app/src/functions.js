@@ -1,6 +1,6 @@
 import React from "react";
 
-function parseMarkdownLinks(text) {
+function parseMarkdownLinks(text, linkClass) {
   let linkSplitter = /\[([^\]]+)\]\(([^)]+)\)/g; // ex: [link.de](https://www.link.de)
   const parts = text.split(linkSplitter);
 
@@ -12,7 +12,7 @@ function parseMarkdownLinks(text) {
           part = "";
         } else if (index % 3 === 2) {
           part = (
-            <a target="_blank" href={part}>
+            <a className={linkClass} target="_blank" href={part}>
               {arr[index - 1]}
             </a>
           );

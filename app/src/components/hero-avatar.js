@@ -16,7 +16,7 @@ const styles = theme => ({
     height: 80,
     marginRight: "auto",
     marginLeft: "auto",
-    marginTop: -47,
+    marginTop: -75,
     border: "4px solid " + theme.palette.background.default,
     borderRadius: 44
   },

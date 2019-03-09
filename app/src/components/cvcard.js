@@ -20,21 +20,32 @@ const styles = theme => ({
   media: {
     height: "170px",
     margin: theme.spacing.unit * 4,
-    marginBottom: 0,
+    marginBottom: "2rem",
     backgroundSize: "contain"
   },
   noMargin: {
     height: 170 + theme.spacing.unit * 4 + "px",
+    paddingBottom: "2rem",
     margin: 0,
     backgroundSize: "cover"
   },
-  card: {},
+  cardContent: {
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.primary.contrastText
+  },
+  cardHeader: {
+    backgroundColor: theme.palette.primary.main
+  },
+  text: {
+    color: theme.palette.primary.contrastText
+  },
   expand: {
     transform: "rotate(0deg)",
     transition: theme.transitions.create("transform", {
       duration: theme.transitions.duration.shortest
     }),
-    marginLeft: "auto"
+    marginLeft: "auto",
+    color: theme.palette.primary.contrastText
   },
   expandOpen: {
     transform: "rotate(180deg)"
@@ -48,6 +59,7 @@ const styles = theme => ({
   },
   collapseChildOverwrite: {
     alignSelf: "center",
+    marginTop: "5px",
     marginBottom: "-1em"
   },
   collapseChildRoot: {
@@ -73,10 +85,12 @@ class CVcard extends React.Component {
   };
 
   componentDidMount = () => {
-    let { description } = this.props;
+    let { description, classes } = this.props;
     if (description) {
-      let descriptionJSX = parseMarkdownLinks(description);
-      descriptionJSX = <Typography>{descriptionJSX}</Typography>;
+      let descriptionJSX = parseMarkdownLinks(description, classes.text);
+      descriptionJSX = (
+        <Typography className={classes.text}>{descriptionJSX}</Typography>
+      );
 
       this.setState({ descriptionJSX });
     }
@@ -118,6 +132,8 @@ class CVcard extends React.Component {
             overwriteCollapse && classes.collapseParentOverwrite
           )}
           classes={{
+            title: classes.text,
+            subheader: classes.text,
             action: classes.collapseChildRoot,
             content:
               descriptionJSX &&
@@ -149,7 +165,9 @@ class CVcard extends React.Component {
         />
         {descriptionJSX && (
           <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
-            <CardContent>{descriptionJSX}</CardContent>
+            <CardContent className={classes.cardContent}>
+              {descriptionJSX}
+            </CardContent>
           </Collapse>
         )}
       </Card>

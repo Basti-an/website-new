@@ -5,7 +5,7 @@ import Knob from "../synth/knob.js";
 const styles = () => ({
   plate: {
     display: "inline-block",
-    height: "250px",
+    height: "240px",
     width: "100px",
     zIndex: 100,
     position: "relative",
@@ -13,8 +13,7 @@ const styles = () => ({
     marginRight: "7px",
     border: "5px solid rgb(143, 235, 181)",
     backgroundColor: "rgb(55, 62, 70)",
-    boxShadow:
-      "0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08)"
+    boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 2px 4px 0 rgba(0, 0, 0, 0.08)"
   },
   topplate: {
     zIndex: 0,
@@ -35,8 +34,8 @@ const styles = () => ({
     padding: "25px",
     paddingRight: "5px",
     paddingLeft: "5px",
-    fontSize: "14px",
-    paddingTop: "35px",
+    paddingTop: 35,
+    paddingBottom: 15,
     backgroundColor: "rgb(143, 235, 181)",
     color: "rgb(55, 62, 70)",
     textAlign: "center"
@@ -82,10 +81,11 @@ class Filtermodule extends Component {
           <Knob
             changeInput={value => {
               filter.frequency.value = value;
+              console.log(filter.frequency.value);
             }}
-            minVal={20}
+            minVal={30}
             maxVal={20000}
-            size="big"
+            isBig
           />
         </div>
         <div className={classes.text}>Cutoff</div>
@@ -98,6 +98,7 @@ class Filtermodule extends Component {
             minVal={1}
             maxVal={30}
             size="small"
+            startValue={30}
           />
         </div>
       </div>

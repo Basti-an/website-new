@@ -7,11 +7,20 @@ import Config from "../config.js";
 const styles = theme => ({
   year: {
     marginTop: theme.spacing.unit * 4 + 2,
-    marginBottom: theme.spacing.unit * 3 + 2
+    marginBottom: theme.spacing.unit * 3 + 2,
+    color: theme.palette.primary.main
   },
   title: {
     marginRight: "auto",
-    marginLeft: "auto"
+    marginLeft: "auto",
+    fontSize: "1.5rem",
+    fontStyle: "italic",
+    marginBottom: "3rem",
+    fontWeight: 400,
+    color: theme.palette.primary.main
+  },
+  grid: {
+    paddingBottom: "2rem !important"
   }
 });
 
@@ -67,6 +76,7 @@ class CV extends React.Component {
                     item
                     xs={12}
                     lg={this.calculateCardWidth(yearEntries, index)}
+                    className={classes.grid}
                   >
                     <CVcard {...entry} />
                   </Grid>

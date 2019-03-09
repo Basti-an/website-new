@@ -109,6 +109,14 @@ class App extends Component {
                               <li>
                                 <Link to="/synth/">Synthesizer</Link>
                               </li>
+                              <li>
+                                <a
+                                  target="_blank"
+                                  href="https://github.com/Basti-an/website-new"
+                                >
+                                  SourceCode @ GitHub
+                                </a>
+                              </li>
                             </ul>
                           </nav>
                           <Route path="/cv/" component={CV} />

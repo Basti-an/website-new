@@ -107,7 +107,7 @@ class CVcard extends React.Component {
     }
 
     return (
-      <Card className={classes.card}>
+      <Card elevation={4} className={classes.card}>
         <a target="_blank" href={url}>
           <CardMedia
             className={classNames(

@@ -1,13 +1,12 @@
 /* allow loading of backend resources regardless of host
  */
-// insert networkIp here to test on mobile devices while using react start
-const currentLocalIp = "";
+const localIp = "192.168.0.157";
 
 const hostname = window && window.location && window.location.hostname;
 let backendHost;
 
-if (hostname === currentLocalIp) {
-  backendHost = "http://" + currentLocalIp + ":8080";
+if (hostname === localIp) {
+  backendHost = "http://" + localIp + ":8080";
 } else if (hostname === "localhost") {
   backendHost = "http://localhost:8080";
 } else {

@@ -18,8 +18,8 @@ const styles = theme => ({
     width: "100vw",
     marginTop: 0,
     zIndex: 1,
-    backgroundColor: theme.palette.background.default
-    // height: "100vh",
+    backgroundColor: theme.palette.background.default,
+    minHeight: "100vh"
     // overflowY: "scroll",
     // scrollSnapType: "y mandatory"
   },

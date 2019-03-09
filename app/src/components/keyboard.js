@@ -24,7 +24,23 @@ class Keyboard extends React.Component {
     "C3"
   ];
 
-  noteKeyMap = {
+  noteKeyboardMap = {
+    C2: "a",
+    "C#2": "w",
+    D2: "s",
+    "D#2": "e",
+    E2: "d",
+    F2: "f",
+    "F#2": "t",
+    G2: "g",
+    "G#2": "z",
+    A2: "h",
+    "A#2": "u",
+    B2: "j",
+    C3: "k"
+  };
+
+  keyCodeNoteMap = {
     65: "C2",
     87: "C#2",
     83: "D2",
@@ -55,7 +71,9 @@ class Keyboard extends React.Component {
               this.props.sendCV(value);
             }}
             className="blackNote"
-          />
+          >
+            {this.noteKeyboardMap[value]}
+          </div>
         );
       }
       return (
@@ -70,7 +88,9 @@ class Keyboard extends React.Component {
             this.props.sendCV(value);
           }}
           className="whiteNote"
-        />
+        >
+          {this.noteKeyboardMap[value]}
+        </div>
       );
     });
     return noteJSX;
@@ -83,11 +103,11 @@ class Keyboard extends React.Component {
     document.onkeydown = e => {
       e = e || window.event;
       var charCode = e.keyCode;
-      const pressedKey = this.noteKeyMap[charCode];
+      const pressedKey = this.keyCodeNoteMap[charCode];
       if (pressedKey && this.state.pressedKeys[pressedKey] === undefined) {
         // control oscillator
         this.props.sendGate(true);
-        this.props.sendCV(this.noteKeyMap[charCode]);
+        this.props.sendCV(this.keyCodeNoteMap[charCode]);
 
         this.setState(prevState => {
           let pressedKeys = prevState.pressedKeys;
@@ -102,7 +122,7 @@ class Keyboard extends React.Component {
     document.onkeyup = e => {
       e = e || window.event;
       var charCode = e.keyCode;
-      const pressedKey = this.noteKeyMap[charCode];
+      const pressedKey = this.keyCodeNoteMap[charCode];
       if (pressedKey) {
         this.setState(prevState => {
           let pressedKeys = prevState.pressedKeys;

@@ -102,7 +102,7 @@ class Keyboard extends React.Component {
     document.onkeyup = e => {
       e = e || window.event;
       var charCode = e.keyCode;
-      const pressedKey = this.state.noteKeyMap[charCode];
+      const pressedKey = this.noteKeyMap[charCode];
       if (pressedKey) {
         this.setState(prevState => {
           let pressedKeys = prevState.pressedKeys;

@@ -1,6 +1,7 @@
 {
   "name": "template-full-stack",
   "scripts": {
+    "analyze": "source-map-explorer 'app/build/static/js/*.js'",
     "setup": "yarn && cd app && yarn && cd ../backend_node && yarn && cd .. && yarn build",
     "dev:app": "cd app && yarn run dev",
     "dev:api": "cd backend_node && node server.js",
@@ -21,6 +22,7 @@
     "public-ip": "^2.4.0",
     "react-router-dom": "^4.3.1",
     "react-scripts": "^1.1.4",
+    "source-map-explorer": "^1.7.0",
     "tone": "^0.12.80",
     "zingtouch": "^1.0.6"
   }

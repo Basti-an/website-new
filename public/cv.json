@@ -9,7 +9,7 @@
         "fullWidth": false,
         "url": "tta.png"
       },
-      "description": "Porting existing Software Assets to a modern technology stack while abstracting components like Identity Access Management and licensing to allow for Cloud, Containerized and On-Prem deployment"
+      "description": "Porting software assets to a modern technology stack while abstracting components like Identity Access Management and licensing to allow for Cloud, Containerized and On-Prem deployment"
     }
   ],
   "2016": [
@@ -22,7 +22,7 @@
         "fullWidth": false,
         "url": "Cloudpilots.jpg"
       },
-      "description": "Developing Cloud-based solutions in the GSuite Eco-system. Full-stack development using Node, Python, JS and React"
+      "description": "Developing cloud-based solutions in the GSuite eco-system. Full-stack development using Node, Python, JS and React"
     }
   ],
   "2015": [
@@ -61,7 +61,7 @@
     },
     {
       "duration": "09/2014 - 10/2015",
-      "title": "Study of \"Practical Computer Science\"",
+      "title": "Studying \"Practical Computer Science\" at Fachhochschule Dortmund",
       "image": {
         "title": "Fachhochschule Dortmund",
         "url": "fh_dortmund.png",
@@ -72,7 +72,7 @@
   ],
   "2013": [
     {
-      "title": "Study of \"Applied Computer Science\"",
+      "title": "Studying \"Applied Computer Science\" at Ruhr-Universität Bochum",
       "duration": "10/2013-03/2014",
       "image": {
         "url": "rub-new.png",

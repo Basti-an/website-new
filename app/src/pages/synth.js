@@ -171,7 +171,7 @@ class Synth extends Component {
             color="inherit"
             className={classes.title}
           >
-            Sound parameter are changed by clicking and dragging on the knobs.
+            Sound parameters are changed by clicking and dragging on the knobs.
           </Typography>
           <Typography
             variant="subheading"

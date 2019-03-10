@@ -20,7 +20,8 @@ const styles = theme => ({
     color: theme.palette.primary.main
   },
   grid: {
-    paddingBottom: "2rem !important"
+    paddingBottom: "1rem !important",
+    paddingTop: "1rem !important"
   }
 });
 

@@ -1,4 +1,17 @@
 {
+  "2019": [
+    {
+      "duration": "01/2019 - today",
+      "title": "Software Developer",
+      "url": "https://timetoact-group.de/",
+      "image": {
+        "title": "TimeToAct Group",
+        "fullWidth": false,
+        "url": "tta.png"
+      },
+      "description": "Porting existing Software Assets to a modern technology stack while abstracting components like Identity Access Management and licensing to allow for Cloud, Containerized and On-Prem deployment"
+    }
+  ],
   "2016": [
     {
       "duration": "09/2016 - today",

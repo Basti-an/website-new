@@ -15,8 +15,13 @@ import Filtermodule from "../components/modules/filter.js";
 import LFOmodule from "../components/modules/lfo.js";
 import OSCModule from "../components/modules/osc.js";
 import Ampmodule from "../components/modules/vca.js";
-/* @TODO: refactor componentDidMount
-      implement paraphony for oscillators
+/* @TODO: 
+  refactor everything, clean everything up
+  implement routing for lfo
+  implement adsr instead of ar
+  osc controls
+  octave up, down buttons
+  implement paraphony for oscillators
 */
 
 const styles = () => ({
@@ -25,6 +30,12 @@ const styles = () => ({
     margin: "1rem auto"
   },
   synth: {},
+  link: {
+    textDecoration: "none",
+    "&:visited": {
+      color: "inherit"
+    }
+  },
   erebusBox: {
     marginLeft: "auto",
     marginRight: "auto",
@@ -121,6 +132,7 @@ class Synth extends Component {
       isPlaying,
       oscOctaveShift
     } = this.state;
+
     if (osc1 !== null) {
       let osc1Frequency =
           currentNote.substring(0, currentNote.length - 1) +
@@ -129,7 +141,6 @@ class Synth extends Component {
           currentNote.substring(0, currentNote.length - 1) +
           (parseInt(currentNote[currentNote.length - 1]) + oscOctaveShift.two);
 
-      console.log(osc1);
       osc1.frequency.value = osc1Frequency;
       osc2.frequency.value = osc2Frequency;
 
@@ -148,7 +159,15 @@ class Synth extends Component {
       <div className={classes.synth}>
         <div className={classes.erebusBox}>
           <Typography variant="title" color="inherit" className={classes.title}>
-            Dreadbox Erebus Clone (Work in progress)
+            <a
+              href="https://www.dreadbox-fx.com/erebus/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={classes.link}
+            >
+              Dreadbox Erebus Clone
+            </a>{" "}
+            (Work in progress)
           </Typography>
           <Typography
             className={classes.error}

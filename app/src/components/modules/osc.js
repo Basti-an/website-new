@@ -22,13 +22,16 @@ const styles = () => ({
     display: "inline-block"
   },
   switches: {},
-
+  tuneKnobs: {
+    marginTop: 21
+  },
   headertext: {
     color: "rgb(55, 62, 70)",
     textAlign: "center",
     position: "absolute",
     marginRight: "auto",
     marginLeft: "auto",
+    marginTop: 8,
     width: "calc(100%)"
   },
   ledOff: {
@@ -80,7 +83,7 @@ class OSCModule extends Component {
     return (
       <div className={classes.plate}>
         <div className={classes.headertext}>OSC</div>
-        <div className={classes.TuneKnobs}>
+        <div className={classes.tuneKnobs}>
           <div className={classes.button}>
             <Knob
               changeInput={value => {

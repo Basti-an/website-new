@@ -2,7 +2,7 @@
   "2019": [
     {
       "duration": "01/2019 - today",
-      "title": "Software Developer",
+      "title": "Fullstack Software Developer",
       "url": "https://timetoact-group.de/",
       "image": {
         "title": "TimeToAct Group",
@@ -14,7 +14,7 @@
   ],
   "2016": [
     {
-      "duration": "09/2016 - today",
+      "duration": "09/2016 - 01/2019",
       "title": "Software Developer (Google Cloud & Webapps)",
       "url": "https://www.cloudpilots.com",
       "image": {
@@ -51,7 +51,7 @@
   "2014": [
     {
       "duration": "03/2014 - 09/2014",
-      "title": "Systems Integrator, Megabyte Systemhaus",
+      "title": "Systems Integration, Megabyte Systemhaus",
       "url": "http://www.megabyte-rs.de/de/",
       "image": {
         "title": "Megabyte Systemhaus Remscheid",
@@ -61,7 +61,7 @@
     },
     {
       "duration": "09/2014 - 10/2015",
-      "title": "Studying \"Practical Computer Science\"",
+      "title": "\"Practical Computer Science\" at FH-Dortmund",
       "image": {
         "title": "Fachhochschule Dortmund",
         "url": "fh_dortmund.png",
@@ -72,7 +72,7 @@
   ],
   "2013": [
     {
-      "title": "Studying \"Applied Computer Science\"",
+      "title": "\"Applied Computer Science\" at RUB",
       "duration": "10/2013-03/2014",
       "image": {
         "url": "rub-new.png",

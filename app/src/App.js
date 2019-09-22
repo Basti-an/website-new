@@ -97,7 +97,7 @@ class App extends Component {
                         className={classes.headline}
                         variant="headline"
                       >
-                        Welcome to my personal homepage.
+                        Fullstack Software Developer based in Cologne, Germany
                       </Typography>
                       <Typography className={classes.nav} variant="subheading">
                         <div>

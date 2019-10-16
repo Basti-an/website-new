@@ -14,10 +14,6 @@ class Switch extends React.Component {
     active: false
   };
 
-  componentDidMount = () => {
-    let control = this.refs.switch;
-  };
-
   onInput = () => {
     const { active } = this.state;
     const { onInput } = this.props;
@@ -41,7 +37,6 @@ class Switch extends React.Component {
   render() {
     const { classes } = this.props;
 
-    // @TODO use image provided by my own server
     return (
       <img
         ref="switch"

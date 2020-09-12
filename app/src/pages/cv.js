@@ -43,9 +43,10 @@ function calculateCardWidth(entries, index) {
 }
 
 function CV() {
-  const [cv, setCv] = useState(null);
   const theme = useTheme();
   const classes = useStyles(theme);
+
+  const [cv, setCv] = useState(null);
 
   useEffect(() => {
     init();

@@ -8,6 +8,8 @@ import HeroAvatar from "./components/hero-avatar";
 import HeroImage from "./components/hero-image";
 import CV from "./pages/cv.js";
 import Synth from "./pages/synth.js";
+import Config from "./config";
+const { hostUrl } = Config;
 
 //@TODO implement detection of mobile user-agent for mobile-only features
 
@@ -18,12 +20,15 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 1,
     backgroundColor: theme.palette.background.default,
     minHeight: "100vh",
+    textAlign: "center",
     // overflowY: "scroll",
     // scrollSnapType: "y mandatory"
   },
   titlebar: {
     backgroundColor: theme.palette.primary.main,
+    backgroundImage: `url("${hostUrl}/images/brushed-alum.png")`,
     color: theme.palette.primary.contrastText,
+    backgroundBlendMode: "color-burn",
   },
   title: {
     marginRight: "auto",
@@ -32,11 +37,11 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
-    padding: theme.spacing.unit * 2 - 2,
+    padding: theme.spacing(2) - 2,
     height: "100%",
   },
   headline: {
-    marginBottom: theme.spacing.unit * 2,
+    marginBottom: theme.spacing(2),
     fontSize: "1.7rem",
     color: theme.palette.primary.main,
   },
@@ -56,14 +61,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// TODO: consider refactoring into stateless functional component
 function App() {
   const theme = useTheme();
-  console.log(theme);
   const classes = useStyles(theme);
 
   return (
-    <div className={classNames("App", classes.root)}>
+    <div className={classes.root}>
       <Router>
         <>
           <AppBar className={classes.titlebar} position="static">

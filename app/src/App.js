@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
   title: {
     marginRight: "auto",
     marginLeft: "auto",
+    fontWeight: 300,
   },
   content: {
     flexGrow: 1,
@@ -72,7 +73,7 @@ function App() {
           <AppBar className={classes.titlebar} position="static">
             <Toolbar>
               <Typography
-                variant="title"
+                variant="h5"
                 color="inherit"
                 className={classes.title}
               >
@@ -101,14 +102,14 @@ function App() {
                             <li>
                               <Link to="/synth/">Synthesizer</Link>
                             </li>
-                            <li>
+                            {/* <li>
                               <a
                                 target="_blank"
                                 href="https://github.com/Basti-an/website-new"
                               >
                                 SourceCode @ GitHub
                               </a>
-                            </li>
+                            </li> */}
                           </ul>
                         </nav>
                         <Route path="/cv/" component={CV} />

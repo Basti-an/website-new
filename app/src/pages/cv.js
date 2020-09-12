@@ -6,15 +6,18 @@ import Config from "../config.js";
 import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
-  year: {
-    marginTop: theme.spacing.unit * 4 + 2,
-    marginBottom: theme.spacing.unit * 3 + 2,
+  yearContainer: {
+    marginTop: theme.spacing(4) + 2,
+    marginBottom: theme.spacing(3) + 2,
     color: theme.palette.primary.main,
+  },
+  year: {
+    fontWeight: 300,
   },
   title: {
     marginRight: "auto",
     marginLeft: "auto",
-    fontSize: "1.5rem",
+    // fontSize: "1.5rem",
     fontStyle: "italic",
     marginBottom: "3rem",
     fontWeight: 400,
@@ -60,7 +63,7 @@ function CV() {
 
   return (
     <React.Fragment>
-      <Typography variant="title" color="inherit" className={classes.title}>
+      <Typography variant="h3" className={classes.title}>
         CV
       </Typography>
 
@@ -84,8 +87,8 @@ function CV() {
 
             return (
               <Grid container spacing={4}>
-                <Grid item xs={12}>
-                  <Typography className={classes.year} variant="headline">
+                <Grid className={classes.yearContainer} item xs={12}>
+                  <Typography className={classes.year} variant="h3">
                     {year}
                   </Typography>
                 </Grid>

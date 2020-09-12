@@ -1,15 +1,19 @@
-import { MuiThemeProvider } from "@material-ui/core/styles";
-import React, { Component } from "react";
+import { ThemeProvider } from "@material-ui/styles";
+import { createMuiTheme } from "@material-ui/core/styles";
+import React from "react";
 import App from "./App";
-import { theme } from "./theme";
+import palette from "./theme";
 
-class Container extends Component {
-  render() {
-    return (
-      <MuiThemeProvider theme={theme}>
-        <App />
-      </MuiThemeProvider>
-    );
-  }
+const theme = createMuiTheme(palette);
+console.log(ThemeProvider);
+
+function Container() {
+  console.log("TEST");
+  return (
+    <ThemeProvider theme={theme}>
+      <App />
+    </ThemeProvider>
+  );
 }
+
 export default Container;

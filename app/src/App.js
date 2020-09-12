@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { makeStyles, useTheme } from "@material-ui/styles";
-import { AppBar, Grid, Toolbar, Typography } from "@material-ui/core";
-import classNames from "classnames";
+import React from "react";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+import {
+  AppBar, Grid, Toolbar, Typography,
+} from "@material-ui/core";
 import { BrowserRouter as Router, Link, Route } from "react-router-dom";
 import "./App.css";
 import HeroAvatar from "./components/hero-avatar";
 import HeroImage from "./components/hero-image";
-import CV from "./pages/cv.js";
-import Synth from "./pages/synth.js";
+import CV from "./pages/cv";
+import Synth from "./pages/synth";
 import Config from "./config";
+
 const { hostUrl } = Config;
 
-//@TODO implement detection of mobile user-agent for mobile-only features
+// @TODO implement detection of mobile user-agent for mobile-only features
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -99,9 +101,9 @@ function App() {
                             <li>
                               <Link to="/cv/">CV</Link>
                             </li>
-                            <li>
+                            {/* <li>
                               <Link to="/synth/">Synthesizer</Link>
-                            </li>
+                            </li> */}
                             {/* <li>
                               <a
                                 target="_blank"
@@ -113,7 +115,7 @@ function App() {
                           </ul>
                         </nav>
                         <Route path="/cv/" component={CV} />
-                        <Route path="/synth/" component={Synth} />
+                        {/* <Route path="/synth/" component={Synth} /> */}
                       </div>
                     </Typography>
                   </Grid>

@@ -1,9 +1,9 @@
 import { Grid, Typography } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import React, { useState, useEffect } from "react";
-import CVcard from "../components/cvcard.js";
-import Config from "../config.js";
 import axios from "axios";
+import CVcard from "../components/cvcard";
+import Config from "../config";
 
 const useStyles = makeStyles((theme) => ({
   yearContainer: {
@@ -51,18 +51,18 @@ function CV() {
 
   const [cv, setCv] = useState(null);
 
-  useEffect(() => {
-    init();
-  }, []);
-
   async function init() {
-    const hostUrl = Config.hostUrl;
+    const { hostUrl } = Config;
     const { data } = await axios.get(`${hostUrl}/cv.json`);
     setCv(data);
   }
 
+  useEffect(() => {
+    init();
+  }, []);
+
   return (
-    <React.Fragment>
+    <>
       <Typography variant="h3" className={classes.title}>
         CV
       </Typography>
@@ -72,18 +72,16 @@ function CV() {
           .sort(sortDescending)
           .map((year) => {
             const yearEntries = cv[year];
-            const cards = yearEntries.map((entry, index) => {
-              return (
-                <Grid
-                  item
-                  xs={12}
-                  lg={calculateCardWidth(yearEntries, index)}
-                  className={classes.grid}
-                >
-                  <CVcard {...entry} />
-                </Grid>
-              );
-            });
+            const cards = yearEntries.map((entry, index) => (
+              <Grid
+                item
+                xs={12}
+                lg={calculateCardWidth(yearEntries, index)}
+                className={classes.grid}
+              >
+                <CVcard {...entry} />
+              </Grid>
+            ));
 
             return (
               <Grid container spacing={4}>
@@ -96,7 +94,7 @@ function CV() {
               </Grid>
             );
           })}
-    </React.Fragment>
+    </>
   );
 }
 

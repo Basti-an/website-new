@@ -63,10 +63,6 @@ function CV() {
 
   return (
     <>
-      <Typography variant="h3" className={classes.title}>
-        CV
-      </Typography>
-
       {cv &&
         Object.keys(cv)
           .sort(sortDescending)

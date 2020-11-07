@@ -6,155 +6,150 @@ import {
   CardMedia,
   Collapse,
   IconButton,
-  Typography
+  Typography,
+  useMediaQuery,
 } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
-import withWidth from "@material-ui/core/withWidth";
+import { useTheme, makeStyles } from "@material-ui/core/styles";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import classNames from "classnames";
-import React from "react";
-import Config from "../config.js";
-import { parseMarkdownLinks } from "../functions.js";
+import React, { useState } from "react";
+import Config from "../config";
+import { parseMarkdownLinks } from "../functions";
 
-const styles = theme => ({
+const useStyles = makeStyles((theme) => ({
   media: {
     height: "170px",
     margin: theme.spacing.unit * 4,
     marginBottom: "2rem",
-    backgroundSize: "contain"
+    backgroundSize: "contain",
   },
   noMargin: {
-    height: 170 + theme.spacing.unit * 4 + "px",
+    height: `${170 + theme.spacing.unit * 4}px`,
     paddingBottom: "2rem",
     margin: 0,
-    backgroundSize: "cover"
+    backgroundSize: "cover",
   },
   cardContent: {
     backgroundColor: theme.palette.primary.main,
-    color: theme.palette.primary.contrastText
+    color: theme.palette.primary.contrastText,
   },
   cardHeader: {
-    backgroundColor: theme.palette.primary.main
+    backgroundColor: theme.palette.primary.main,
+    height: "100%",
   },
   text: {
-    color: theme.palette.primary.contrastText
+    color: theme.palette.primary.contrastText,
   },
   expand: {
     transform: "rotate(0deg)",
     transition: theme.transitions.create("transform", {
-      duration: theme.transitions.duration.shortest
+      duration: theme.transitions.duration.shortest,
     }),
     marginLeft: "auto",
-    color: theme.palette.primary.contrastText
+    color: theme.palette.primary.contrastText,
   },
   expandOpen: {
-    transform: "rotate(180deg)"
+    transform: "rotate(180deg)",
   },
   actions: {
     marginRight: -(theme.spacing.unit * 1),
-    marginTop: "-5px"
+    marginTop: "-5px",
   },
   collapseParentOverwrite: {
-    flexDirection: "column"
+    flexDirection: "column",
+    height: "100%",
   },
   collapseChildOverwrite: {
     alignSelf: "center",
     marginTop: "5px",
-    marginBottom: "-1em"
+    marginBottom: "-1em",
   },
   collapseChildRoot: {
     alignSelf: "center",
-    marginRight: "0"
+    marginRight: "0",
   },
   collapseParentShift: {
-    marginRight: "-64px"
-  }
-});
+    marginRight: "-64px",
+  },
+}));
 
-class CVcard extends React.Component {
+const parseDescription = (description, classes) => {
+  if (!description) {
+    return <></>;
+  }
+  const descriptionJSX = parseMarkdownLinks(description, classes.text);
+  return (
+    <Typography className={classes.text}>{descriptionJSX}</Typography>
+  );
+};
+
+function CVCard(props) {
   /** This Component includes css overwrites based on screen width
    *  basically we overwrite flex rules for card header if the screen width is smaller than "lg"
    *  else we give the card header content a negative right margin to compensate for the width
    *  of the collapse button right next to it
    */
-  state = { expanded: false, description: null };
-  hostUrl = Config.hostUrl;
+  const {
+    image, url, title, duration, description,
+  } = props;
+  const [expanded, setExpanded] = useState(false);
+  const theme = useTheme();
+  const classes = useStyles(theme);
+  const descriptionJSX = parseDescription(description, classes);
 
-  handleExpandClick = () => {
-    this.setState({ expanded: !this.state.expanded });
-  };
+  const isSmall = useMediaQuery(theme.breakpoints.down("md"));
 
-  componentDidMount = () => {
-    let { description, classes } = this.props;
-    if (description) {
-      let descriptionJSX = parseMarkdownLinks(description, classes.text);
-      descriptionJSX = (
-        <Typography className={classes.text}>{descriptionJSX}</Typography>
-      );
+  const { hostUrl } = Config;
 
-      this.setState({ descriptionJSX });
-    }
-  };
-
-  render() {
-    const { image, url, title, duration, classes, width } = this.props;
-    const { descriptionJSX } = this.state;
-
-    // base rendering of collapse button on width
-    let overwriteCollapse = false;
-    if (width !== "lg" && width !== "xl") {
-      overwriteCollapse = true;
-    }
-
-    return (
-      <Card elevation={4} className={classes.card}>
-        <a target="_blank" href={url}>
-          <CardMedia
-            className={classNames(
-              classes.media,
-              image.fullWidth && classes.noMargin
-            )}
-            image={`${this.hostUrl}/images/` + image.url}
-            title={image.title}
-          />
-        </a>
-        {/* we have to overwite the class of header
+  return (
+    <Card elevation={4} className={classes.card}>
+      <a target="_blank" rel="noopener noreferrer" href={url}>
+        <CardMedia
+          className={classNames(
+            classes.media,
+            image.fullWidth && classes.noMargin,
+          )}
+          image={`${hostUrl}/images/${image.url}`}
+          title={image.title}
+        />
+      </a>
+      {/* we have to overwite the class of header
             because the "root" of cardHeader action
             is NOT actually the root class..
             we also overwrite the width of the CardHeaderContent on screen sizes
             where CardAction is in same row, so CardHeaderContent is always centered
         */}
-        <CardHeader
-          title={title}
-          subheader={duration}
-          className={classNames(
-            classes.cardHeader,
-            overwriteCollapse && classes.collapseParentOverwrite
-          )}
-          classes={{
-            title: classes.text,
-            subheader: classes.text,
-            action: classes.collapseChildRoot,
-            content:
-              descriptionJSX &&
-              !overwriteCollapse &&
-              classes.collapseParentShift
-          }}
-          action={
-            descriptionJSX && (
+      <CardHeader
+        title={title}
+        subheader={duration}
+        className={classNames(
+          classes.cardHeader,
+          isSmall && classes.collapseParentOverwrite,
+        )}
+        classes={{
+          title: classes.text,
+          subheader: classes.text,
+          action: classes.collapseChildRoot,
+          content:
+              description &&
+              !isSmall &&
+              classes.collapseParentShift,
+        }}
+        action={
+            description && (
               <CardActions
                 className={classNames(
                   classes.actions,
-                  overwriteCollapse && classes.collapseChildOverwrite
+                  isSmall && classes.collapseChildOverwrite,
                 )}
               >
                 <IconButton
                   className={classNames(
                     classes.expand,
-                    this.state.expanded && classes.expandOpen
+                    expanded && classes.expandOpen,
                   )}
-                  onClick={this.handleExpandClick}
-                  aria-expanded={this.state.expanded}
+                  onClick={() => { setExpanded(!expanded); }}
+                  aria-expanded={expanded}
                   aria-label="Show more"
                 >
                   <ExpandMoreIcon />
@@ -162,17 +157,16 @@ class CVcard extends React.Component {
               </CardActions>
             )
           }
-        />
-        {descriptionJSX && (
-          <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
-            <CardContent className={classes.cardContent}>
-              {descriptionJSX}
-            </CardContent>
-          </Collapse>
-        )}
-      </Card>
-    );
-  }
+      />
+      {description && (
+      <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <CardContent className={classes.cardContent}>
+          {descriptionJSX}
+        </CardContent>
+      </Collapse>
+      )}
+    </Card>
+  );
 }
 
-export default withWidth()(withStyles(styles)(CVcard));
+export default CVCard;

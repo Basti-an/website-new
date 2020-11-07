@@ -1,20 +1,16 @@
 /* allow loading of backend resources regardless of host
  */
-const localIp = "192.168.0.157";
-
 const hostname = window && window.location && window.location.hostname;
-let backendHost;
+let host;
 
-if (hostname === localIp) {
-  backendHost = "http://" + localIp + ":8080";
-} else if (hostname === "localhost") {
-  backendHost = "http://localhost:8080";
+if (hostname.indexOf(".com") !== -1) {
+  host = `https://${hostname}`;
 } else {
-  backendHost = "https://" + hostname;
+  host = `http://${hostname}:8080`;
 }
 
 const Config = {
-  hostUrl: backendHost
+  hostUrl: host,
 };
 
 export default Config;

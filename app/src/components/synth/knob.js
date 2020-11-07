@@ -9,15 +9,15 @@ const styles = () => ({
     transform: "rotate(0deg)",
     marginRight: "auto",
     marginLeft: "auto",
-    display: "block"
+    display: "block",
   },
   knobSmall: {
     height: "50px",
     transform: "rotate(0deg)",
     marginRight: "auto",
     marginLeft: "auto",
-    display: "block"
-  }
+    display: "block",
+  },
 });
 
 function isMobileDevice() {
@@ -31,30 +31,31 @@ function isMobileDevice() {
 class Knob extends Component {
   state = {
     isCheckingforChange: false,
-    lastValue: this.props.minVal
+    lastValue: this.props.minVal,
   };
 
   componentDidMount() {
-    let knob = this.refs.knob;
+    const { knob } = this.refs;
     // use ZingTouch on mobile for knob rotation
     // TODO: check for "sweep" in ZingTouch
+    const { startValue } = this.props;
+    let currentAngle = startValue - 140 || 0;
+
     if (isMobileDevice()) {
-      var region = new ZingTouch.Region(knob);
-      region.bind(knob, "rotate", e => {
+      const region = new ZingTouch.Region(knob);
+      region.bind(knob, "rotate", (e) => {
         currentAngle += e.detail.distanceFromLast;
         if (currentAngle < 140 && currentAngle > -140) {
-          knob.style.transform = "rotate(" + currentAngle + "deg)";
+          knob.style.transform = `rotate(${currentAngle}deg)`;
           this.handleInputChange(currentAngle + 140);
         }
       });
       return;
     }
     // init Knob position
-    const { startValue } = this.props;
-    let currentAngle = startValue - 140 || 0;
-    knob.style.transform = "rotate(" + currentAngle + "deg)";
+    knob.style.transform = `rotate(${currentAngle}deg)`;
 
-    const moveKnob = e => {
+    const moveKnob = (e) => {
       e.preventDefault();
 
       let curr = parseInt(knob.style.transform.split("(")[1].split("d"), 10);
@@ -66,8 +67,8 @@ class Knob extends Component {
 
       // do not allow knob rotation beyond 140 degrees
       if (curr < 140 && curr > -140) {
-        knob.style.transform = "rotate(" + curr + "deg)";
-        let currentValue = curr + 140;
+        knob.style.transform = `rotate(${curr}deg)`;
+        const currentValue = curr + 140;
         this.handleInputChange(currentValue);
         this.setState({ lastValue: currentValue });
         // check if value sweep has ended
@@ -86,13 +87,13 @@ class Knob extends Component {
     });
 
     // prevent knob image dragging in firefox
-    knob.addEventListener("dragstart", function(e) {
+    knob.addEventListener("dragstart", (e) => {
       e.preventDefault();
       return false;
     });
   }
 
-  checkForChange = currentValue => {
+  checkForChange = (currentValue) => {
     // periodically check if knob value still changing
     // can trigger an event as soon as values not changing anymore
     console.log("sweep started.");
@@ -109,8 +110,10 @@ class Knob extends Component {
     }, 250);
   };
 
-  handleInputChange = value => {
-    const { minVal, maxVal, changeInput, isLinear } = this.props;
+  handleInputChange = (value) => {
+    const {
+      minVal, maxVal, changeInput, isLinear,
+    } = this.props;
     if (isLinear) {
       changeInput(this.getLinValue(value, minVal, maxVal));
       return;
@@ -119,7 +122,9 @@ class Knob extends Component {
   };
 
   whileSweep = () => {
-    const { minVal, maxVal, whileSweep, isLinear } = this.props;
+    const {
+      minVal, maxVal, whileSweep, isLinear,
+    } = this.props;
     const { lastValue } = this.state;
     if (typeof whileSweep === "function") {
       if (isLinear) {
@@ -131,7 +136,9 @@ class Knob extends Component {
   };
 
   afterSweep = () => {
-    const { minVal, maxVal, afterSweep, isLinear } = this.props;
+    const {
+      minVal, maxVal, afterSweep, isLinear,
+    } = this.props;
     const { lastValue } = this.state;
     if (typeof afterSweep === "function") {
       if (isLinear) {
@@ -143,22 +150,22 @@ class Knob extends Component {
   };
 
   getLogValue(sliderValue, min, max) {
-    let minp = 0,
-      maxp = 280;
+    const minp = 0;
+    const maxp = 280;
 
-    let minv = Math.log(min),
-      maxv = Math.log(max);
+    const minv = Math.log(min);
+    const maxv = Math.log(max);
 
     // calculate adjustment factor
-    let scale = (maxv - minv) / (maxp - minp);
+    const scale = (maxv - minv) / (maxp - minp);
     return Math.exp(minv + scale * (sliderValue - minp));
   }
 
   getLinValue(sliderValue, min, max) {
-    let maxp = 280,
-      linVal = sliderValue / maxp,
-      range = max - min,
-      inRangeVal = linVal * range;
+    const maxp = 280;
+    const linVal = sliderValue / maxp;
+    const range = max - min;
+    const inRangeVal = linVal * range;
     return min + inRangeVal;
   }
 

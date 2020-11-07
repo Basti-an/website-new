@@ -5,35 +5,35 @@ import classNames from "classnames";
 import React, { Component } from "react";
 import Config from "../config.js";
 
-const styles = theme => ({
+const styles = (theme) => ({
   avatarBase: {
     marginRight: "auto",
     marginLeft: "auto",
-    zIndex: 1000
+    zIndex: 1000,
   },
   BigAvatar: {
-    width: 80,
-    height: 80,
+    width: 128,
+    height: 128,
     marginRight: "auto",
     marginLeft: "auto",
     marginTop: -75,
-    border: "4px solid " + theme.palette.background.default,
-    borderRadius: 44
+    border: `4px solid ${theme.palette.background.default}`,
+    borderRadius: 24,
   },
   smallAvatar: {
     width: 60,
     height: 60,
     marginTop: -34,
     borderRadius: 32,
-    border: "2px solid " + theme.palette.background.default
+    border: `2px solid ${theme.palette.background.default}`,
   },
   microAvatar: {
     width: 44,
     height: 44,
     marginTop: -26,
     borderRadius: 24,
-    border: "2px solid " + theme.palette.background.default
-  }
+    border: `2px solid ${theme.palette.background.default}`,
+  },
 });
 
 class HeroAvatar extends Component {

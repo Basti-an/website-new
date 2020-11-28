@@ -17,6 +17,11 @@ import Config from "../config";
 import { parseMarkdownLinks } from "../functions";
 
 const useStyles = makeStyles((theme) => ({
+  card: {
+    transform: "translate3d(0, 0, 0)",
+    WebkitTransform: "translate3d(0, 0, 0)",
+    WebkitVackfaceVisibility: "hidden",
+  },
   media: {
     height: "170px",
     margin: theme.spacing.unit * 4,
@@ -78,9 +83,7 @@ const parseDescription = (description, classes) => {
     return <></>;
   }
   const descriptionJSX = parseMarkdownLinks(description, classes.text);
-  return (
-    <Typography className={classes.text}>{descriptionJSX}</Typography>
-  );
+  return <Typography className={classes.text}>{descriptionJSX}</Typography>;
 };
 
 function CVCard(props) {
@@ -89,9 +92,7 @@ function CVCard(props) {
    *  else we give the card header content a negative right margin to compensate for the width
    *  of the collapse button right next to it
    */
-  const {
-    image, url, title, duration, description,
-  } = props;
+  const { image, url, title, duration, description } = props;
   const [expanded, setExpanded] = useState(false);
   const theme = useTheme();
   const classes = useStyles(theme);
@@ -107,7 +108,7 @@ function CVCard(props) {
         <CardMedia
           className={classNames(
             classes.media,
-            image.fullWidth && classes.noMargin,
+            image.fullWidth && classes.noMargin
           )}
           image={`${hostUrl}/images/${image.url}`}
           title={image.title}
@@ -124,46 +125,45 @@ function CVCard(props) {
         subheader={duration}
         className={classNames(
           classes.cardHeader,
-          isSmall && classes.collapseParentOverwrite,
+          isSmall && classes.collapseParentOverwrite
         )}
         classes={{
           title: classes.text,
           subheader: classes.text,
           action: classes.collapseChildRoot,
-          content:
-              description &&
-              !isSmall &&
-              classes.collapseParentShift,
+          content: description && !isSmall && classes.collapseParentShift,
         }}
         action={
-            description && (
-              <CardActions
+          description && (
+            <CardActions
+              className={classNames(
+                classes.actions,
+                isSmall && classes.collapseChildOverwrite
+              )}
+            >
+              <IconButton
                 className={classNames(
-                  classes.actions,
-                  isSmall && classes.collapseChildOverwrite,
+                  classes.expand,
+                  expanded && classes.expandOpen
                 )}
+                onClick={() => {
+                  setExpanded(!expanded);
+                }}
+                aria-expanded={expanded}
+                aria-label="Show more"
               >
-                <IconButton
-                  className={classNames(
-                    classes.expand,
-                    expanded && classes.expandOpen,
-                  )}
-                  onClick={() => { setExpanded(!expanded); }}
-                  aria-expanded={expanded}
-                  aria-label="Show more"
-                >
-                  <ExpandMoreIcon />
-                </IconButton>
-              </CardActions>
-            )
-          }
+                <ExpandMoreIcon />
+              </IconButton>
+            </CardActions>
+          )
+        }
       />
       {description && (
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent className={classes.cardContent}>
-          {descriptionJSX}
-        </CardContent>
-      </Collapse>
+        <Collapse in={expanded} timeout="auto" unmountOnExit>
+          <CardContent className={classes.cardContent}>
+            {descriptionJSX}
+          </CardContent>
+        </Collapse>
       )}
     </Card>
   );

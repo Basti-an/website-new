@@ -61,10 +61,17 @@ const useStyles = makeStyles({
 function initAudio(options = {}) {
   // @TODO add defaults everywhere
   const filterOpt = options.filter || {};
-  const filter = new Filter({ frequency: filterOpt.frequency || 842, Q: filterOpt.Q || 2.4 });
+  const filter = new Filter({
+    frequency: filterOpt.frequency || 842,
+    Q: filterOpt.Q || 2.4,
+  });
 
   const lfoOpt = options.lfo || {};
-  const lfo = new LFO(lfoOpt.frequency || 5, lfoOpt.min || 20, lfoOpt.max || 1500);
+  const lfo = new LFO(
+    lfoOpt.frequency || 5,
+    lfoOpt.min || 20,
+    lfoOpt.max || 1500
+  );
 
   const osc1 = new OmniOscillator("C2", "sawtooth");
   const osc2 = new OmniOscillator("C2", "sawtooth");
@@ -98,7 +105,13 @@ function initAudio(options = {}) {
   ampEnv.connect(feedbackDelay);
   feedbackDelay.chain(distortion, Destination);
   return {
-    filter, lfo, osc1, osc2, ampEnv, feedbackDelay, noise,
+    filter,
+    lfo,
+    osc1,
+    osc2,
+    ampEnv,
+    feedbackDelay,
+    noise,
   };
 }
 
@@ -107,7 +120,7 @@ function Synth() {
 
   const [oscOctaveShift, setOscOctaveShift] = useState({ one: 0, two: 1 });
   const [velocity, setVelocity] = useState(0.4);
-  const [isPlaying, setIsPlaying] = useState(false);
+  // const [isPlaying, setIsPlaying] = useState(false);
   const [init, setInit] = useState(false);
   const [ready, setReady] = useState(false);
 
@@ -125,7 +138,14 @@ function Synth() {
 
   return (
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-    <div className={classes.synth} onClick={() => { if (!init) { setInit(true); } }}>
+    <div
+      className={classes.synth}
+      onClick={() => {
+        if (!init) {
+          setInit(true);
+        }
+      }}
+    >
       <div className={classes.erebusBox}>
         <Typography variant="h5" color="inherit" className={classes.title}>
           <a
@@ -138,34 +158,18 @@ function Synth() {
           </a>{" "}
           (Work in progress)
         </Typography>
-        <Typography
-          className={classes.error}
-          variant="h5"
-          color="error"
-        >
+        <Typography className={classes.error} variant="h5" color="error">
           Currently Not Working on Mobile! Implementation is buggy at the
           moment.
         </Typography>
-        <Typography
-          variant="h5"
-          color="inherit"
-          className={classes.title}
-        >
+        <Typography variant="h5" color="inherit" className={classes.title}>
           Oscillator controls and styling, Envelope generator and modular
           patching yet to be implemented.
         </Typography>
-        <Typography
-          variant="h5"
-          color="inherit"
-          className={classes.title}
-        >
+        <Typography variant="h5" color="inherit" className={classes.title}>
           Sound parameters are changed by clicking and dragging on the knobs.
         </Typography>
-        <Typography
-          variant="h5"
-          color="inherit"
-          className={classes.title}
-        >
+        <Typography variant="h5" color="inherit" className={classes.title}>
           Sounds can be played by clicking on the keyboard or by pressing keys
           on your keyboard (a-k for white keys, w-z for black keys).
         </Typography>
@@ -174,8 +178,7 @@ function Synth() {
         href="https://fonts.googleapis.com/css?family=Comfortaa:700"
         rel="stylesheet"
       />
-      {
-        ready &&
+      {ready && (
         <>
           <div style={{ minWidth: 510 }} className={classes.erebusBox}>
             <div className="spacer">
@@ -197,7 +200,6 @@ function Synth() {
                 amp={window.erebus.ampEnv}
               />
             </div>
-
           </div>
           <Keyboard
             sendCVs={(cv1, cv2) => {
@@ -224,7 +226,7 @@ function Synth() {
             }}
           />
         </>
-      }
+      )}
     </div>
   );
 }

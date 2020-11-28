@@ -13,6 +13,9 @@ const useStyles = makeStyles((theme) => ({
   },
   year: {
     fontWeight: 300,
+    color: "#fff",
+    backdropFilter: "blur(18px)",
+    borderRadius: "4px",
   },
   title: {
     marginRight: "auto",

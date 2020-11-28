@@ -1,8 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import {
-  AppBar, Grid, Toolbar, Typography,
-} from "@material-ui/core";
+import { AppBar, Grid, Toolbar, Typography } from "@material-ui/core";
 import { BrowserRouter as Router, Link, Route } from "react-router-dom";
 import "./App.css";
 import HeroAvatar from "./components/hero-avatar";
@@ -16,17 +14,20 @@ const useStyles = makeStyles((theme) => ({
     width: "100vw",
     marginTop: 0,
     zIndex: 1,
-    backgroundColor: theme.palette.background.default,
+    // backgroundColor: theme.palette.background.default,
     minHeight: "100vh",
     textAlign: "center",
     // overflowY: "scroll",
     // scrollSnapType: "y mandatory"
   },
   titlebar: {
-    backgroundColor: theme.palette.primary.main,
-    backgroundImage: `url("${hostUrl}/images/brushed-alum.png")`,
+    transform: "translate3d(0,0,0)",
+    backgroundColor: "rgba(42,42,42,0.5)",
+    backdropFilter: "blur(28px)",
     color: theme.palette.primary.contrastText,
-    backgroundBlendMode: "color-burn",
+    // backgroundBlendMode: "color-burn",
+    zIndex: 10000,
+    position: "fixed",
   },
   title: {
     marginRight: "auto",
@@ -35,15 +36,18 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     flexGrow: 1,
-    backgroundColor: theme.palette.background.default,
+    // backgroundColor: theme.palette.background.default,
     padding: theme.spacing(2) - 2,
+    paddingTop: 64,
     height: "100%",
+    position: "relative",
+    zIndex: 1000,
   },
   headline: {
     marginTop: theme.spacing(4),
     marginBottom: theme.spacing(2),
     // fontSize: "1.7rem",
-    color: theme.palette.primary.main,
+    color: "#fff",
   },
   grid: {
     // scrollSnapAlign: "center"
@@ -52,32 +56,29 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: "auto",
   },
   links: {
+    "&:visited": {
+      color: "#fff",
+    },
     paddingLeft: 0,
     listStyle: "none",
-    marginBottom: theme.spacing(10),
+    marginBottom: "2rem",
     marginRight: "auto",
     marginLeft: "auto",
-    fontStyle: "italic",
     textDecoration: "none",
-    fontWeight: 400,
-    color: theme.palette.primary.main,
-  },
-  nav: {
-    marginTop: "6rem",
+    fontWeight: 300,
+    color: "#fff",
+    backdropFilter: "blur(18px)",
+    borderRadius: "4px",
+    padding: "1rem",
+    marginTop: "4rem",
+    fontSize: "16pt",
   },
 }));
 
 const views = {
-  "/cv": React.lazy(() => import("./pages/cv")),
-  "/synth": React.lazy(() => import("./pages/synth")),
+  "/cv": { name: "CV", Component: React.lazy(() => import("./pages/cv")) },
+  // "/synth": { name: "Synthesizer" Component: React.lazy(() => import("./pages/synth"))},
 };
-
-function toUpperCase(s) {
-  if (typeof s === "string") {
-    return s[0].toUpperCase() + s.slice(1);
-  }
-  return s;
-}
 
 function App() {
   const theme = useTheme();
@@ -87,17 +88,12 @@ function App() {
     <div className={classes.root}>
       <AppBar className={classes.titlebar} position="static">
         <Toolbar>
-          <Typography
-            variant="h5"
-            color="inherit"
-            className={classes.title}
-          >
+          <Typography variant="h5" color="inherit" className={classes.title}>
             Sebastian Wiendlocha
           </Typography>
         </Toolbar>
       </AppBar>
       <HeroImage />
-      <HeroAvatar />
       <React.Suspense fallback={<span>Loading content...</span>}>
         <Router>
           <>
@@ -110,35 +106,43 @@ function App() {
                       <Typography className={classes.headline} variant="h4">
                         Fullstack Software Developer based in Cologne, Germany
                       </Typography>
-                      <Typography className={classes.nav} variant="h4">
-                        <div>
-                          <nav>
-                            <ul className={classes.links}>
-                              {Object.entries(views).map(([key]) => (
-                                <li>
-                                  <Link to={key}>{toUpperCase(key.replace(/\//g, ""))}</Link>
-                                </li>
-                              ))}
-                              <li>
-                                <a
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  href="https://github.com/Basti-an/website-new"
-                                >
-                                  SourceCode @ GitHub
-                                </a>
-                              </li>
-                            </ul>
-                          </nav>
+                    </Grid>
 
-                          {Object.entries(views).map(([path, View]) => (<Route
+                    <Grid item xs={6}>
+                      <HeroAvatar />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <nav>
+                        <ul className={classes.links}>
+                          {Object.entries(views).map(([path, view]) => (
+                            <li>
+                              <Link to={path}>{view.name}</Link>
+                            </li>
+                          ))}
+                          <li>
+                            <a
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              href="https://github.com/Basti-an/website-new"
+                            >
+                              Source code
+                            </a>
+                          </li>
+                        </ul>
+                      </nav>
+                    </Grid>
+                    <Grid item xs={12}>
+                      {Object.entries(views).map(([path, view]) => {
+                        const { Component } = view;
+                        return (
+                          <Route
                             key={`${path}`}
                             path={path}
                             exact
-                            render={() => <View />}
-                          />))}
-                        </div>
-                      </Typography>
+                            render={() => <Component />}
+                          />
+                        );
+                      })}
                     </Grid>
                   </Grid>
                 </Grid>

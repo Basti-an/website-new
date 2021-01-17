@@ -1,11 +1,10 @@
 /* allow loading of backend resources regardless of host
  */
 const hostname = window && window.location && window.location.hostname;
-let host;
+let host = `https://${hostname}`;
+const env = process.env.NODE_ENV;
 
-if (hostname.indexOf(".com") !== -1) {
-  host = `https://${hostname}`;
-} else {
+if (env === "development") {
   host = `http://${hostname}:8080`;
 }
 

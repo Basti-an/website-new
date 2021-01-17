@@ -1,20 +1,34 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import { AppBar, Grid, Toolbar, Typography } from "@material-ui/core";
+import {
+  AppBar,
+  Grid,
+  Toolbar,
+  Typography,
+  FormControlLabel,
+  Switch,
+  Paper,
+  Tooltip,
+} from "@material-ui/core";
 import { BrowserRouter as Router, Link, Route } from "react-router-dom";
 import "./App.css";
-import HeroAvatar from "./components/hero-avatar";
+// import HeroAvatar from "./components/hero-avatar";
 import HeroImage from "./components/hero-image";
+import { getIsMobileOS, getIsGoodBrowser } from "./utils";
 import Config from "./config";
-
 const { hostUrl } = Config;
+
+const isMobile = getIsMobileOS();
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100vw",
     marginTop: 0,
     zIndex: 1,
-    // backgroundColor: theme.palette.background.default,
+    backgroundImage: isMobile
+      ? `url("${hostUrl}/images/mobileBg.jpg")`
+      : `url("${hostUrl}/images/mainBg.jpg")`,
+    backgroundAttachment: "fixed",
     minHeight: "100vh",
     textAlign: "center",
     // overflowY: "scroll",
@@ -44,9 +58,10 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 1000,
   },
   headline: {
-    marginTop: theme.spacing(4),
+    marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),
-    // fontSize: "1.7rem",
+    fontWeight: 300,
+    fontSize: "18pt",
     color: "#fff",
   },
   grid: {
@@ -59,7 +74,6 @@ const useStyles = makeStyles((theme) => ({
     "&:visited": {
       color: "#fff",
     },
-    paddingLeft: 0,
     listStyle: "none",
     marginBottom: "2rem",
     marginRight: "auto",
@@ -67,12 +81,19 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: "none",
     fontWeight: 300,
     color: "#fff",
+    borderRadius: "4px",
+    padding: "0",
+    marginTop: "2rem",
+    fontSize: "16pt",
+  },
+  boxed: {
+    backgroundColor: "initial",
     backdropFilter: "blur(18px)",
     borderRadius: "4px",
     padding: "1rem",
-    marginTop: "4rem",
-    fontSize: "16pt",
+    fontWeight: 300,
   },
+  switch: { marginRight: 0, float: "right" },
 }));
 
 const views = {
@@ -83,14 +104,54 @@ const views = {
 function App() {
   const theme = useTheme();
   const classes = useStyles(theme);
+  const [isFlowing, setIsFlowing] = useState(getIsGoodBrowser());
+
+  useEffect(() => {
+    const isMobile = getIsMobileOS();
+    const bgId = isMobile ? "noiseMobile" : "background";
+    const bg = document.getElementById(bgId);
+    if (!bg) {
+      return;
+    }
+
+    if (isFlowing) {
+      bg.style.display = "";
+    } else {
+      bg.style.display = "none";
+    }
+  }, [isFlowing]);
 
   return (
     <div className={classes.root}>
       <AppBar className={classes.titlebar} position="static">
         <Toolbar>
-          <Typography variant="h5" color="inherit" className={classes.title}>
-            Sebastian Wiendlocha
-          </Typography>
+          <Grid container className={classes.grid} xs={12}>
+            <Grid item xs={1}></Grid>
+            <Grid item xs={10}>
+              <Typography
+                variant="h5"
+                color="inherit"
+                className={classes.title}
+              >
+                Sebastian Wiendlocha
+              </Typography>
+            </Grid>
+            <Grid item xs={1}>
+              <Tooltip title='Toggle "flowing" background'>
+                <FormControlLabel
+                  className={classes.switch}
+                  control={
+                    <Switch
+                      checked={isFlowing}
+                      onChange={() => setIsFlowing(!isFlowing)}
+                      name="beWater"
+                    />
+                  }
+                  label=""
+                />
+              </Tooltip>
+            </Grid>
+          </Grid>
         </Toolbar>
       </AppBar>
       <HeroImage />
@@ -103,23 +164,27 @@ function App() {
                 <Grid item xs={12} sm={10} md={8} lg={10} xl={8}>
                   <Grid container>
                     <Grid item xs={12}>
-                      <Typography className={classes.headline} variant="h4">
-                        Fullstack Software Developer based in Cologne, Germany
-                      </Typography>
-                    </Grid>
-
-                    <Grid item xs={6}>
-                      <HeroAvatar />
-                    </Grid>
-                    <Grid item xs={6}>
+                      <div style={{ marginTop: "2rem" }}>
+                        <Paper elevation={16} className={classes.boxed}>
+                          <Typography className={classes.headline} variant="h3">
+                            Hello There! I`m a Fullstack Software Developer from
+                            Cologne, Germany
+                          </Typography>
+                          <Typography className={classes.headline} variant="h3">
+                            Unfortunately, this site is only used for hosting my
+                            CV at the moment
+                          </Typography>
+                        </Paper>
+                      </div>
                       <nav>
                         <ul className={classes.links}>
-                          {Object.entries(views).map(([path, view]) => (
-                            <li>
-                              <Link to={path}>{view.name}</Link>
-                            </li>
-                          ))}
-                          <li>
+                          <Paper elevation={16} className={classes.boxed}>
+                            {Object.entries(views).map(([path, view]) => (
+                              <Link style={{ fontSize: "22pt" }} to={path}>
+                                <li>{view.name}</li>
+                              </Link>
+                            ))}
+                            {/* <li>
                             <a
                               target="_blank"
                               rel="noopener noreferrer"
@@ -127,7 +192,8 @@ function App() {
                             >
                               Source code
                             </a>
-                          </li>
+                          </li> */}
+                          </Paper>
                         </ul>
                       </nav>
                     </Grid>

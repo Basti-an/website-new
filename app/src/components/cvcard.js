@@ -103,7 +103,12 @@ function CVCard(props) {
   const { hostUrl } = Config;
 
   return (
-    <Card elevation={4} className={classes.card}>
+    <Card
+      elevation={4}
+      className={classes.card}
+      // overwrite card background if needed
+      style={image.background ? { backgroundColor: image.background } : {}}
+    >
       <a target="_blank" rel="noopener noreferrer" href={url}>
         <CardMedia
           className={classNames(
@@ -112,6 +117,7 @@ function CVCard(props) {
           )}
           image={`${hostUrl}/images/${image.url}`}
           title={image.title}
+          style={image.background ? { backgroundColor: image.background } : {}}
         />
       </a>
       {/* we have to overwite the class of header

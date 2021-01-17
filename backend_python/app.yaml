@@ -27,6 +27,16 @@ handlers:
     upload: www/index.html
     secure: always
 
+  - url: /cv
+    static_files: www/index.html
+    upload: www/index.html
+    secure: always
+
+  - url: /synth
+    static_files: www/index.html
+    upload: www/index.html
+    secure: always
+
   - url: /synth/
     static_files: www/index.html
     upload: www/index.html

@@ -125,7 +125,12 @@ function App() {
     <div className={classes.root}>
       <AppBar className={classes.titlebar} position="static">
         <Toolbar>
-          <Grid container className={classes.grid} xs={12}>
+          <Grid
+            container
+            className={classes.grid}
+            xs={12}
+            style={{ maxWidth: "initial" }}
+          >
             <Grid item xs={1}></Grid>
             <Grid item xs={10}>
               <Typography

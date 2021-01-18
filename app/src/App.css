@@ -345,3 +345,46 @@ a {
 A {
   text-decoration: none;
 }
+
+.genie {
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  -o-transform: translateZ(0);
+  transform: translateZ(0);
+  transition: width 0.2s ease-out, height 0.2s ease-out;
+  margin: 0 0.5rem;
+  min-height: 68px;
+  min-width: 68px;
+  width: 68px;
+  height: 68px;
+  display: inline-block;
+  border-radius: 12px;
+}
+
+.app-icon {
+  width: 100%;
+  height: 100%;
+}
+
+#stage {
+  z-index: 1000000;
+  padding: 150px 0 20px 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  text-align: center;
+}
+
+#innerStage {
+  position: absolute;
+  bottom: 10px;
+  width: 260px;
+  height: 89px;
+  backdrop-filter: blur(120px);
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+}

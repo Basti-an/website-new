@@ -15,6 +15,7 @@ import "./App.css";
 // I would use a picture of myself on my website if my self esteem would't be so low at the moment
 // import HeroAvatar from "./components/hero-avatar";
 import HeroImage from "./components/hero-image";
+import Navigation from "./components/navigation";
 import { getIsMobileOS, getIsGoodBrowser } from "./utils";
 import Config from "./config";
 
@@ -189,7 +190,7 @@ function App() {
                           </Typography>
                         </Paper>
                       </div>
-                      <nav>
+                      {/* <nav>
                         <ul className={classes.links}>
                           <Paper elevation={16} className={classes.boxed}>
                             {Object.entries(views).map(([path, view]) => (
@@ -197,7 +198,6 @@ function App() {
                                 <li>{view.name}</li>
                               </Link>
                             ))}
-                            {/* <li>
                             // link to this sites github repo, very meta
                             <a
                               target="_blank"
@@ -206,10 +206,10 @@ function App() {
                             >
                               Source code
                             </a>
-                          </li> */}
+                          </li> 
                           </Paper>
                         </ul>
-                      </nav>
+                      </nav> */}
                     </Grid>
 
                     {/** **********************
@@ -236,6 +236,7 @@ function App() {
               </Grid>
             </div>
           </>
+          <Navigation />
         </Router>
       </React.Suspense>
     </div>

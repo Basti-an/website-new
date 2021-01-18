@@ -30,6 +30,10 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: "1rem !important",
     paddingTop: "1rem !important",
   },
+  spacer: {
+    width: "100%",
+    margin: "6rem 0",
+  },
 }));
 
 function sortDescending(a, b) {
@@ -93,6 +97,7 @@ function CV() {
               </Grid>
             );
           })}
+      <div className={classes.spacer} />
     </>
   );
 }

@@ -9,10 +9,25 @@ import { getIsMobileOS } from "../utils";
 
 function HeroImage(props) {
   const isMobileDevice = getIsMobileOS();
+  console.log(isMobileDevice);
   const { hostUrl } = Config;
 
   return (
     <>
+      {!isMobileDevice && (
+        <>
+          <img
+            id="background-dummy"
+            alt="water shore background"
+            src={`${hostUrl}/images/mainBg.jpg`}
+          />
+          <img
+            id="background"
+            alt="water shore background"
+            src={`${hostUrl}/images/mainBg.jpg`}
+          />
+        </>
+      )}
       <div id="container">
         <svg
           className="animated"
@@ -76,18 +91,20 @@ function HeroImage(props) {
               />
             </filter>
           )}
-          <image
-            id="mobileBg"
-            xlinkHref={`${hostUrl}/images/mobileBg.jpg`}
-            x="0"
-            y="0"
-            width="100%"
-            height="100%"
-            preserveAspectRatio="none"
-            filter="url(#noiseMobile)"
-          >
-            {" "}
-          </image>
+          {isMobileDevice && (
+            <image
+              id="mobileBg"
+              xlinkHref={`${hostUrl}/images/mobileBg.jpg`}
+              x="0"
+              y="0"
+              width="100%"
+              height="100%"
+              preserveAspectRatio="none"
+              filter="url(#noiseMobile)"
+            >
+              {" "}
+            </image>
+          )}
         </svg>
       </div>
     </>

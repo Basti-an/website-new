@@ -12,14 +12,17 @@ import {
 } from "@material-ui/core";
 import { BrowserRouter as Router, Link, Route } from "react-router-dom";
 import "./App.css";
+// I would use a picture of myself on my website if my self esteem would't be so low at the moment
 // import HeroAvatar from "./components/hero-avatar";
 import HeroImage from "./components/hero-image";
 import { getIsMobileOS, getIsGoodBrowser } from "./utils";
 import Config from "./config";
+
 const { hostUrl } = Config;
 
 const isMobile = getIsMobileOS();
 
+// most of this css should'nt really be here
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100vw",
@@ -29,17 +32,15 @@ const useStyles = makeStyles((theme) => ({
       ? `url("${hostUrl}/images/mobileBg.jpg")`
       : `url("${hostUrl}/images/mainBg.jpg")`,
     backgroundAttachment: "fixed",
+    backgroundSize: "cover",
     minHeight: "100vh",
     textAlign: "center",
-    // overflowY: "scroll",
-    // scrollSnapType: "y mandatory"
   },
   titlebar: {
     transform: "translate3d(0,0,0)",
     backgroundColor: "rgba(42,42,42,0.5)",
     backdropFilter: "blur(28px)",
     color: theme.palette.primary.contrastText,
-    // backgroundBlendMode: "color-burn",
     zIndex: 10000,
     position: "fixed",
   },
@@ -50,7 +51,6 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     flexGrow: 1,
-    // backgroundColor: theme.palette.background.default,
     padding: theme.spacing(2) - 2,
     paddingTop: 64,
     height: "100%",
@@ -65,7 +65,6 @@ const useStyles = makeStyles((theme) => ({
     color: "#fff",
   },
   grid: {
-    // scrollSnapAlign: "center"
     maxWidth: 1800,
     marginRight: "auto",
     marginLeft: "auto",
@@ -98,6 +97,7 @@ const useStyles = makeStyles((theme) => ({
 
 const views = {
   "/cv": { name: "CV", Component: React.lazy(() => import("./pages/cv")) },
+  // Synthesizer is currently not available due to tone.js being a harsh mistress
   // "/synth": { name: "Synthesizer" Component: React.lazy(() => import("./pages/synth"))},
 };
 
@@ -107,13 +107,16 @@ function App() {
   const [isFlowing, setIsFlowing] = useState(getIsGoodBrowser());
 
   useEffect(() => {
-    const isMobile = getIsMobileOS();
+    // flowing background is different between desktop and mobile
+    // this should not be of concern to this component, and it wont be in the future, hopefully
+    // @TODO
     const bgId = isMobile ? "noiseMobile" : "background";
     const bg = document.getElementById(bgId);
     if (!bg) {
       return;
     }
 
+    // toggle a visual effect the old school way
     if (isFlowing) {
       bg.style.display = "";
     } else {
@@ -131,7 +134,10 @@ function App() {
             xs={12}
             style={{ maxWidth: "initial" }}
           >
-            <Grid item xs={1}></Grid>
+            <Grid item xs={1}>
+              {/* spacing so next element will be properly mid-aligned */}
+            </Grid>
+
             <Grid item xs={10}>
               <Typography
                 variant="h5"
@@ -141,6 +147,7 @@ function App() {
                 Sebastian Wiendlocha
               </Typography>
             </Grid>
+
             <Grid item xs={1}>
               <Tooltip title='Toggle "flowing" background'>
                 <FormControlLabel
@@ -166,6 +173,7 @@ function App() {
             <div className={classes.content}>
               <Grid container className={classes.grid} xs={12}>
                 <Grid item sm={1} md={2} lg={1} xl={2} />
+
                 <Grid item xs={12} sm={10} md={8} lg={10} xl={8}>
                   <Grid container>
                     <Grid item xs={12}>
@@ -190,6 +198,7 @@ function App() {
                               </Link>
                             ))}
                             {/* <li>
+                            // link to this sites github repo, very meta
                             <a
                               target="_blank"
                               rel="noopener noreferrer"
@@ -202,6 +211,12 @@ function App() {
                         </ul>
                       </nav>
                     </Grid>
+
+                    {/** **********************
+                     ****                  ****
+                     ****    ACTUAL VIEW   ****
+                     ****                  ****
+                     ************************ */}
                     <Grid item xs={12}>
                       {Object.entries(views).map(([path, view]) => {
                         const { Component } = view;

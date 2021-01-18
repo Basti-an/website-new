@@ -1,7 +1,7 @@
 /* allow loading of backend resources regardless of host
  */
 const hostname = window && window.location && window.location.hostname;
-let host = `https://${hostname}`;
+let host = `https://wiendlocha.org`;
 const env = process.env.NODE_ENV;
 
 if (env === "development") {

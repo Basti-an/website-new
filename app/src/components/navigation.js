@@ -23,8 +23,6 @@ function Navigation(props) {
     stage.addEventListener("mousemove", (e) => {
       const x = e.clientX;
       const y = e.clientY;
-      console.log(x);
-      console.log(y);
       resizeGenies(x, y);
     });
 

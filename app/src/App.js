@@ -10,20 +10,20 @@ import {
   Paper,
   Tooltip,
 } from "@material-ui/core";
-import { BrowserRouter as Router, Link, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import "./App.css";
 // I would use a picture of myself on my website if my self esteem would't be so low at the moment
 // import HeroAvatar from "./components/hero-avatar";
 import HeroImage from "./components/hero-image";
 import Navigation from "./components/navigation";
-import { getIsMobileOS, getIsGoodBrowser } from "./utils";
+import { getIsMobileOS, getIsGoodBrowser, checkForDevicePerformance } from "./utils";
 import Config from "./config";
 
 const { hostUrl } = Config;
 
 const isMobile = getIsMobileOS();
 
-// most of this css should'nt really be here
+// @TODO externalize JSS classes
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100vw",
@@ -109,15 +109,15 @@ function App() {
 
   useEffect(() => {
     // flowing background is different between desktop and mobile
-    // this should not be of concern to this component, and it wont be in the future, hopefully
-    // @TODO
+    // this should not be of concern to this component, and should be refactored
+    // maybe navigation.js can export this
     const bgId = isMobile ? "noiseMobile" : "background";
     const bg = document.getElementById(bgId);
     if (!bg) {
       return;
     }
 
-    // toggle a visual effect the old school way
+    // old school
     if (isFlowing) {
       bg.style.display = "";
     } else {
@@ -125,26 +125,21 @@ function App() {
     }
   }, [isFlowing]);
 
+  useEffect(() => {
+    checkForDevicePerformance(setIsFlowing);
+  }, []);
+
   return (
     <div className={classes.root}>
       <AppBar className={classes.titlebar} position="static">
         <Toolbar>
-          <Grid
-            container
-            className={classes.grid}
-            xs={12}
-            style={{ maxWidth: "initial" }}
-          >
+          <Grid container className={classes.grid} xs={12} style={{ maxWidth: "initial" }}>
             <Grid item xs={1}>
               {/* spacing so next element will be properly mid-aligned */}
             </Grid>
 
             <Grid item xs={10}>
-              <Typography
-                variant="h5"
-                color="inherit"
-                className={classes.title}
-              >
+              <Typography variant="h5" color="inherit" className={classes.title}>
                 Sebastian Wiendlocha
               </Typography>
             </Grid>
@@ -181,12 +176,10 @@ function App() {
                       <div style={{ marginTop: "2rem" }}>
                         <Paper elevation={16} className={classes.boxed}>
                           <Typography className={classes.headline} variant="h3">
-                            Hello There! I`m a Fullstack Software Developer from
-                            Cologne, Germany
+                            Hello There! I`m a Fullstack Software Developer from Cologne, Germany
                           </Typography>
                           <Typography className={classes.headline} variant="h3">
-                            Unfortunately, this site is only used for hosting my
-                            CV at the moment
+                            Unfortunately, this site is only used for hosting my CV at the moment
                           </Typography>
                         </Paper>
                       </div>
@@ -221,12 +214,7 @@ function App() {
                       {Object.entries(views).map(([path, view]) => {
                         const { Component } = view;
                         return (
-                          <Route
-                            key={`${path}`}
-                            path={path}
-                            exact
-                            render={() => <Component />}
-                          />
+                          <Route key={`${path}`} path={path} exact render={() => <Component />} />
                         );
                       })}
                     </Grid>

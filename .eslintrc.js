@@ -1,6 +1,8 @@
 module.exports = {
   extends: ["airbnb", "airbnb/hooks"],
+  plugins: ["prettier"],
   rules: {
+    "prettier/prettier": ["error"],
     // param reassign is no issue in pure functions
     "no-param-reassign": 0,
     "react/prop-types": ["off"],
@@ -18,6 +20,7 @@ module.exports = {
     "no-unused-vars": 1,
     "no-nested-ternary": 0,
     "import/no-mutable-exports": 0,
+    "no-console": 0,
     camelcase: 1,
     quotes: 0,
   },

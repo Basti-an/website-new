@@ -31,6 +31,7 @@ function checkForDevicePerformance(setFancyAnimations) {
   // https://www.growingwiththeweb.com/2017/12/fast-simple-js-fps-counter.html (Daniel Imms)
   let lastCalledTime;
   let fps;
+  let done = false;
 
   // calculates fps based on time elapsed since last frame
   function refreshLoop() {
@@ -44,7 +45,9 @@ function checkForDevicePerformance(setFancyAnimations) {
       const delta = (performance.now() - lastCalledTime) / 1000;
       lastCalledTime = performance.now();
       fps = 1 / delta;
-      refreshLoop();
+      if (!done) {
+        refreshLoop();
+      }
     });
   }
 
@@ -54,11 +57,17 @@ function checkForDevicePerformance(setFancyAnimations) {
   // sample FPS after component had time to ramp up rendering
   const cookFor = 3000;
   setTimeout(() => {
+    done = true;
     console.log(`FPS after ${Math.floor(cookFor / 1000)} seconds`, Math.floor(fps));
-    if (fps < 24) {
-      // disable "flowing" background
-      // @TODO trigger a snackbar message, informing about feature being disabled
-      // due to poor performance, basically telling the user that his device sucks XD
+    // disable "flowing" background
+    // @TODO trigger a snackbar message, informing about feature being disabled
+    // due to poor performance, basically telling the user that his device sucks XD
+    if (getIsMobileOS()) {
+      if (fps < 10) {
+        // mobile animation uses different turbulence values and still looks nice™ even at lower fps
+        setFancyAnimations(false);
+      }
+    } else if (fps < 24) {
       setFancyAnimations(false);
     }
   }, cookFor);

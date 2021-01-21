@@ -24,12 +24,12 @@ const useStyles = makeStyles((theme) => ({
   },
   media: {
     height: "170px",
-    margin: theme.spacing.unit * 4,
+    margin: theme.spacing(4),
     marginBottom: "2rem",
     backgroundSize: "contain",
   },
   noMargin: {
-    height: `${170 + theme.spacing.unit * 4}px`,
+    height: `${170 + theme.spacing(4)}px`,
     paddingBottom: "2rem",
     margin: 0,
     backgroundSize: "cover",
@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
     transform: "rotate(180deg)",
   },
   actions: {
-    marginRight: -(theme.spacing.unit * 1),
+    marginRight: -theme.spacing(1),
     marginTop: "-5px",
   },
   collapseParentOverwrite: {
@@ -111,10 +111,7 @@ function CVCard(props) {
     >
       <a target="_blank" rel="noopener noreferrer" href={url}>
         <CardMedia
-          className={classNames(
-            classes.media,
-            image.fullWidth && classes.noMargin
-          )}
+          className={classNames(classes.media, image.fullWidth && classes.noMargin)}
           image={`${hostUrl}/images/${image.url}`}
           title={image.title}
           style={image.background ? { backgroundColor: image.background } : {}}
@@ -129,10 +126,7 @@ function CVCard(props) {
       <CardHeader
         title={title}
         subheader={duration}
-        className={classNames(
-          classes.cardHeader,
-          isSmall && classes.collapseParentOverwrite
-        )}
+        className={classNames(classes.cardHeader, isSmall && classes.collapseParentOverwrite)}
         classes={{
           title: classes.text,
           subheader: classes.text,
@@ -142,16 +136,10 @@ function CVCard(props) {
         action={
           description && (
             <CardActions
-              className={classNames(
-                classes.actions,
-                isSmall && classes.collapseChildOverwrite
-              )}
+              className={classNames(classes.actions, isSmall && classes.collapseChildOverwrite)}
             >
               <IconButton
-                className={classNames(
-                  classes.expand,
-                  expanded && classes.expandOpen
-                )}
+                className={classNames(classes.expand, expanded && classes.expandOpen)}
                 onClick={() => {
                   setExpanded(!expanded);
                 }}
@@ -166,9 +154,7 @@ function CVCard(props) {
       />
       {description && (
         <Collapse in={expanded} timeout="auto" unmountOnExit>
-          <CardContent className={classes.cardContent}>
-            {descriptionJSX}
-          </CardContent>
+          <CardContent className={classes.cardContent}>{descriptionJSX}</CardContent>
         </Collapse>
       )}
     </Card>

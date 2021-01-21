@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Tooltip } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import Config from "../config";
+import { getIsMobileOS } from "../utils";
 const { hostUrl } = Config;
 
 // this component is a PoC stuffed into a react component while not using react idioms, a refactor would be in order
@@ -20,11 +21,25 @@ function Navigation(props) {
     const defaultWidth = 68;
     const defaultHeight = 68;
 
-    stage.addEventListener("mousemove", (e) => {
-      const x = e.clientX;
-      const y = e.clientY;
-      resizeGenies(x, y);
-    });
+    if (!getIsMobileOS()) {
+      stage.addEventListener("mousemove", (e) => {
+        const x = e.clientX;
+        const y = e.clientY;
+        resizeGenies(x, y);
+      });
+    } else {
+      stage.addEventListener("touchmove", (e) => {
+        if (!e.touches[0]) {
+          return;
+        }
+        const x = e.touches[0].clientX;
+        const y = e.touches[0].clientY;
+        resizeGenies(x, y);
+      });
+      stage.addEventListener("touchend", (e) => {
+        resizeGenies(0, 0);
+      });
+    }
 
     function getDistance(rect, mouseX, mouseY) {
       let { x, y, width, height } = rect.getBoundingClientRect();
@@ -46,8 +61,7 @@ function Navigation(props) {
           genie.style.width = `${defaultWidth}px`;
           genie.style.height = `${defaultHeight}px`;
           genie.style.transition = "width 0.2s ease-out, height 0.2s ease-out";
-          innerStage.style.transition =
-            "width 0.2s ease-out, height 0.2s ease-out";
+          innerStage.style.transition = "width 0.2s ease-out, height 0.2s ease-out";
           genieWidths += defaultWidth;
           return;
         }
@@ -66,8 +80,7 @@ function Navigation(props) {
       const scaleX = 1 + ((fallOffX - x) / fallOffX) * maxMagnification;
       if (y > fallOffY) {
         genie.style.transition = "width 0.2s ease-out, height 0.2s ease-out";
-        innerStage.style.transition =
-          "width 0.2s ease-out, height 0.2s ease-out";
+        innerStage.style.transition = "width 0.2s ease-out, height 0.2s ease-out";
         genie.style.width = `${defaultWidth}px`;
         genie.style.height = `${defaultHeight}px`;
         return defaultWidth;
@@ -91,15 +104,11 @@ function Navigation(props) {
 
   return (
     <div id="stage">
-      <div id="innerStage"></div>
+      <div id="innerStage" />
       <Tooltip title="Home">
         <div className="genie">
           <Link to="/">
-            <img
-              className="app-icon"
-              alt="Home icon"
-              src={`${hostUrl}/images/home.png`}
-            ></img>
+            <img className="app-icon" alt="Home icon" src={`${hostUrl}/images/home.png`} />
           </Link>
         </div>
       </Tooltip>
@@ -110,7 +119,7 @@ function Navigation(props) {
               className="app-icon"
               alt="icon of a popular app for creating documents"
               src={`${hostUrl}/images/pages.png`}
-            ></img>
+            />
           </Link>
         </div>
       </Tooltip>
@@ -121,7 +130,7 @@ function Navigation(props) {
               className="app-icon"
               alt="contact book icon"
               src={`${hostUrl}/images/contact.png`}
-            ></img>
+            />
           </a>
         </div>
       </Tooltip>

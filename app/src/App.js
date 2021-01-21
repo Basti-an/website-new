@@ -94,6 +94,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 300,
   },
   switch: { marginRight: 0, float: "right" },
+  view: { maxWidth: "100vw" },
 }));
 
 const views = {
@@ -210,7 +211,7 @@ function App() {
                      ****    ACTUAL VIEW   ****
                      ****                  ****
                      ************************ */}
-                    <Grid item xs={12}>
+                    <Grid item xs={12} className={classes.view}>
                       {Object.entries(views).map(([path, view]) => {
                         const { Component } = view;
                         return (

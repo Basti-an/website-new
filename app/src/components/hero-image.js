@@ -21,20 +21,11 @@ function HeroImage(props) {
             alt="water shore background"
             src={`${hostUrl}/images/mainBg.jpg`}
           />
-          <img
-            id="background"
-            alt="water shore background"
-            src={`${hostUrl}/images/mainBg.jpg`}
-          />
+          <img id="background" alt="water shore background" src={`${hostUrl}/images/mainBg.jpg`} />
         </>
       )}
       <div id="container">
-        <svg
-          className="animated"
-          height="100%"
-          width="100%"
-          viewBox="0 0 450 920"
-        >
+        <svg className="animated" height="100%" width="100%" viewBox="0 0 450 920">
           {!isMobileDevice && (
             <filter id="noise" x="0" y="0%" width="100%" height="100%">
               <feTurbulence

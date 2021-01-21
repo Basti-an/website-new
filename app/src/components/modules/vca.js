@@ -12,7 +12,7 @@ const styles = () => ({
     borderRadius: "1rem",
     backgroundColor: "rgb(55, 62, 70)",
     border: "5px solid rgb(143, 235, 181)",
-    boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 2px 4px 0 rgba(0, 0, 0, 0.08)"
+    boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 2px 4px 0 rgba(0, 0, 0, 0.08)",
   },
   topplate: {
     zIndex: 0,
@@ -22,7 +22,7 @@ const styles = () => ({
     borderRight: "50px solid transparent",
     borderTop: "80px solid rgb(143, 235, 181)",
     marginRight: "auto",
-    marginLeft: "auto"
+    marginLeft: "auto",
   },
   bottomplate: {
     zIndex: 0,
@@ -36,7 +36,7 @@ const styles = () => ({
     paddingTop: 35,
     backgroundColor: "rgb(143, 235, 181)",
     color: "rgb(55, 62, 70)",
-    textAlign: "center"
+    textAlign: "center",
   },
   attack: {
     position: "absolute",
@@ -44,7 +44,7 @@ const styles = () => ({
     bottom: "40px",
     zIndex: 1000,
     height: "50px",
-    display: "block"
+    display: "block",
   },
   release: {
     position: "absolute",
@@ -52,20 +52,20 @@ const styles = () => ({
     zIndex: 1000,
     height: "50px",
     right: "10px",
-    display: "block"
+    display: "block",
   },
   text: {
     marginTop: "5px",
     textAlign: "center",
-    color: "rgb(143, 235, 181)"
+    color: "rgb(143, 235, 181)",
   },
   textBottom: {
     width: "50%",
     textAlign: "center",
-    color: "rgb(55, 62, 70)"
+    color: "rgb(55, 62, 70)",
   },
   textContainer: {
-    display: "flex"
+    display: "flex",
   },
   headertext: {
     color: "rgb(55, 62, 70)",
@@ -74,26 +74,27 @@ const styles = () => ({
     top: "10px",
     marginRight: "auto",
     marginLeft: "auto",
-    width: "calc(100%)"
+    width: "calc(100%)",
   },
   knobLevel: {
-    marginTop: -47
+    marginTop: -47,
   },
   knobAttack: {
     zIndex: 1000,
     display: "inline-block",
     padding: 10,
-    position: "relative"
+    position: "relative",
   },
+
   knobRelease: {
     zIndex: 1000,
     display: "inline-block",
     padding: 10,
-    position: "relative"
+    position: "relative",
   },
   knobContainer: {
-    marginTop: 6
-  }
+    marginTop: 6,
+  },
 });
 
 class Ampmodule extends Component {
@@ -102,16 +103,16 @@ class Ampmodule extends Component {
   componentDidMount() {}
 
   render() {
-    const { classes, amp, setVelocity, setAmp } = this.props;
+    const { classes, setVelocity } = this.props;
     return (
       <div className={classes.plate}>
         <div className={classes.topplate} />
         <div className={classes.headertext}>VCA</div>
         <div className={classes.knobLevel}>
           <Knob
-            changeInput={value => {
+            changeInput={(value) => {
               console.log(value / 1000);
-              //master.volume.value = value / 1000;
+              // master.volume.value = value / 1000;
               setVelocity(value / 1000);
             }}
             minVal={1}
@@ -124,24 +125,23 @@ class Ampmodule extends Component {
         <div className={classes.knobContainer}>
           <div className={classes.knobAttack}>
             <Knob
-              changeInput={value => {
-                amp.attack = value / 5000;
-                console.log(amp.attack);
+              changeInput={(value) => {
+                window.erebus.ampEnv.set({ attack: value });
+                console.log(window.erebus.ampEnv.attack);
               }}
-              minVal={100}
-              maxVal={100000}
-              startValue={0}
+              minVal={0.05}
+              maxVal={2}
+              startValue={7}
             />
           </div>
           <div className={classes.knobRelease}>
             <Knob
-              changeInput={value => {
-                amp.release = value / 5000;
-                console.log(amp.release);
+              changeInput={(value) => {
+                window.erebus.ampEnv.set({ release: value });
+                console.log(window.erebus.ampEnv.release);
               }}
-              minVal={100}
-              maxVal={100000}
-              isLinear
+              minVal={0.05}
+              maxVal={7}
             />
           </div>
         </div>

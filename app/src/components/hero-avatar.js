@@ -3,37 +3,40 @@ import { withStyles } from "@material-ui/core/styles";
 import withWidth from "@material-ui/core/withWidth";
 import classNames from "classnames";
 import React, { Component } from "react";
-import Config from "../config.js";
+import Config from "../config";
 
-const styles = theme => ({
+const styles = (theme) => ({
   avatarBase: {
     marginRight: "auto",
     marginLeft: "auto",
-    zIndex: 1000
+    zIndex: 1000,
+    marginTop: "5rem",
   },
   BigAvatar: {
-    width: 80,
-    height: 80,
+    width: "100%",
+    height: "100%",
+    maxHeight: 255,
+    maxWidth: 237,
     marginRight: "auto",
     marginLeft: "auto",
-    marginTop: -75,
-    border: "4px solid " + theme.palette.background.default,
-    borderRadius: 44
+
+    border: `4px solid ${theme.palette.background.default}`,
+    borderRadius: 24,
   },
   smallAvatar: {
     width: 60,
     height: 60,
-    marginTop: -34,
+
     borderRadius: 32,
-    border: "2px solid " + theme.palette.background.default
+    border: `2px solid ${theme.palette.background.default}`,
   },
   microAvatar: {
     width: 44,
     height: 44,
-    marginTop: -26,
+
     borderRadius: 24,
-    border: "2px solid " + theme.palette.background.default
-  }
+    border: `2px solid ${theme.palette.background.default}`,
+  },
 });
 
 class HeroAvatar extends Component {
@@ -56,7 +59,7 @@ class HeroAvatar extends Component {
     return (
       <Avatar
         alt="Sebastian Wiendlocha"
-        src={`${hostUrl}/images/sebastian.jpg`}
+        src={`${hostUrl}/images/sebastian_2020_crop.jpg`}
         className={avatar}
       />
     );

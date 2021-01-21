@@ -1,34 +1,47 @@
 {
+  "2021": [
+    {
+      "duration": "01/2021 - today",
+      "title": "Software Engineer @ sipgate",
+      "url": "https://sipgate.de/",
+      "image": {
+        "title": "sipgate",
+        "fullWidth": false,
+        "url": "sipgate.jpg",
+        "background": "#000"
+      },
+      "description": "Working on machine learning Research & Development projects to explore the potential of natural language processing for VoIP products."
+    }
+  ],
   "2019": [
     {
-      "duration": "01/2019 - today",
-      "title": "Fullstack Software Developer",
+      "duration": "01/2019 - 12/2020",
+      "title": "Fullstack Engineer @ TIMETOACT",
       "url": "https://timetoact-group.de/",
       "image": {
         "title": "TimeToAct Group",
         "fullWidth": false,
         "url": "tta.png"
-      },
-      "description": "Porting software assets to a modern technology stack while abstracting components like Identity Access Management and licensing to allow for Cloud, Containerized and On-Prem deployment"
+      }
     }
   ],
   "2016": [
     {
       "duration": "09/2016 - 01/2019",
-      "title": "Software Developer (Google Cloud & Webapps)",
+      "title": "Google Cloud Dev @ CLOUDPILOTS",
       "url": "https://www.cloudpilots.com",
       "image": {
         "title": "CLOUDPILOTS Software & Consulting GmbH",
         "fullWidth": false,
         "url": "Cloudpilots.jpg"
       },
-      "description": "Developing cloud-based solutions in the GSuite eco-system. Full-stack development using Node, Python, JS and React"
+      "description": "Developed cloud-based solutions around GSuite / Google Cloud using Node, Python, JS and React"
     }
   ],
   "2015": [
     {
       "duration": "06/2015 - 08/2015",
-      "title": "Frontend Development Internship",
+      "title": "Frontend Dev Internship @ Sevenval",
       "url": "https://www.sevenval.com/",
       "image": {
         "title": "Sevenval Technologies GmbH",
@@ -38,20 +51,20 @@
     },
     {
       "duration": "09/2015 - 05/2016",
-      "title": "Software Developer (Shopware)",
+      "title": "Software Dev @  Latzko Websoftware",
       "url": "https://www.latzko-websoftware.de",
       "image": {
         "title": "Latzko Websoftware GmbH",
         "fullWidth": false,
         "url": "latzko.gif"
       },
-      "description": "Developing Webshops (e.g. [myonbelle.de](https://www.myonbelle.de)) with JS, CSS3, HTML5, PHP, Shopware and ExtJS"
+      "description": "Developed Webshops with JS, CSS3, HTML5, PHP, Shopware and ExtJS"
     }
   ],
   "2014": [
     {
       "duration": "03/2014 - 09/2014",
-      "title": "Systems Integration, Megabyte Systemhaus",
+      "title": "Systems Integration @ Megabyte Systemhaus",
       "url": "http://www.megabyte-rs.de/de/",
       "image": {
         "title": "Megabyte Systemhaus Remscheid",
@@ -61,7 +74,7 @@
     },
     {
       "duration": "09/2014 - 10/2015",
-      "title": "\"Practical Computer Science\" at FH-Dortmund",
+      "title": "\"Practical Computer Science\" @ FH-Dortmund",
       "image": {
         "title": "Fachhochschule Dortmund",
         "url": "fh_dortmund.png",
@@ -72,7 +85,7 @@
   ],
   "2013": [
     {
-      "title": "\"Applied Computer Science\" at RUB",
+      "title": "\"Applied Computer Science\" @ RUB",
       "duration": "10/2013-03/2014",
       "image": {
         "url": "rub-new.png",
@@ -82,7 +95,7 @@
       "url": "http://studienangebot.ruhr-uni-bochum.de/de/angewandte-informatik/bachelor-1-fach"
     },
     {
-      "title": "Abitur at Gymnasium Wermelskirchen",
+      "title": "Abitur @ Gymnasium Wermelskirchen",
       "duration": "06/2013",
       "image": {
         "url": "gymnasium.jpg",

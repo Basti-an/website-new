@@ -1,20 +1,15 @@
 /* allow loading of backend resources regardless of host
  */
-const localIp = "192.168.0.157";
-
 const hostname = window && window.location && window.location.hostname;
-let backendHost;
+let host = `https://wiendlocha.org`;
+const env = process.env.NODE_ENV;
 
-if (hostname === localIp) {
-  backendHost = "http://" + localIp + ":8080";
-} else if (hostname === "localhost") {
-  backendHost = "http://localhost:8080";
-} else {
-  backendHost = "https://" + hostname;
+if (env === "development") {
+  host = `http://${hostname}:8080`;
 }
 
 const Config = {
-  hostUrl: backendHost
+  hostUrl: host,
 };
 
 export default Config;

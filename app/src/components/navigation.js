@@ -11,7 +11,6 @@ const { hostUrl } = Config;
 function Navigation(props) {
   useEffect(() => {
     const stage = document.getElementById("stage");
-    console.log(stage);
     const innerStage = document.getElementById("innerStage");
     const genies = document.querySelectorAll(".genie");
 

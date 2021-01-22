@@ -58,7 +58,7 @@ function checkForDevicePerformance(setFancyAnimations) {
   const cookFor = 3000;
   setTimeout(() => {
     done = true;
-    console.log(`FPS after ${Math.floor(cookFor / 1000)} seconds`, Math.floor(fps));
+    console.log(`FPS after ${Math.floor(cookFor / 1000)} seconds:`, Math.floor(fps));
     // disable "flowing" background
     // @TODO trigger a snackbar message, informing about feature being disabled
     // due to poor performance, basically telling the user that his device sucks XD

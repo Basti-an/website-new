@@ -9,7 +9,6 @@ import { getIsMobileOS } from "../utils";
 
 function HeroImage(props) {
   const isMobileDevice = getIsMobileOS();
-  console.log(isMobileDevice);
   const { hostUrl } = Config;
 
   return (

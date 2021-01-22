@@ -5,10 +5,8 @@ import App from "./App";
 import palette from "./theme";
 
 const theme = createMuiTheme(palette);
-console.log(ThemeProvider);
 
 function Container() {
-  console.log("TEST");
   return (
     <ThemeProvider theme={theme}>
       <App />

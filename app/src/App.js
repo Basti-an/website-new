@@ -94,7 +94,6 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 300,
   },
   switch: { marginRight: 0, float: "right" },
-  view: { maxWidth: "100vw" },
 }));
 
 const views = {
@@ -134,7 +133,7 @@ function App() {
     <div className={classes.root}>
       <AppBar className={classes.titlebar} position="static">
         <Toolbar>
-          <Grid container className={classes.grid} xs={12} style={{ maxWidth: "initial" }}>
+          <Grid container className={classes.grid} style={{ maxWidth: "initial" }}>
             <Grid item xs={1}>
               {/* spacing so next element will be properly mid-aligned */}
             </Grid>
@@ -168,7 +167,7 @@ function App() {
         <Router>
           <>
             <div className={classes.content}>
-              <Grid container className={classes.grid} xs={12}>
+              <Grid container className={classes.grid}>
                 <Grid item sm={1} md={2} lg={1} xl={2} />
 
                 <Grid item xs={12} sm={10} md={8} lg={10} xl={8}>
@@ -211,7 +210,7 @@ function App() {
                      ****    ACTUAL VIEW   ****
                      ****                  ****
                      ************************ */}
-                    <Grid item xs={12} className={classes.view}>
+                    <Grid item xs={12}>
                       {Object.entries(views).map(([path, view]) => {
                         const { Component } = view;
                         return (
@@ -221,7 +220,7 @@ function App() {
                     </Grid>
                   </Grid>
                 </Grid>
-                <Grid sm={1} md={2} lg={1} xl={2} />
+                <Grid item sm={1} md={2} lg={1} xl={2} />
               </Grid>
             </div>
           </>

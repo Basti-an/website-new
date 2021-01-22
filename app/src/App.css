@@ -327,7 +327,6 @@ body,
 html {
   width: 100vw;
   -webkit-overflow-scrolling: touch;
-  overflow-y: hidden;
 }
 
 body {

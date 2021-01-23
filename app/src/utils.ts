@@ -80,7 +80,7 @@ function checkForDevicePerformance(setFancyAnimations: React.Dispatch<boolean>):
         // mobile animation uses different turbulence values and still looks nice™ even at lower fps
         setFancyAnimations(false);
       }
-    } else if (fps < 15) {
+    } else if (fps < 18) {
       setFancyAnimations(false);
     }
   }, cookFor);

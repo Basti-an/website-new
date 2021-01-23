@@ -39,10 +39,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "start:dev": "concurrently -r --kill-others \"node ../backend_node/server\" \"react-scripts start\" ",
-    "build:node": "react-scripts build && rm -rf ../backend_node/build && cp ./build ../backend_node",
-    "build:python": "react-scripts build && rm -rf ../backend_python/www && cp ./build ../backend_python/www && cp ../backend_python/cv.json ../backend_python/www",
-    "eject": "react-scripts eject",
+    "build": "react-scripts build",
     "dev": "env=dev react-scripts start"
   },
   "browserslist": {

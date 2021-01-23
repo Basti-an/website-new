@@ -9,7 +9,7 @@
     "cleanup": "rm -rf ./backend_python/www && rm -rf ./backend_node/build && rm -rf ./backend_python/public && rm -rf ./backend_node/public",
     "copy:build": "cp -r ./app/build ./backend_python/www && cp -r ./app/build ./backend_node/build",
     "copy:public": "cp -r ./public ./backend_python/ && cp -r ./public ./backend_node/ && cp ./public/cv.json ./backend_python/www",
-    "build": "cd ./app && react-scripts build && cd .. && yarn cleanup && yarn copy:build && yarn copy:public",
+    "build": "cd ./app && yarn build && cd .. && yarn cleanup && yarn copy:build && yarn copy:public",
     "start:node": "cd ./backend_node && yarn start",
     "start:python": "cd ./backend_python && yarn start",
     "deploy": "cd ./backend_python && gcloud app deploy app.yaml",
@@ -19,6 +19,7 @@
   "dependencies": {
     "concurrently": "^3.6.0",
     "react-scripts": "^4.0.1",
-    "source-map-explorer": "^1.7.0"
+    "source-map-explorer": "^1.7.0",
+    "typescript": "^4.1.3"
   }
 }

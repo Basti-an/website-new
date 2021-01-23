@@ -1,6 +1,6 @@
 import { withStyles } from "@material-ui/core/styles";
 import React, { Component } from "react";
-import Knob from "../synth/knob.js";
+import Knob from "../synth/_knob.js";
 
 const styles = () => ({
   plate: {
@@ -50,8 +50,7 @@ const styles = () => ({
     opacity: 0,
     border: "1px solid #500000",
     animation: "flickerAnimation 0.2s infinite",
-    boxShadow:
-      "0 4px 8px 0 rgba(254, 27, 7, 0.3), 0 2px 4px 0 rgba(254, 27, 7, 0.3)",
+    boxShadow: "0 4px 8px 0 rgba(254, 27, 7, 0.3), 0 2px 4px 0 rgba(254, 27, 7, 0.3)",
   },
   button: {
     padding: 10,
@@ -93,7 +92,7 @@ class DelayModule extends Component {
                 delay.feedback.value = value;
               }}
               minVal={0.01}
-              maxVal={1.00}
+              maxVal={1.0}
               afterSweep={this.evaluateConnection}
               whileSweep={this.evaluateConnection}
               isLinear

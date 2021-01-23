@@ -7,3 +7,4 @@
 /backend_python/public
 /backend_python/www
 .DS_Store
+/app/.eslintcache

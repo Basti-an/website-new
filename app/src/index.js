@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import Container from "./Container.tsx";
 import "./index.css";
 
-const githubRepoLink = "https://github.com/Basti-an/website-new";
+const githubRepoLink = "https://github.com/Basti-an/website-new/tree/typescript";
 
 console.log("Hello, tech-savy friend!");
 console.log(

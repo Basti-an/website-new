@@ -1,41 +1,13 @@
 import { Grid, GridProps, Typography } from "@material-ui/core";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { useTheme } from "@material-ui/core/styles";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import CVcard from "../components/cvcard";
 import Config from "../config";
 import { CvModel, CvEntry } from "../models/cv";
+import { cvStyles } from "../jss";
 
-const useStyles = makeStyles((theme) => ({
-  yearContainer: {
-    marginTop: theme.spacing(4) + 2,
-    marginBottom: theme.spacing(3) + 2,
-    color: theme.palette.primary.main,
-  },
-  year: {
-    fontWeight: 300,
-    color: "#fff",
-    backdropFilter: "blur(18px)",
-    borderRadius: "4px",
-  },
-  title: {
-    marginRight: "auto",
-    marginLeft: "auto",
-    // fontSize: "1.5rem",
-    fontStyle: "italic",
-    marginBottom: "3rem",
-    fontWeight: 400,
-    color: theme.palette.primary.main,
-  },
-  grid: {
-    paddingBottom: "1rem !important",
-    paddingTop: "1rem !important",
-  },
-  spacer: {
-    width: "100%",
-    margin: "6rem 0",
-  },
-}));
+const useStyles = cvStyles;
 
 function sortDescending(a: string, b: string) {
   return parseInt(b, 10) - parseInt(a, 10);

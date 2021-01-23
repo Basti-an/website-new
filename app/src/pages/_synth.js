@@ -12,12 +12,12 @@ import {
   Noise,
 } from "tone";
 
-import Keyboard from "../components/keyboard";
-import DelayModule from "../components/modules/delay";
-import Filtermodule from "../components/modules/filter";
-import LFOmodule from "../components/modules/lfo";
-import OSCModule from "../components/modules/osc";
-import Ampmodule from "../components/modules/vca";
+import Keyboard from "../components/_keyboard";
+import DelayModule from "../components/modules/_delay";
+import Filtermodule from "../components/modules/_filter";
+import LFOmodule from "../components/modules/_lfo";
+import OSCModule from "../components/modules/_osc";
+import Ampmodule from "../components/modules/_vca";
 /* @TODO:
   refactor everything, clean everything up
   implement routing for lfo
@@ -50,8 +50,7 @@ const useStyles = makeStyles({
     backgroundColor: "rgb(55, 62, 70)",
     border: "5px solid rgb(143, 235, 181)",
     borderRadius: "1rem",
-    boxShadow:
-      "0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08)",
+    boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08)",
   },
   error: {
     fontWeight: 500,
@@ -67,11 +66,7 @@ function initAudio(options = {}) {
   });
 
   const lfoOpt = options.lfo || {};
-  const lfo = new LFO(
-    lfoOpt.frequency || 5,
-    lfoOpt.min || 20,
-    lfoOpt.max || 1500
-  );
+  const lfo = new LFO(lfoOpt.frequency || 5, lfoOpt.min || 20, lfoOpt.max || 1500);
 
   const osc1 = new OmniOscillator("C2", "sawtooth");
   const osc2 = new OmniOscillator("C2", "sawtooth");
@@ -159,25 +154,21 @@ function Synth() {
           (Work in progress)
         </Typography>
         <Typography className={classes.error} variant="h5" color="error">
-          Currently Not Working on Mobile! Implementation is buggy at the
-          moment.
+          Currently Not Working on Mobile! Implementation is buggy at the moment.
         </Typography>
         <Typography variant="h5" color="inherit" className={classes.title}>
-          Oscillator controls and styling, Envelope generator and modular
-          patching yet to be implemented.
+          Oscillator controls and styling, Envelope generator and modular patching yet to be
+          implemented.
         </Typography>
         <Typography variant="h5" color="inherit" className={classes.title}>
           Sound parameters are changed by clicking and dragging on the knobs.
         </Typography>
         <Typography variant="h5" color="inherit" className={classes.title}>
-          Sounds can be played by clicking on the keyboard or by pressing keys
-          on your keyboard (a-k for white keys, w-z for black keys).
+          Sounds can be played by clicking on the keyboard or by pressing keys on your keyboard (a-k
+          for white keys, w-z for black keys).
         </Typography>
       </div>
-      <link
-        href="https://fonts.googleapis.com/css?family=Comfortaa:700"
-        rel="stylesheet"
-      />
+      <link href="https://fonts.googleapis.com/css?family=Comfortaa:700" rel="stylesheet" />
       {ready && (
         <>
           <div style={{ minWidth: 510 }} className={classes.erebusBox}>

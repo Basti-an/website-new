@@ -372,7 +372,8 @@ A {
   padding: 150px 0 20px 0;
   position: fixed;
   bottom: 0;
-  width: 100%;
+  left: calc(50% - 333px);
+  width: 666px;
   display: flex;
   justify-content: center;
   align-items: baseline;

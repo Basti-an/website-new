@@ -16,7 +16,7 @@ import "./App.css";
 // import HeroAvatar from "./components/hero-avatar";
 import HeroImage from "./components/hero-image";
 import Navigation from "./components/navigation";
-import { getIsMobileOS, getIsGoodBrowser, checkForDevicePerformance } from "./utils";
+import { getIsMobileOS, getIsGoodBrowser, checkForDevicePerformance } from "./utils.ts";
 import Config from "./config";
 
 const { hostUrl } = Config;

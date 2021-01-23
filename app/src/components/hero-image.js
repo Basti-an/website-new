@@ -1,6 +1,6 @@
 import React from "react";
 import Config from "../config";
-import { getIsMobileOS } from "../utils";
+import { getIsMobileOS } from "../utils.ts";
 
 // this stuff is wild
 // we have an image being used as the source graphic for a discplacement map

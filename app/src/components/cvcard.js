@@ -14,7 +14,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import classNames from "classnames";
 import React, { useState } from "react";
 import Config from "../config";
-import { parseMarkdownLinks } from "../functions";
+import { parseMarkdownLinks } from "../functions.tsx";
 
 const useStyles = makeStyles((theme) => ({
   card: {

@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import Container from "./Container.js";
+import Container from "./Container.tsx";
 import "./index.css";
 
 const githubRepoLink = "https://github.com/Basti-an/website-new";

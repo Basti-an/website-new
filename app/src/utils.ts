@@ -3,6 +3,10 @@ import { detect } from "detect-browser";
 const browser = detect();
 
 function getIsMobileOS() {
+  if (!browser) {
+    return false;
+  }
+
   const { os } = browser;
   if (!os) {
     return false;
@@ -17,20 +21,26 @@ function getIsMobileOS() {
 }
 
 function getIsGoodBrowser() {
+  if (!browser) {
+    return false;
+  }
+
+  const { name } = browser;
+
   const goodBrowsers = ["chrome", "safari"];
 
-  if (goodBrowsers.includes(browser.name) || getIsMobileOS()) {
+  if (goodBrowsers.includes(name) || getIsMobileOS()) {
     return true;
   }
 
   return false;
 }
 
-function checkForDevicePerformance(setFancyAnimations) {
+function checkForDevicePerformance(setFancyAnimations: React.Dispatch<any>) {
   // count fps and stop background animation if fps dips below 24, based on:
   // https://www.growingwiththeweb.com/2017/12/fast-simple-js-fps-counter.html (Daniel Imms)
-  let lastCalledTime;
-  let fps;
+  let lastCalledTime: number;
+  let fps: number;
   let done = false;
 
   // calculates fps based on time elapsed since last frame
@@ -42,9 +52,11 @@ function checkForDevicePerformance(setFancyAnimations) {
         refreshLoop();
         return;
       }
+
       const delta = (performance.now() - lastCalledTime) / 1000;
       lastCalledTime = performance.now();
       fps = 1 / delta;
+
       if (!done) {
         refreshLoop();
       }
@@ -59,6 +71,7 @@ function checkForDevicePerformance(setFancyAnimations) {
   setTimeout(() => {
     done = true;
     console.log(`FPS after ${Math.floor(cookFor / 1000)} seconds:`, Math.floor(fps));
+
     // disable "flowing" background
     // @TODO trigger a snackbar message, informing about feature being disabled
     // due to poor performance, basically telling the user that his device sucks XD
@@ -67,7 +80,7 @@ function checkForDevicePerformance(setFancyAnimations) {
         // mobile animation uses different turbulence values and still looks nice™ even at lower fps
         setFancyAnimations(false);
       }
-    } else if (fps < 24) {
+    } else if (fps < 15) {
       setFancyAnimations(false);
     }
   }, cookFor);

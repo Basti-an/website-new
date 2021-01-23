@@ -1,10 +1,10 @@
 import { ThemeProvider } from "@material-ui/styles";
-import { createMuiTheme } from "@material-ui/core/styles";
+import { createMuiTheme, ThemeOptions } from "@material-ui/core/styles";
 import React from "react";
 import App from "./App";
-import palette from "./theme";
+import { palette } from "./theme";
 
-const theme = createMuiTheme(palette);
+const theme = createMuiTheme({ palette } as ThemeOptions);
 
 function Container() {
   return (

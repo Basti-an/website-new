@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Tooltip } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import Config from "../config";
-import { getIsMobileOS } from "../utils";
+import { getIsMobileOS } from "../utils.ts";
 const { hostUrl } = Config;
 
 // this component is a PoC stuffed into a react component while not using react idioms, a refactor would be in order

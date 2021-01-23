@@ -3,36 +3,9 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
 import React, { useEffect } from "react";
 
-const notes = [
-  "C2",
-  "C#2",
-  "D2",
-  "D#2",
-  "E2",
-  "F2",
-  "F#2",
-  "G2",
-  "G#2",
-  "A2",
-  "A#2",
-  "B2",
-  "C3",
-];
+const notes = ["C2", "C#2", "D2", "D#2", "E2", "F2", "F#2", "G2", "G#2", "A2", "A#2", "B2", "C3"];
 
-const midiNotes = [
-  "C",
-  "C#",
-  "D",
-  "D#",
-  "E",
-  "F",
-  "F#",
-  "G",
-  "G#",
-  "A",
-  "A#",
-  "B",
-];
+const midiNotes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
 const noteKeyboardMap = {
   C2: "a",
@@ -269,9 +242,7 @@ function Keyboard(props) {
       id="keyboard"
       onMouseDown={(event) => {
         // eslint-disable-next-line no-unused-expressions
-        event.preventDefault
-          ? event.preventDefault()
-          : (event.returnValue = false);
+        event.preventDefault ? event.preventDefault() : (event.returnValue = false);
         sendGate(true);
       }}
       onMouseUp={() => {
@@ -281,17 +252,13 @@ function Keyboard(props) {
         console.log("sending gate");
         sendGate(true);
         // eslint-disable-next-line no-unused-expressions
-        event.preventDefault
-          ? event.preventDefault()
-          : (event.returnValue = false);
+        event.preventDefault ? event.preventDefault() : (event.returnValue = false);
       }}
       onTouchEnd={(event) => {
         console.log("stopping gate");
         sendGate(false);
         // eslint-disable-next-line no-unused-expressions
-        event.preventDefault
-          ? event.preventDefault()
-          : (event.returnValue = false);
+        event.preventDefault ? event.preventDefault() : (event.returnValue = false);
       }}
     >
       {/* TODO: add octave shift button */}

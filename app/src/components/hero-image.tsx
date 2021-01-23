@@ -1,13 +1,13 @@
 import React from "react";
 import Config from "../config";
-import { getIsMobileOS } from "../utils.ts";
+import { getIsMobileOS } from "../utils";
 
 // this stuff is wild
 // we have an image being used as the source graphic for a discplacement map
 // which is being displaced by a turbulence pattern which is itself being animated through
 // thereby creating an illusion of a moving turbulence akin to flowing water
 
-function HeroImage(props) {
+function HeroImage(): JSX.Element {
   const isMobileDevice = getIsMobileOS();
   const { hostUrl } = Config;
 

@@ -1,7 +1,7 @@
 import { withStyles } from "@material-ui/core/styles";
 import React, { Component } from "react";
 import ZingTouch from "zingtouch";
-import Config from "../../config.js";
+import Config from "../../config";
 
 const styles = () => ({
   knobBig: {
@@ -23,8 +23,7 @@ const styles = () => ({
 function isMobileDevice() {
   // detect mobile device
   return (
-    typeof window.orientation !== "undefined" ||
-    navigator.userAgent.indexOf("IEMobile") !== -1
+    typeof window.orientation !== "undefined" || navigator.userAgent.indexOf("IEMobile") !== -1
   );
 }
 
@@ -111,9 +110,7 @@ class Knob extends Component {
   };
 
   handleInputChange = (value) => {
-    const {
-      minVal, maxVal, changeInput, isLinear,
-    } = this.props;
+    const { minVal, maxVal, changeInput, isLinear } = this.props;
     if (isLinear) {
       changeInput(this.getLinValue(value, minVal, maxVal));
       return;
@@ -122,9 +119,7 @@ class Knob extends Component {
   };
 
   whileSweep = () => {
-    const {
-      minVal, maxVal, whileSweep, isLinear,
-    } = this.props;
+    const { minVal, maxVal, whileSweep, isLinear } = this.props;
     const { lastValue } = this.state;
     if (typeof whileSweep === "function") {
       if (isLinear) {
@@ -136,9 +131,7 @@ class Knob extends Component {
   };
 
   afterSweep = () => {
-    const {
-      minVal, maxVal, afterSweep, isLinear,
-    } = this.props;
+    const { minVal, maxVal, afterSweep, isLinear } = this.props;
     const { lastValue } = this.state;
     if (typeof afterSweep === "function") {
       if (isLinear) {

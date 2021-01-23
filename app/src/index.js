@@ -5,7 +5,7 @@ import "./index.css";
 
 const githubRepoLink = "https://github.com/Basti-an/website-new";
 
-console.log("Hello, my tech-savy friend!");
+console.log("Hello, tech-savy friend!");
 console.log(
   `if you are interested, the source code for this site can be found at: ${githubRepoLink}`,
 );

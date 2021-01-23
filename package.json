@@ -17,23 +17,8 @@
     "deploy:test": "cd ./backend_python && gcloud app deploy app.yaml --version=test"
   },
   "dependencies": {
-    "@material-ui/core": "^4.11.0",
     "concurrently": "^3.6.0",
-    "internal-ip": "^3.0.1",
-    "public-ip": "^2.4.0",
-    "react-scripts": "^3.4.3",
-    "source-map-explorer": "^1.7.0",
-    "tone": "^0.12.80",
-    "zingtouch": "^1.0.6"
-  },
-  "devDependencies": {
-    "babel-eslint": "^10.1.0",
-    "eslint-config-airbnb": "^18.2.0",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-jsx-a11y": "^6.3.1",
-    "eslint-plugin-prettier": "^3.3.1",
-    "eslint-plugin-react": "^7.20.5",
-    "eslint-plugin-react-hooks": "^4.0.8"
+    "react-scripts": "^4.0.1",
+    "source-map-explorer": "^1.7.0"
   }
 }

@@ -1,17 +1,17 @@
 import { withStyles } from "@material-ui/core/styles";
 import React from "react";
-import Config from "../../config.js";
+import Config from "../../config";
 
 // TODO: change between zingtouch and my implementation based on device
 const styles = () => ({
   switch: {
-    width: 30
-  }
+    width: 30,
+  },
 });
 
 class Switch extends React.Component {
   state = {
-    active: false
+    active: false,
   };
 
   onInput = () => {

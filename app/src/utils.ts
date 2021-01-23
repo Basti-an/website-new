@@ -2,7 +2,7 @@ import { detect } from "detect-browser";
 
 const browser = detect();
 
-function getIsMobileOS() {
+function getIsMobileOS(): boolean {
   if (!browser) {
     return false;
   }
@@ -20,14 +20,14 @@ function getIsMobileOS() {
   return false;
 }
 
-function getIsGoodBrowser() {
+function getIsGoodBrowser(): boolean {
   if (!browser) {
     return false;
   }
 
   const { name } = browser;
 
-  const goodBrowsers = ["chrome", "safari"];
+  const goodBrowsers = ["chrome", "safari", "samsung"];
 
   if (goodBrowsers.includes(name) || getIsMobileOS()) {
     return true;
@@ -36,7 +36,7 @@ function getIsGoodBrowser() {
   return false;
 }
 
-function checkForDevicePerformance(setFancyAnimations: React.Dispatch<any>) {
+function checkForDevicePerformance(setFancyAnimations: React.Dispatch<boolean>): void {
   // count fps and stop background animation if fps dips below 24, based on:
   // https://www.growingwiththeweb.com/2017/12/fast-simple-js-fps-counter.html (Daniel Imms)
   let lastCalledTime: number;

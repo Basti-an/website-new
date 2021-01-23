@@ -6,7 +6,7 @@ import { palette } from "./theme";
 
 const theme = createMuiTheme({ palette } as ThemeOptions);
 
-function Container() {
+function Container(): JSX.Element {
   return (
     <ThemeProvider theme={theme}>
       <App />

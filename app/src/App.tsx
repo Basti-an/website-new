@@ -16,7 +16,7 @@ import "./App.css";
 // import HeroAvatar from "./components/hero-avatar";
 import HeroImage from "./components/hero-image";
 import Navigation from "./components/navigation";
-import { getIsMobileOS, getIsGoodBrowser, checkForDevicePerformance } from "./utils.ts";
+import { getIsMobileOS, getIsGoodBrowser, checkForDevicePerformance } from "./utils";
 import Config from "./config";
 
 const { hostUrl } = Config;
@@ -102,7 +102,7 @@ const views = {
   // "/synth": { name: "Synthesizer" Component: React.lazy(() => import("./pages/synth"))},
 };
 
-function App() {
+function App(): JSX.Element {
   const theme = useTheme();
   const classes = useStyles(theme);
   const [isFlowing, setIsFlowing] = useState(getIsGoodBrowser());

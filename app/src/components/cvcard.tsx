@@ -10,11 +10,13 @@ import {
   useMediaQuery,
 } from "@material-ui/core";
 import { useTheme, makeStyles } from "@material-ui/core/styles";
+import { ClassNameMap } from "@material-ui/core/styles/withStyles";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import classNames from "classnames";
 import React, { useState } from "react";
 import Config from "../config";
-import { parseMarkdownLinks } from "../functions.tsx";
+import { parseMarkdownLinks } from "../functions";
+import { CvEntry } from "../models/cv";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -78,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const parseDescription = (description, classes) => {
+const parseDescription = (description: string | undefined, classes: ClassNameMap) => {
   if (!description) {
     return <></>;
   }
@@ -86,7 +88,7 @@ const parseDescription = (description, classes) => {
   return <Typography className={classes.text}>{descriptionJSX}</Typography>;
 };
 
-function CVCard(props) {
+function CVCard(props: CvEntry): JSX.Element {
   /** This Component includes css overwrites based on screen width
    *  basically we overwrite flex rules for card header if the screen width is smaller than "lg"
    *  else we give the card header content a negative right margin to compensate for the width
@@ -131,7 +133,7 @@ function CVCard(props) {
           title: classes.text,
           subheader: classes.text,
           action: classes.collapseChildRoot,
-          content: description && !isSmall && classes.collapseParentShift,
+          content: (description && !isSmall && classes.collapseParentShift) || "",
         }}
         action={
           description && (

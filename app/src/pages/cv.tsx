@@ -1,9 +1,10 @@
-import { Grid, Typography } from "@material-ui/core";
+import { Grid, GridProps, Typography } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import CVcard from "../components/cvcard";
 import Config from "../config";
+import { CvModel, CvEntry } from "../models/cv";
 
 const useStyles = makeStyles((theme) => ({
   yearContainer: {
@@ -36,11 +37,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function sortDescending(a, b) {
+function sortDescending(a: string, b: string) {
   return parseInt(b, 10) - parseInt(a, 10);
 }
 
-function calculateCardWidth(entries, index) {
+function calculateCardWidth(entries: CvEntry[], index: number) {
   const isLastEntry = index + 1 === entries.length;
   const hasOddNumberOfEntries = !(index % 2);
   let cardWidth = 6;
@@ -49,14 +50,14 @@ function calculateCardWidth(entries, index) {
   } else if (hasOddNumberOfEntries && isLastEntry) {
     cardWidth = 12;
   }
-  return cardWidth;
+  return cardWidth as GridProps["lg"];
 }
 
-function CV() {
+function CV(): JSX.Element {
   const theme = useTheme();
   const classes = useStyles(theme);
 
-  const [cv, setCv] = useState(null);
+  const [cv, setCv] = useState({} as CvModel);
 
   async function init() {
     const { hostUrl } = Config;
@@ -68,35 +69,33 @@ function CV() {
     init();
   }, []);
 
+  if (!cv) {
+    return <></>;
+  }
+
   return (
     <>
-      {cv &&
-        Object.keys(cv)
-          .sort(sortDescending)
-          .map((year) => {
-            const yearEntries = cv[year];
-            const cards = yearEntries.map((entry, index) => (
-              <Grid
-                item
-                xs={12}
-                lg={calculateCardWidth(yearEntries, index)}
-                className={classes.grid}
-              >
-                <CVcard {...entry} />
-              </Grid>
-            ));
+      {Object.keys(cv)
+        .sort(sortDescending)
+        .map((year) => {
+          const yearEntries = cv[year];
+          const cards = yearEntries.map((entry, index) => (
+            <Grid item xs={12} lg={calculateCardWidth(yearEntries, index)} className={classes.grid}>
+              <CVcard {...entry} />
+            </Grid>
+          ));
 
-            return (
-              <Grid container spacing={4}>
-                <Grid className={classes.yearContainer} item xs={12}>
-                  <Typography className={classes.year} variant="h3">
-                    {year}
-                  </Typography>
-                </Grid>
-                {cards}
+          return (
+            <Grid container spacing={4}>
+              <Grid className={classes.yearContainer} item xs={12}>
+                <Typography className={classes.year} variant="h3">
+                  {year}
+                </Typography>
               </Grid>
-            );
-          })}
+              {cards}
+            </Grid>
+          );
+        })}
       <div className={classes.spacer} />
     </>
   );

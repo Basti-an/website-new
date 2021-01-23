@@ -9,76 +9,17 @@ import {
   Typography,
   useMediaQuery,
 } from "@material-ui/core";
-import { useTheme, makeStyles } from "@material-ui/core/styles";
+import { useTheme } from "@material-ui/core/styles";
 import { ClassNameMap } from "@material-ui/core/styles/withStyles";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import classNames from "classnames";
 import React, { useState } from "react";
 import Config from "../config";
 import { parseMarkdownLinks } from "../functions";
+import { cvCardStyles } from "../jss";
 import { CvEntry } from "../models/cv";
 
-const useStyles = makeStyles((theme) => ({
-  card: {
-    transform: "translate3d(0, 0, 0)",
-    WebkitTransform: "translate3d(0, 0, 0)",
-    WebkitVackfaceVisibility: "hidden",
-  },
-  media: {
-    height: "170px",
-    margin: theme.spacing(4),
-    marginBottom: "2rem",
-    backgroundSize: "contain",
-  },
-  noMargin: {
-    height: `${170 + theme.spacing(4)}px`,
-    paddingBottom: "2rem",
-    margin: 0,
-    backgroundSize: "cover",
-  },
-  cardContent: {
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.primary.contrastText,
-  },
-  cardHeader: {
-    backgroundColor: theme.palette.primary.main,
-    height: "100%",
-  },
-  text: {
-    color: theme.palette.primary.contrastText,
-  },
-  expand: {
-    transform: "rotate(0deg)",
-    transition: theme.transitions.create("transform", {
-      duration: theme.transitions.duration.shortest,
-    }),
-    marginLeft: "auto",
-    color: theme.palette.primary.contrastText,
-  },
-  expandOpen: {
-    transform: "rotate(180deg)",
-  },
-  actions: {
-    marginRight: -theme.spacing(1),
-    marginTop: "-5px",
-  },
-  collapseParentOverwrite: {
-    flexDirection: "column",
-    height: "100%",
-  },
-  collapseChildOverwrite: {
-    alignSelf: "center",
-    marginTop: "5px",
-    marginBottom: "-1em",
-  },
-  collapseChildRoot: {
-    alignSelf: "center",
-    marginRight: "0",
-  },
-  collapseParentShift: {
-    marginRight: "-64px",
-  },
-}));
+const useStyles = cvCardStyles;
 
 const parseDescription = (description: string | undefined, classes: ClassNameMap) => {
   if (!description) {

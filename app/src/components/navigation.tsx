@@ -102,6 +102,7 @@ export default function Navigation(): JSX.Element {
         const x = e.clientX;
         const y = e.clientY;
         resizeGenies(x, y);
+        console.log(document.elementFromPoint(e.screenX, e.screenY));
       });
     } else {
       stage.addEventListener("touchmove", (e) => {

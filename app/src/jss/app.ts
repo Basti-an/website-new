@@ -74,6 +74,8 @@ export const appStyles = makeStyles((theme: Theme) => ({
     borderRadius: "4px",
     padding: "1rem",
     fontWeight: 300,
+    marginBottom: 16,
+    marginTop: 8,
   },
   switch: { marginRight: 0, float: "right" },
 }));

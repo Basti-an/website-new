@@ -1,4 +1,6 @@
+import "./App.css";
 import React, { useEffect, useState } from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import { useTheme } from "@material-ui/core/styles";
 import {
   AppBar,
@@ -10,10 +12,6 @@ import {
   Paper,
   Tooltip,
 } from "@material-ui/core";
-import { BrowserRouter as Router, Route } from "react-router-dom";
-import "./App.css";
-// I would use a picture of myself on my website if my self esteem would't be so low at the moment
-// import HeroAvatar from "./components/hero-avatar";
 import HeroImage from "./components/hero-image";
 import Navigation from "./components/navigation";
 import { getIsMobileOS, getIsGoodBrowser, checkForDevicePerformance } from "./utils";
@@ -27,7 +25,7 @@ const useStyles = appStyles;
 const views = {
   "/cv": { name: "CV", Component: React.lazy(() => import("./pages/cv")) },
   // Synthesizer is currently not available due to tone.js being a harsh mistress
-  // "/synth": { name: "Synthesizer" Component: React.lazy(() => import("./pages/synth"))},
+  "/synth": { name: "Synthesizer", Component: React.lazy(() => import("./pages/_synth")) },
 };
 
 function App(): JSX.Element {
@@ -101,16 +99,14 @@ function App(): JSX.Element {
                 <Grid item xs={12} sm={10} md={8} lg={10} xl={8}>
                   <Grid container>
                     <Grid item xs={12}>
-                      <div style={{ marginTop: "2rem" }}>
-                        <Paper elevation={16} className={classes.boxed}>
-                          <Typography className={classes.headline} variant="h3">
-                            Hello There! I`m a Fullstack Software Developer from Cologne, Germany
-                          </Typography>
-                          <Typography className={classes.headline} variant="h3">
-                            Unfortunately, this site is only used for hosting my CV at the moment
-                          </Typography>
-                        </Paper>
-                      </div>
+                      <Paper elevation={16} className={classes.boxed}>
+                        <Typography className={classes.headline} variant="h3">
+                          Hello There! I`m a Fullstack Software Developer from Cologne, Germany
+                        </Typography>
+                        <Typography className={classes.headline} variant="h3">
+                          Unfortunately, this site is only used for hosting my CV at the moment
+                        </Typography>
+                      </Paper>
                       {/* <nav>
                         <ul className={classes.links}>
                           <Paper elevation={16} className={classes.boxed}>

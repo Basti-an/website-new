@@ -133,6 +133,13 @@ export default function Navigation(): JSX.Element {
           </Link>
         </div>
       </Tooltip>
+      <Tooltip title="Synthesizer">
+        <div className="genie">
+          <Link to="/synth">
+            <img className="app-icon" alt="Home icon" src={`${hostUrl}/images/erebus_knob.png`} />
+          </Link>
+        </div>
+      </Tooltip>
       <Tooltip title="CV / Work history">
         <div className="genie">
           <Link to="/cv">

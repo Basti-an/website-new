@@ -3,7 +3,36 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
 import React, { useEffect } from "react";
 
-const notes = ["C2", "C#2", "D2", "D#2", "E2", "F2", "F#2", "G2", "G#2", "A2", "A#2", "B2", "C3"];
+type Note =
+  | "C2"
+  | "C#2"
+  | "D2"
+  | "D#2"
+  | "E2"
+  | "F2"
+  | "F#2"
+  | "G2"
+  | "G#2"
+  | "A2"
+  | "A#2"
+  | "B2"
+  | "C3";
+
+const notes: Note[] = [
+  "C2",
+  "C#2",
+  "D2",
+  "D#2",
+  "E2",
+  "F2",
+  "F#2",
+  "G2",
+  "G#2",
+  "A2",
+  "A#2",
+  "B2",
+  "C3",
+];
 
 const midiNotes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
@@ -23,7 +52,7 @@ const noteKeyboardMap = {
   C3: "k",
 };
 
-const keyCodeNoteMap = {
+const keyCodeNoteMap: { [index: number]: Note } = {
   65: "C2",
   87: "C#2",
   83: "D2",
@@ -39,28 +68,28 @@ const keyCodeNoteMap = {
   75: "C3",
 };
 
-function Notes({ sendCV }) {
+function Notes({ sendCV }: { sendCV: (cv: Note) => void }): JSX.Element {
   const noteJSX = notes.map((value) => {
     if (value.indexOf("#") !== -1) {
       return (
         <div
           id={value}
-          onMouseOver={(event) => {
+          onMouseOver={() => {
             sendCV(value);
           }}
-          onTouchMove={(event) => {
+          onTouchMove={() => {
             console.log("touch move");
             sendCV(value);
           }}
-          onTouchStart={(event) => {
+          onTouchStart={() => {
             console.log("touch start");
             sendCV(value);
           }}
-          onTouchEnd={(event) => {
+          onTouchEnd={() => {
             console.log("touch end");
             sendCV(value);
           }}
-          onClick={(event) => {
+          onClick={() => {
             console.log("onClick");
             sendCV(value);
           }}
@@ -73,22 +102,22 @@ function Notes({ sendCV }) {
     return (
       <div
         id={value}
-        onMouseOver={(event) => {
+        onMouseOver={() => {
           sendCV(value);
         }}
-        onTouchMove={(event) => {
+        onTouchMove={() => {
           console.log("touch move");
           sendCV(value);
         }}
-        onTouchStart={(event) => {
+        onTouchStart={() => {
           console.log("touch start");
           sendCV(value);
         }}
-        onTouchEnd={(event) => {
+        onTouchEnd={() => {
           console.log("touch end");
           sendCV(value);
         }}
-        onClick={(event) => {
+        onClick={() => {
           console.log("onClick");
           sendCV(value);
         }}
@@ -98,14 +127,14 @@ function Notes({ sendCV }) {
       </div>
     );
   });
-  return noteJSX;
+  return <>{noteJSX}</>;
 }
 
-const pressedKeys = [];
+const pressedKeys: Note[] = [];
 
 // generates an eventhandler in the scope of the react component below
-function onKeyDown(sendCVs, sendGate) {
-  return (e) => {
+function onKeyDown(sendCVs: (cv1: Note, cv2: Note) => void, sendGate: (gate: boolean) => void) {
+  return (e: KeyboardEvent) => {
     if (e.repeat) {
       return;
     }
@@ -117,7 +146,12 @@ function onKeyDown(sendCVs, sendGate) {
     if (!pressedKey) {
       return;
     }
-    document.getElementById(pressedKey).classList.add("pressed");
+    const pressedKeyEl = document.getElementById(pressedKey);
+    if (!pressedKeyEl) {
+      console.error("pressed key not found in DOM: ", pressedKey);
+      return;
+    }
+    pressedKeyEl.classList.add("pressed");
     pressedKeys.push(pressedKey);
     sendCVs(pressedKeys[0], pressedKey);
 
@@ -126,16 +160,21 @@ function onKeyDown(sendCVs, sendGate) {
 }
 
 // generates an eventhandler in the scope of the react component below
-function onKeyUp(sendCVs, sendGate) {
-  return (e) => {
+function onKeyUp(sendCVs: (cv1: Note, cv2: Note) => void, sendGate: (gate: boolean) => void) {
+  return (e: KeyboardEvent) => {
     e = e || window.event;
     const charCode = e.keyCode;
     const releasedKey = keyCodeNoteMap[charCode];
     if (!releasedKey) {
       return;
     }
+    const releasedKeyEl = document.getElementById(releasedKey);
+    if (!releasedKeyEl) {
+      console.error("released Key not found in DOM: ", releasedKey);
+      return;
+    }
+    releasedKeyEl.classList.remove("pressed");
 
-    document.getElementById(releasedKey).classList.remove("pressed");
     // remove releasedKey from pressedKeys
     const releasedKeyIndex = pressedKeys.indexOf(releasedKey);
     if (releasedKeyIndex === -1) {
@@ -152,23 +191,26 @@ function onKeyUp(sendCVs, sendGate) {
   };
 }
 
-function Keyboard(props) {
-  const { sendCVs, sendGate } = props;
+interface KeyboardProps {
+  sendCVs: (cv1: Note, cv2: Note) => void;
+  sendGate: (gate: boolean) => void;
+}
 
+export default function Keyboard({ sendCVs, sendGate }: KeyboardProps) {
   useEffect(() => {
     document.onkeydown = onKeyDown(sendCVs, sendGate);
     document.onkeyup = onKeyUp(sendCVs, sendGate);
   }, [sendCVs, sendGate]);
 
   useEffect(() => {
-    if (navigator.requestMIDIAccess) {
+    if (typeof navigator.requestMIDIAccess === "function") {
       console.log("This browser supports WebMIDI!");
     } else {
       console.log("WebMIDI is not supported in this browser.");
       return;
     }
 
-    function getMIDIMessage(message) {
+    function getMIDIMessage(message: WebMidi.MIDIMessageEvent) {
       const command = message.data[0];
       const note = message.data[1];
       const velocity = message.data.length > 2 ? message.data[2] : 0; // a velocity value might not be included with a noteOff command
@@ -177,52 +219,54 @@ function Keyboard(props) {
         case 144: // note on
           if (velocity > 0) {
             // todo
-            const pressedKey = midiNotes[note - 24];
+            const pressedKey = midiNotes[note - 24] as Note;
             pressedKeys.push(pressedKey);
             sendCVs(pressedKeys[0], pressedKey);
-
             sendGate(true);
             console.log(note);
-            try {
-              document.getElementById(pressedKey).classList.add("pressed");
-            } catch (e) {
-              console.log(e);
+            const pressedKeyEl = document.getElementById(pressedKey);
+            if (!pressedKeyEl) {
+              console.error("could not find pressedKey in DOM: ", pressedKey);
+              return;
             }
+            pressedKeyEl.classList.add("pressed");
           } else {
             console.log(note);
           }
           break;
         case 128: // note off
-          console.log(note);
-          const releasedKey = midiNotes[note];
+          {
+            console.log(note);
+            const releasedKey = midiNotes[note] as Note;
 
-          // remove releasedKey from pressedKeys
-          const releasedKeyIndex = pressedKeys.indexOf(releasedKey);
-          if (releasedKeyIndex === -1) {
-            return;
-          }
+            // remove releasedKey from pressedKeys
+            const releasedKeyIndex = pressedKeys.indexOf(releasedKey);
+            if (releasedKeyIndex === -1) {
+              return;
+            }
+            sendCVs(pressedKeys[0], pressedKeys[pressedKeys.length - 1]);
 
-          // remove key from pressedKeys
-          pressedKeys.splice(releasedKeyIndex, 1);
-          if (pressedKeys.length === 0) {
-            sendGate(false);
-            try {
-              document.getElementById(releasedKey).classList.remove("pressed");
-            } catch (e) {}
-            return;
+            const releasedKeyEl = document.getElementById(releasedKey);
+            if (!releasedKeyEl) {
+              console.error("could not find releasedKey in DOM: ", releasedKey);
+              return;
+            }
+
+            // remove key from pressedKeys
+            pressedKeys.splice(releasedKeyIndex, 1);
+            if (pressedKeys.length === 0) {
+              sendGate(false);
+
+              releasedKeyEl.classList.remove("pressed");
+            }
           }
-          sendCVs(pressedKeys[0], pressedKeys[pressedKeys.length - 1]);
-          try {
-            document.getElementById(releasedKey).classList.remove("pressed");
-          } catch (e) {}
           break;
         default:
           break;
-        // we could easily expand this switch statement to cover other types of commands such as controllers or sysex
       }
     }
 
-    function onMIDISuccess(midiAccess) {
+    function onMIDISuccess(midiAccess: WebMidi.MIDIAccess) {
       midiAccess.inputs.forEach((input) => {
         input.onmidimessage = getMIDIMessage;
       });
@@ -241,8 +285,7 @@ function Keyboard(props) {
     <div
       id="keyboard"
       onMouseDown={(event) => {
-        // eslint-disable-next-line no-unused-expressions
-        event.preventDefault ? event.preventDefault() : (event.returnValue = false);
+        event.preventDefault();
         sendGate(true);
       }}
       onMouseUp={() => {
@@ -251,14 +294,12 @@ function Keyboard(props) {
       onTouchStart={(event) => {
         console.log("sending gate");
         sendGate(true);
-        // eslint-disable-next-line no-unused-expressions
-        event.preventDefault ? event.preventDefault() : (event.returnValue = false);
+        event.preventDefault();
       }}
       onTouchEnd={(event) => {
         console.log("stopping gate");
         sendGate(false);
-        // eslint-disable-next-line no-unused-expressions
-        event.preventDefault ? event.preventDefault() : (event.returnValue = false);
+        event.preventDefault();
       }}
     >
       {/* TODO: add octave shift button */}
@@ -270,5 +311,3 @@ function Keyboard(props) {
     </div>
   );
 }
-
-export default Keyboard;

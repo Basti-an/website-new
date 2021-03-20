@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/mouse-events-have-key-events */
 import { Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import React, { useState, useEffect } from "react";
@@ -12,12 +14,12 @@ import {
   Noise,
 } from "tone";
 
-import Keyboard from "../components/_keyboard";
-import DelayModule from "../components/modules/_delay";
-import Filtermodule from "../components/modules/_filter";
-import LFOmodule from "../components/modules/_lfo";
-import OSCModule from "../components/modules/_osc";
-import Ampmodule from "../components/modules/_vca";
+import Keyboard from "../components/keyboard";
+import DelayModule from "../components/synth-modules/delay";
+import Filtermodule from "../components/synth-modules/filter";
+import LFOmodule from "../components/synth-modules/lfo";
+import OSCModule from "../components/synth-modules/osc";
+import Ampmodule from "../components/synth-modules/vca";
 /* @TODO:
   refactor everything, clean everything up
   implement routing for lfo
@@ -65,7 +67,7 @@ function initAudio(options = {}) {
     Q: filterOpt.Q || 2.4,
   });
 
-  const lfoOpt = options.lfo || {};
+  const lfoOpt = options.lfo || { units: "Hertz" };
   const lfo = new LFO(lfoOpt.frequency || 5, lfoOpt.min || 20, lfoOpt.max || 1500);
 
   const osc1 = new OmniOscillator("C2", "sawtooth");
@@ -187,6 +189,14 @@ function Synth() {
               <Ampmodule
                 setVelocity={(value) => {
                   setVelocity(value);
+                }}
+                setAmpEnv={({ attack, release }) => {
+                  if (attack) {
+                    window.erebus.ampEnv.set({ attack });
+                  }
+                  if (release) {
+                    window.erebus.ampEnv.set({ release });
+                  }
                 }}
                 amp={window.erebus.ampEnv}
               />

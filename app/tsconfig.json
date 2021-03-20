@@ -17,5 +17,7 @@
     "jsx": "react-jsx"
   },
   "include": ["src"],
-  "exclude": ["src/**/_*.ts"]
+  "exclude": ["src/**/_*.ts"],
+  "types": ["webmidi"],
+  "typeRoots": ["./node_modules/@types", "./src/types"]
 }

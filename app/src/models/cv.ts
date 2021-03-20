@@ -1,4 +1,6 @@
-export type CvModel = Record<string, CvEntry[]>;
+type Year = string;
+
+export type CvModel = Record<Year, CvEntry[]>;
 
 export interface CvEntry {
   title: string;

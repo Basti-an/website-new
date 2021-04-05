@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Config from "../../config";
 import { switchStyles } from "../../jss/synth";
 
@@ -6,13 +6,18 @@ const useStyles = switchStyles;
 
 interface SwitchProps {
   onInput: (isActive: boolean) => void;
-  initialState?: boolean;
+  initialState?: 0 | 1;
 }
 
 export default function Switch({ onInput, initialState }: SwitchProps): JSX.Element {
   const [active, setActive] = useState(initialState || false);
   const switchEl = useRef<HTMLImageElement>(null);
   const classes = useStyles();
+
+  useEffect(() => {
+    onInput(!!active);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const switchHandler = () => {
     if (switchEl.current) {
@@ -30,6 +35,7 @@ export default function Switch({ onInput, initialState }: SwitchProps): JSX.Elem
 
   return (
     <button
+      className={classes.switchButton}
       type="button"
       onClick={switchHandler}
       onKeyDown={(e: React.KeyboardEvent) => {

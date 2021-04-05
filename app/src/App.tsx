@@ -9,7 +9,6 @@ import {
   Typography,
   FormControlLabel,
   Switch,
-  Paper,
   Tooltip,
 } from "@material-ui/core";
 import HeroImage from "./components/hero-image";
@@ -25,7 +24,8 @@ const useStyles = appStyles;
 const views = {
   "/cv": { name: "CV", Component: React.lazy(() => import("./pages/cv")) },
   // Synthesizer is currently not available due to tone.js being a harsh mistress
-  "/synth": { name: "Synthesizer", Component: React.lazy(() => import("./pages/_synth")) },
+  "/synth": { name: "Synthesizer", Component: React.lazy(() => import("./pages/synth")) },
+  "/": { name: "Home", Component: React.lazy(() => import("./pages/home")) },
 };
 
 function App(): JSX.Element {
@@ -99,46 +99,16 @@ function App(): JSX.Element {
                 <Grid item xs={12} sm={10} md={8} lg={10} xl={8}>
                   <Grid container>
                     <Grid item xs={12}>
-                      <Paper elevation={16} className={classes.boxed}>
-                        <Typography className={classes.headline} variant="h3">
-                          Hello There! I`m a Fullstack Software Developer from Cologne, Germany
-                        </Typography>
-                        <Typography className={classes.headline} variant="h3">
-                          Unfortunately, this site is only used for hosting my CV at the moment
-                        </Typography>
-                      </Paper>
-                      {/* <nav>
-                        <ul className={classes.links}>
-                          <Paper elevation={16} className={classes.boxed}>
-                            {Object.entries(views).map(([path, view]) => (
-                              <Link style={{ fontSize: "22pt" }} to={path}>
-                                <li>{view.name}</li>
-                              </Link>
-                            ))}
-                            // link to this sites github repo, very meta
-                            <a
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              href="https://github.com/Basti-an/website-new"
-                            >
-                              Source code
-                            </a>
-                          </li> 
-                          </Paper>
-                        </ul>
-                      </nav> */}
-                    </Grid>
-
-                    {/** **********************
-                     ****                  ****
-                     ****    ACTUAL VIEW   ****
-                     ****                  ****
-                     ************************ */}
-                    <Grid item xs={12}>
                       {Object.entries(views).map(([path, view]) => {
-                        const { Component } = view;
+                        const { Component, name } = view;
+
                         return (
-                          <Route key={`${path}`} path={path} exact render={() => <Component />} />
+                          <Route
+                            key={`${name}`}
+                            path={path}
+                            exact
+                            render={() => <Component setIsFlowing={setIsFlowing} />}
+                          />
                         );
                       })}
                     </Grid>

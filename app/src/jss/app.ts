@@ -60,7 +60,7 @@ export const appStyles = makeStyles((theme: Theme) => ({
     marginBottom: "2rem",
     marginRight: "auto",
     marginLeft: "auto",
-    textDecoration: "none",
+    // textDecoration: "none",
     fontWeight: 300,
     color: "#fff",
     borderRadius: "4px",

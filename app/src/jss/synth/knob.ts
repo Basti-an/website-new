@@ -1,6 +1,6 @@
-import { Theme, makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 
-export const knobStyles = makeStyles((theme: Theme) => ({
+export const knobStyles = makeStyles(() => ({
   knobBig: {
     height: "85px",
     transform: "rotate(0deg)",

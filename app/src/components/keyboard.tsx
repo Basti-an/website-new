@@ -196,7 +196,7 @@ interface KeyboardProps {
   sendGate: (gate: boolean) => void;
 }
 
-export default function Keyboard({ sendCVs, sendGate }: KeyboardProps) {
+export default function Keyboard({ sendCVs, sendGate }: KeyboardProps): JSX.Element {
   useEffect(() => {
     document.onkeydown = onKeyDown(sendCVs, sendGate);
     document.onkeyup = onKeyUp(sendCVs, sendGate);
@@ -210,6 +210,7 @@ export default function Keyboard({ sendCVs, sendGate }: KeyboardProps) {
       return;
     }
 
+    // @TODO: externalize midi handling into own file
     function getMIDIMessage(message: WebMidi.MIDIMessageEvent) {
       const command = message.data[0];
       const note = message.data[1];

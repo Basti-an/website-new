@@ -4,4 +4,9 @@ export const switchStyles = makeStyles(() => ({
   switch: {
     width: 30,
   },
+  switchButton: {
+    border: "none",
+    outline: "none",
+    background: "inherit",
+  },
 }));

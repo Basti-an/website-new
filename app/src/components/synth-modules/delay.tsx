@@ -6,16 +6,23 @@ import { delayStyles } from "../../jss/synth";
 const useStyles = delayStyles;
 
 interface DelayProps {
-  evaluateConnection: (value: number) => void;
+  evaluateConnection?: (value: number) => void;
   delay: Tone.FeedbackDelay;
 }
 
+const delayDescription =
+  "The delay feeds the signal back into itself with a timed delay, creating an echo. " +
+  "The feedback adjusts the amount of signal that get fed back, while the mix knob determines how much of the delayed signal is mixed into the audio output";
+
 // @TODO: implement CV Input to filter frequency
-export default function DelayModule({ evaluateConnection, delay }: DelayProps): JSX.Element {
+export default function DelayModule({
+  evaluateConnection = () => {},
+  delay,
+}: DelayProps): JSX.Element {
   const classes = useStyles();
 
   return (
-    <div className={classes.plate}>
+    <div className={classes.plate} title={delayDescription}>
       <div className={classes.headertext}>Echo</div>
       <div className={classes.rateKnob}>
         <div className={classes.button}>
@@ -23,9 +30,9 @@ export default function DelayModule({ evaluateConnection, delay }: DelayProps): 
             changeInput={(value) => {
               delay.delayTime.value = value;
             }}
-            minVal={0.01}
-            maxVal={0.99}
-            initialValue={60}
+            minVal={0.1}
+            maxVal={1.0}
+            initialValue={0.666}
           />
         </div>
         <div className={classes.button}>
@@ -33,12 +40,12 @@ export default function DelayModule({ evaluateConnection, delay }: DelayProps): 
             changeInput={(value) => {
               delay.feedback.value = value;
             }}
-            minVal={0.01}
+            minVal={0.1}
             maxVal={1.0}
             afterSweep={evaluateConnection}
             whileSweep={evaluateConnection}
             isLinear
-            initialValue={115}
+            initialValue={0.25}
           />
         </div>
         <div className={classes.button}>
@@ -46,12 +53,12 @@ export default function DelayModule({ evaluateConnection, delay }: DelayProps): 
             changeInput={(value) => {
               delay.wet.value = value;
             }}
-            minVal={0.01}
-            maxVal={0.99}
+            minVal={0}
+            maxVal={1}
             afterSweep={evaluateConnection}
             whileSweep={evaluateConnection}
             isLinear
-            initialValue={30}
+            initialValue={0}
           />
         </div>
       </div>

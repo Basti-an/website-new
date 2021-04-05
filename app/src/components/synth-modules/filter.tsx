@@ -9,36 +9,57 @@ interface FilterProps {
   filter: Tone.Filter;
 }
 
+const filterDescription =
+  "The filter is used to cut away frequencies from the oscillators signal. Try playing around with the cutoff knob to get a feeling for how it works.";
+
+const resonanceDescription =
+  "The resonance is the amount of filter signal that is fed back into the filter - creating a feedback around the cutoff frequency.";
+
 // @TODO: implement CV Input to filter frequency
 export default function FilterModule({ filter }: FilterProps): JSX.Element {
   const classes = useStyles();
 
   return (
-    <div className={classes.plate}>
+    <div className={classes.plate} title={filterDescription}>
       <div className={classes.topplate} />
       <div className={classes.headertext}>VCF</div>
       <div className={classes.freqKnob}>
         <Knob
           changeInput={(value: number) => {
-            filter.frequency.value = value;
-            console.log(filter.frequency.value);
+            // @TODO refactor this mess and find out why the if below works..
+            const lfoAverage =
+              (window.erebus.lfo.amplitude.value *
+                (window.erebus.lfo.max - window.erebus.lfo.min)) /
+              2;
+            console.log(`test ${value - lfoAverage}`);
+            console.log(lfoAverage);
+            let newValue = value - lfoAverage;
+            if (lfoAverage < window.erebus.lfo.max / 2) {
+              newValue -= lfoAverage;
+            }
+            if (window.erebus.lfo.amplitude.value < 0.05) {
+              newValue -= window.erebus.lfo.max / 2;
+            }
+            window.erebus.add.addend.rampTo(newValue);
+            // filter.frequency.set({ value });
+            // filter.frequency.value = value;
           }}
           minVal={32}
           maxVal={20000}
-          initialValue={30}
+          initialValue={333}
           isBig
         />
       </div>
       <div className={classes.text}>Cutoff</div>
       <div className={classes.bottomplate}>resonance</div>
-      <div className={classes.resKnob}>
+      <div className={classes.resKnob} title={resonanceDescription}>
         <Knob
           changeInput={(value: number) => {
             filter.Q.value = value;
           }}
-          minVal={1}
-          maxVal={30}
-          initialValue={30}
+          minVal={3}
+          maxVal={33}
+          initialValue={9}
         />
       </div>
     </div>

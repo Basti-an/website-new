@@ -10,11 +10,15 @@ interface VcaProps {
   setAmpEnv: (ampEnvOptions: { attack?: number; release?: number }) => void;
 }
 
+const vcaDescription =
+  "The VCA is the amplifier, determining the loudness of the output signal. This one has a ramp up time (attack, currently not working unfortunately) and a release, " +
+  "which determines how long the sound will still play after the key was released.";
+
 export default function Ampmodule({ setVelocity, setAmpEnv }: VcaProps): JSX.Element {
   const classes = useStyles();
 
   return (
-    <div className={classes.plate}>
+    <div className={classes.plate} title={vcaDescription}>
       <div className={classes.topplate} />
       <div className={classes.headertext}>VCA</div>
       <div className={classes.knobLevel}>
@@ -25,7 +29,8 @@ export default function Ampmodule({ setVelocity, setAmpEnv }: VcaProps): JSX.Ele
             setVelocity(value / 1000);
           }}
           minVal={1}
-          maxVal={900}
+          maxVal={300}
+          initialValue={80}
           isBig
           isLinear
         />
@@ -39,7 +44,8 @@ export default function Ampmodule({ setVelocity, setAmpEnv }: VcaProps): JSX.Ele
             }}
             minVal={0.05}
             maxVal={2}
-            initialValue={7}
+            initialValue={0.5}
+            isLinear
           />
         </div>
         <div className={classes.knobRelease}>
@@ -47,8 +53,9 @@ export default function Ampmodule({ setVelocity, setAmpEnv }: VcaProps): JSX.Ele
             changeInput={(value: number) => {
               setAmpEnv({ release: value });
             }}
-            minVal={0.05}
-            maxVal={7}
+            minVal={1}
+            maxVal={9}
+            initialValue={6}
           />
         </div>
       </div>

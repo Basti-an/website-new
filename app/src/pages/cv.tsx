@@ -52,7 +52,13 @@ function CV(): JSX.Element {
         .map((year) => {
           const yearEntries = cv[year];
           const cards = yearEntries.map((entry, index) => (
-            <Grid item xs={12} lg={calculateCardWidth(yearEntries, index)} className={classes.grid}>
+            <Grid
+              item
+              xs={12}
+              lg={calculateCardWidth(yearEntries, index)}
+              className={classes.grid}
+              key={entry.title}
+            >
               <CVcard {...entry} />
             </Grid>
           ));

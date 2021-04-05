@@ -23,22 +23,24 @@ const setAnimDuration = (lfo: Tone.LFO) => {
   led.style.animation = `flickerAnimation ${duration}s infinite`;
 };
 
+const lfoDescription =
+  "an LFO (low frequency oscillator) generates a wave that can be used to modulate other parameters. The LFO is currently routed to the frequency of the filter.";
+
 export default function LFOmodule({ lfo, input }: LfoProps): JSX.Element {
   const classes = useStyles();
 
   function evaluateConnection(value: number) {
-    console.log(input);
-    // disconnect lfo if value is below certain treshold
-    if (value < 1.05) {
-      const currInputValue = input && input.frequency.value;
-      lfo.disconnect();
-      input.frequency.value = currInputValue;
-      return;
-    }
-    // if (typeof this.props.input.value !== "undefined") {
-
+    // console.log(input);
+    // // disconnect lfo if value is below certain treshold
+    // if (value < 0.05) {
+    //   const currInputValue = input.frequency.value;
+    //   lfo.disconnect();
+    //   input.frequency.value = currInputValue;
+    //   return;
     // }
-    lfo.connect(input);
+    // // if (typeof this.props.input.value !== "undefined") {
+    // // }
+    // lfo.connect(input.frequency);
   }
 
   function switchWaveform(isSquare: boolean) {
@@ -52,7 +54,7 @@ export default function LFOmodule({ lfo, input }: LfoProps): JSX.Element {
   }
 
   return (
-    <div className={classes.plate}>
+    <div className={classes.plate} title={lfoDescription}>
       <div className={classes.headertext}>LFO</div>
       <div className={classes.components}>
         <div className={classes.rateKnob}>
@@ -69,19 +71,20 @@ export default function LFOmodule({ lfo, input }: LfoProps): JSX.Element {
               whileSweep={() => {
                 setAnimDuration(lfo);
               }}
+              initialValue={0.2}
             />
           </div>
           <div className={classes.button}>
             <Knob
               changeInput={(value: number) => {
-                lfo.amplitude.value = value - 1;
+                lfo.amplitude.value = value;
               }}
-              minVal={1}
-              maxVal={2}
+              minVal={0}
+              maxVal={1}
               afterSweep={evaluateConnection}
               whileSweep={evaluateConnection}
               isLinear
-              initialValue={0}
+              initialValue={0.333}
             />
           </div>
         </div>

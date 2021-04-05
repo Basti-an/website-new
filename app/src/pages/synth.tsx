@@ -3,16 +3,7 @@
 import { Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import React, { useState, useEffect } from "react";
-import {
-  AmplitudeEnvelope,
-  FeedbackDelay,
-  Filter,
-  LFO,
-  OmniOscillator,
-  Destination,
-  Distortion,
-  Noise,
-} from "tone";
+import * as Tone from "tone";
 
 import Keyboard from "../components/keyboard";
 import DelayModule from "../components/synth-modules/delay";
@@ -20,6 +11,7 @@ import Filtermodule from "../components/synth-modules/filter";
 import LFOmodule from "../components/synth-modules/lfo";
 import OSCModule from "../components/synth-modules/osc";
 import Ampmodule from "../components/synth-modules/vca";
+
 /* @TODO:
   refactor everything, clean everything up
   implement routing for lfo
@@ -28,6 +20,12 @@ import Ampmodule from "../components/synth-modules/vca";
   octave up, down buttons
   implement paraphony for oscillators
 */
+
+declare global {
+  interface Window {
+    erebus: Erebus;
+  }
+}
 
 const useStyles = makeStyles({
   title: {
@@ -38,7 +36,6 @@ const useStyles = makeStyles({
     fontSize: "1rem",
   },
   link: {
-    textDecoration: "none",
     "&:visited": {
       color: "inherit",
     },
@@ -59,48 +56,78 @@ const useStyles = makeStyles({
   },
 });
 
-function initAudio(options = {}) {
+interface AudioOptions {
+  filter?: Tone.AutoFilterOptions & { Q?: number }; // q ("resonance") is not part of AutoFilterOptions unfortunately
+  lfo?: Tone.LFOOptions;
+}
+
+interface Erebus {
+  filter: Tone.Filter;
+  lfo: Tone.LFO;
+  osc1: Tone.OmniOscillator<Tone.Oscillator>;
+  osc2: Tone.OmniOscillator<Tone.Oscillator>;
+  ampEnv: Tone.AmplitudeEnvelope;
+  feedbackDelay: Tone.FeedbackDelay;
+  noise: Tone.Noise;
+  add: Tone.Add;
+}
+
+function initAudio(options: AudioOptions = {}): Erebus {
   // @TODO add defaults everywhere
-  const filterOpt = options.filter || {};
-  const filter = new Filter({
-    frequency: filterOpt.frequency || 842,
-    Q: filterOpt.Q || 2.4,
+  const filterOpt = options.filter;
+  const filter = new Tone.Filter({
+    frequency: filterOpt?.frequency ?? 0,
+    Q: filterOpt?.Q || 2.4,
   });
 
-  const lfoOpt = options.lfo || { units: "Hertz" };
-  const lfo = new LFO(lfoOpt.frequency || 5, lfoOpt.min || 20, lfoOpt.max || 1500);
+  const lfoOpt = options.lfo;
+  const lfo = new Tone.LFO(lfoOpt?.frequency ?? 0.7, lfoOpt?.min ?? 0, lfoOpt?.max ?? 1000);
+  // const merge = Tone.Merge()
+  lfo.set({ units: "hertz" });
+  const add = new Tone.Add(2);
+  lfo.connect(add);
+  lfo.start();
+  add.connect(filter.frequency);
+  const osc1 = new Tone.OmniOscillator("C2", "sawtooth");
+  const osc2 = new Tone.OmniOscillator("C2", "sawtooth");
+  // create noise floor at -62Db, which is the noise floor of my personal Dreadbox Erebus serial no. 777
+  const noise = new Tone.Noise("white");
+  noise.volume.value = -63;
 
-  const osc1 = new OmniOscillator("C2", "sawtooth");
-  const osc2 = new OmniOscillator("C2", "sawtooth");
-  // create noise floor at -44Db
-  const noise = new Noise("white");
-  noise.volume.value = -44;
-
-  const ampEnv = new AmplitudeEnvelope({
+  const ampEnv = new Tone.AmplitudeEnvelope({
     attack: 0.42,
+    // attackCurve:"exponential",
     decay: 0.33,
-    sustain: 0.8,
+    sustain: 1.0,
     release: 0.5,
   });
-  ampEnv.attackCurve = "exponential";
 
-  const feedbackDelay = new FeedbackDelay("0.4", 0.3).toDestination();
+  const feedbackDelay = new Tone.FeedbackDelay("0.4", 0.3);
+  const outNode = new Tone.Gain(0.9);
+  const limiter = new Tone.Limiter(-12);
 
   // connect modules
   // ampEnv.toDestination();
-  feedbackDelay.wet.value = 0.11;
-  const distortion = new Distortion(0.03);
+  const distortion = new Tone.Distortion(0.05);
+  distortion.connect(feedbackDelay);
 
   // detune oscillators slightly
   osc2.detune.value = 8;
   osc1.detune.value = -3;
 
-  osc1.connect(filter).start();
-  osc2.connect(filter).start();
-  noise.connect(filter).start();
+  // start oscillatros and sum them into one audio node, connecting mixer out to filter
+  osc1.connect(limiter).start();
+  osc2.connect(limiter).start();
+  noise.connect(limiter).start();
+  limiter.connect(filter);
+  // distortion.connect();
+
   filter.connect(ampEnv);
   ampEnv.connect(feedbackDelay);
-  feedbackDelay.chain(distortion, Destination);
+  feedbackDelay.connect(outNode);
+  outNode.toDestination();
+
+  // limiter.connect(Tone.Destination); // feedbackDelay
   return {
     filter,
     lfo,
@@ -109,17 +136,25 @@ function initAudio(options = {}) {
     ampEnv,
     feedbackDelay,
     noise,
+    add,
   };
 }
 
-function Synth() {
-  const classes = useStyles();
+interface SynthProps {
+  setIsFlowing: (flowState: boolean) => void;
+}
 
+function Synth({ setIsFlowing }: SynthProps): JSX.Element {
+  const classes = useStyles();
   const [oscOctaveShift, setOscOctaveShift] = useState({ one: 0, two: 1 });
-  const [velocity, setVelocity] = useState(0.4);
+  const [velocity, setVelocity] = useState(0.2);
   // const [isPlaying, setIsPlaying] = useState(false);
   const [init, setInit] = useState(false);
   const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    setIsFlowing(false);
+  }, [setIsFlowing]);
 
   useEffect(() => {
     if (init) {
@@ -128,7 +163,7 @@ function Synth() {
     }
   }, [init]);
 
-  function changeOscOctave(osc, value) {
+  function changeOscOctave(osc: "one" | "two", value: number) {
     oscOctaveShift[osc] = value;
     setOscOctaveShift(oscOctaveShift);
   }
@@ -153,21 +188,19 @@ function Synth() {
           >
             Dreadbox Erebus Clone
           </a>{" "}
-          (Work in progress)
-        </Typography>
-        <Typography className={classes.error} variant="h5" color="error">
-          Currently Not Working on Mobile! Implementation is buggy at the moment.
         </Typography>
         <Typography variant="h5" color="inherit" className={classes.title}>
-          Oscillator controls and styling, Envelope generator and modular patching yet to be
-          implemented.
+          Click anywhere on this box to enable audio and load the synthesizer.
+        </Typography>
+        <Typography variant="h5" color="inherit" className={classes.title}>
+          How to play: Sounds can be played by clicking on the keyboard or by pressing keys on your
+          keyboard (a-k for white keys, w-z for black keys).
         </Typography>
         <Typography variant="h5" color="inherit" className={classes.title}>
           Sound parameters are changed by clicking and dragging on the knobs.
         </Typography>
-        <Typography variant="h5" color="inherit" className={classes.title}>
-          Sounds can be played by clicking on the keyboard or by pressing keys on your keyboard (a-k
-          for white keys, w-z for black keys).
+        <Typography className={classes.error} variant="h5" color="error">
+          Currently Not Working on Mobile! This is a work in progress
         </Typography>
       </div>
       <link href="https://fonts.googleapis.com/css?family=Comfortaa:700" rel="stylesheet" />
@@ -198,7 +231,6 @@ function Synth() {
                     window.erebus.ampEnv.set({ release });
                   }
                 }}
-                amp={window.erebus.ampEnv}
               />
             </div>
           </div>

@@ -1,5 +1,4 @@
-import { withStyles } from "@material-ui/core/styles";
-import React, { Component, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ZingTouch from "zingtouch";
 import Config from "../../config";
 import { knobStyles } from "../../jss/synth";
@@ -16,7 +15,7 @@ function isMobileDevice() {
 interface KnobProps {
   minVal: number;
   maxVal: number;
-  initialValue?: number;
+  initialValue: number;
   isBig?: boolean;
   isLinear?: boolean;
   changeInput: (value: number) => void;
@@ -24,16 +23,43 @@ interface KnobProps {
   afterSweep?: (value: number) => void;
 }
 
-function getLogValue(sliderValue: number, min: number, max: number) {
-  const minp = 0;
-  const maxp = 280;
-
+function getLogRemapped(value: number, min: number, max: number, minp: number, maxp: number) {
+  if (min === 0) {
+    min += 1;
+    max += 1;
+  }
   const minv = Math.log(min);
   const maxv = Math.log(max);
 
   // calculate adjustment factor
   const scale = (maxv - minv) / (maxp - minp);
-  return Math.exp(minv + scale * (sliderValue - minp));
+  return Math.exp(minv + scale * (value - minp));
+}
+
+function getLogValue(sliderValue: number, min: number, max: number) {
+  return getLogRemapped(sliderValue, min, max, 0, 280);
+}
+
+function getSliderValueForLogValue(value: number, min: number, max: number) {
+  // inverse order of operations, as we map from log space to linear space
+  if (min === 0) {
+    min += 1;
+    max += 1;
+  }
+  const minLog = Math.log(min);
+  const maxLog = Math.log(max) - minLog;
+  const valueLog = Math.log(value) - minLog;
+  return (valueLog / maxLog) * 280 - 140;
+}
+
+function getSliderValueForLinValue(value: number, min: number, max: number) {
+  if (value < min) {
+    return min;
+  }
+  if (value > max) {
+    return max;
+  }
+  return (value / max) * 280 - 140;
 }
 
 function getLinValue(sliderValue: number, min: number, max: number) {
@@ -110,7 +136,11 @@ export default function Knob({
 
     const knob = knobEl.current;
 
-    let currentAngle = (initialValue / maxVal) * 280 - 140;
+    let currentAngle = isLinear
+      ? getSliderValueForLinValue(initialValue, minVal, maxVal)
+      : getSliderValueForLogValue(initialValue, minVal, maxVal);
+    console.log(knobEl.current);
+    console.log(getSliderValueForLogValue(initialValue, minVal, maxVal));
 
     if (isMobileDevice()) {
       const region = new ZingTouch.Region(knob);
@@ -162,6 +192,13 @@ export default function Knob({
       e.preventDefault();
       return false;
     });
+
+    if (typeof initialValue === "number") {
+      changeInput(initialValue);
+      if (afterSweep) {
+        afterSweep(initialValue);
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

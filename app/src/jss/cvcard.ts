@@ -10,7 +10,7 @@ export const cvCardStyles = makeStyles((theme: Theme) => ({
     height: "170px",
     margin: theme.spacing(4),
     marginBottom: "2rem",
-    backgroundSize: "contain",
+    backgroundSize: "contain !important",
   },
   noMargin: {
     height: `${170 + theme.spacing(4)}px`,
@@ -54,8 +54,8 @@ export const cvCardStyles = makeStyles((theme: Theme) => ({
     marginBottom: "-1em",
   },
   collapseChildRoot: {
-    alignSelf: "center",
-    marginRight: "0",
+    alignSelf: "center !important",
+    marginRight: "0 !important",
   },
   collapseParentShift: {
     marginRight: "-64px",

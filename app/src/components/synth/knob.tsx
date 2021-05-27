@@ -117,7 +117,6 @@ export default function Knob({
   function checkForChange(currentValue: number) {
     // periodically check if knob value still changing
     // can trigger an event as soon as values not changing anymore
-    console.log("sweep started.");
     setTimeout(() => {
       if (lastValue === currentValue) {
         setIsCheckingforChange(false);
@@ -139,8 +138,6 @@ export default function Knob({
     let currentAngle = isLinear
       ? getSliderValueForLinValue(initialValue, minVal, maxVal)
       : getSliderValueForLogValue(initialValue, minVal, maxVal);
-    console.log(knobEl.current);
-    console.log(getSliderValueForLogValue(initialValue, minVal, maxVal));
 
     if (isMobileDevice()) {
       const region = new ZingTouch.Region(knob);

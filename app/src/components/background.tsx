@@ -7,7 +7,7 @@ import { getIsMobileOS } from "../utils";
 // which is being displaced by a turbulence pattern which is itself being animated through
 // thereby creating an illusion of a moving turbulence akin to flowing water
 
-function HeroImage(): JSX.Element {
+function Background(): JSX.Element {
   const isMobileDevice = getIsMobileOS();
   const { hostUrl } = Config;
 
@@ -101,4 +101,4 @@ function HeroImage(): JSX.Element {
   );
 }
 
-export default HeroImage;
+export default Background;

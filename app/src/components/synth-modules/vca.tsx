@@ -6,15 +6,14 @@ import { vcaStyles } from "../../jss/synth";
 const useStyles = vcaStyles;
 
 interface VcaProps {
-  setVelocity: (value: number) => void;
   setAmpEnv: (ampEnvOptions: { attack?: number; release?: number }) => void;
 }
 
 const vcaDescription =
-  "The VCA is the amplifier, determining the loudness of the output signal. This one has a ramp up time (attack, currently not working unfortunately) and a release, " +
+  "The VCA is the amplifier, determining the loudness of the output signal. This one has a ramp up time, called attack and a release time, " +
   "which determines how long the sound will still play after the key was released.";
 
-export default function Ampmodule({ setVelocity, setAmpEnv }: VcaProps): JSX.Element {
+export default function Ampmodule({ setAmpEnv }: VcaProps): JSX.Element {
   const classes = useStyles();
 
   return (
@@ -25,8 +24,7 @@ export default function Ampmodule({ setVelocity, setAmpEnv }: VcaProps): JSX.Ele
         <Knob
           changeInput={(value: number) => {
             console.log(value / 1000);
-            // master.volume.value = value / 1000;
-            setVelocity(value / 1000);
+            window.erebus.output.gain.rampTo(value / 1000, 0);
           }}
           minVal={1}
           maxVal={300}
@@ -42,10 +40,9 @@ export default function Ampmodule({ setVelocity, setAmpEnv }: VcaProps): JSX.Ele
             changeInput={(value: number) => {
               setAmpEnv({ attack: value });
             }}
-            minVal={0.05}
+            minVal={0.01}
             maxVal={2}
-            initialValue={0.5}
-            isLinear
+            initialValue={0.01}
           />
         </div>
         <div className={classes.knobRelease}>
@@ -53,8 +50,8 @@ export default function Ampmodule({ setVelocity, setAmpEnv }: VcaProps): JSX.Ele
             changeInput={(value: number) => {
               setAmpEnv({ release: value });
             }}
-            minVal={1}
-            maxVal={9}
+            minVal={0.1}
+            maxVal={100}
             initialValue={6}
           />
         </div>

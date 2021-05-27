@@ -18,12 +18,12 @@ import Ampmodule from "../components/synth-modules/vca";
   implement adsr instead of ar
   osc controls
   octave up, down buttons
-  implement paraphony for oscillators
 */
 
 declare global {
   interface Window {
     erebus: Erebus;
+    prohibitFlowing: boolean;
   }
 }
 
@@ -70,6 +70,8 @@ interface Erebus {
   feedbackDelay: Tone.FeedbackDelay;
   noise: Tone.Noise;
   add: Tone.Add;
+  filterFreq: Tone.Signal<"hertz">;
+  output: Tone.Gain;
 }
 
 function initAudio(options: AudioOptions = {}): Erebus {
@@ -85,25 +87,30 @@ function initAudio(options: AudioOptions = {}): Erebus {
   // const merge = Tone.Merge()
   lfo.set({ units: "hertz" });
   const add = new Tone.Add(2);
-  lfo.connect(add);
-  lfo.start();
+  const filterFreq = new Tone.Signal(0, "hertz");
+  filterFreq.connect(add);
+  // try subtracting instead, as add is fucky
+  // lfo.connect(add.addend);
   add.connect(filter.frequency);
+
+  lfo.start();
+
   const osc1 = new Tone.OmniOscillator("C2", "sawtooth");
   const osc2 = new Tone.OmniOscillator("C2", "sawtooth");
+
   // create noise floor at -62Db, which is the noise floor of my personal Dreadbox Erebus serial no. 777
   const noise = new Tone.Noise("white");
-  noise.volume.value = -63;
+  noise.volume.value = -80;
 
   const ampEnv = new Tone.AmplitudeEnvelope({
     attack: 0.42,
-    // attackCurve:"exponential",
     decay: 0.33,
     sustain: 1.0,
     release: 0.5,
   });
 
   const feedbackDelay = new Tone.FeedbackDelay("0.4", 0.3);
-  const outNode = new Tone.Gain(0.9);
+  const output = new Tone.Gain(0.9);
   const limiter = new Tone.Limiter(-12);
 
   // connect modules
@@ -118,14 +125,15 @@ function initAudio(options: AudioOptions = {}): Erebus {
   // start oscillatros and sum them into one audio node, connecting mixer out to filter
   osc1.connect(limiter).start();
   osc2.connect(limiter).start();
-  noise.connect(limiter).start();
   limiter.connect(filter);
   // distortion.connect();
 
   filter.connect(ampEnv);
   ampEnv.connect(feedbackDelay);
-  feedbackDelay.connect(outNode);
-  outNode.toDestination();
+
+  noise.connect(output).start();
+  feedbackDelay.connect(output);
+  output.toDestination();
 
   // limiter.connect(Tone.Destination); // feedbackDelay
   return {
@@ -137,6 +145,8 @@ function initAudio(options: AudioOptions = {}): Erebus {
     feedbackDelay,
     noise,
     add,
+    filterFreq,
+    output,
   };
 }
 
@@ -147,8 +157,6 @@ interface SynthProps {
 function Synth({ setIsFlowing }: SynthProps): JSX.Element {
   const classes = useStyles();
   const [oscOctaveShift, setOscOctaveShift] = useState({ one: 0, two: 1 });
-  const [velocity, setVelocity] = useState(0.2);
-  // const [isPlaying, setIsPlaying] = useState(false);
   const [init, setInit] = useState(false);
   const [ready, setReady] = useState(false);
 
@@ -190,17 +198,17 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
           </a>{" "}
         </Typography>
         <Typography variant="h5" color="inherit" className={classes.title}>
-          Click anywhere on this box to enable audio and load the synthesizer.
+          Click on this box to enable WebAudio and load the synthesizer.
         </Typography>
         <Typography variant="h5" color="inherit" className={classes.title}>
-          How to play: Sounds can be played by clicking on the keyboard or by pressing keys on your
-          keyboard (a-k for white keys, w-z for black keys).
+          How to play: click on the keyboard or press the keys on your keyboard (a-k for white keys,
+          w-z for black keys).
         </Typography>
         <Typography variant="h5" color="inherit" className={classes.title}>
           Sound parameters are changed by clicking and dragging on the knobs.
         </Typography>
         <Typography className={classes.error} variant="h5" color="error">
-          Currently Not Working on Mobile! This is a work in progress
+          This is a work in progress and currently Not Working on Mobile
         </Typography>
       </div>
       <link href="https://fonts.googleapis.com/css?family=Comfortaa:700" rel="stylesheet" />
@@ -208,7 +216,7 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
         <>
           <div style={{ minWidth: 510 }} className={classes.erebusBox}>
             <div className="spacer">
-              <LFOmodule lfo={window.erebus.lfo} input={window.erebus.filter} />
+              <LFOmodule lfo={window.erebus.lfo} />
 
               <DelayModule delay={window.erebus.feedbackDelay} />
             </div>
@@ -220,9 +228,6 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
               />
               <Filtermodule filter={window.erebus.filter} />
               <Ampmodule
-                setVelocity={(value) => {
-                  setVelocity(value);
-                }}
                 setAmpEnv={({ attack, release }) => {
                   if (attack) {
                     window.erebus.ampEnv.set({ attack });
@@ -249,7 +254,7 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
             sendGate={(newgate) => {
               if (newgate) {
                 // if (!isPlaying) {
-                window.erebus.ampEnv.triggerAttack(0.05, velocity);
+                window.erebus.ampEnv.triggerAttack(undefined, 1.0);
                 // setIsPlaying(true);
                 // }
               } else {

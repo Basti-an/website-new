@@ -11,7 +11,7 @@ import {
   Switch,
   Tooltip,
 } from "@material-ui/core";
-import HeroImage from "./components/hero-image";
+import Background from "./components/background";
 import Navigation from "./components/navigation";
 import { getIsMobileOS, getIsGoodBrowser, checkForDevicePerformance } from "./utils";
 import { appStyles } from "./jss";
@@ -88,7 +88,7 @@ function App(): JSX.Element {
           </Grid>
         </Toolbar>
       </AppBar>
-      <HeroImage />
+      <Background />
       <React.Suspense fallback={<span>Loading content...</span>}>
         <Router>
           <>

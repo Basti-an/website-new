@@ -9,7 +9,7 @@ const useStyles = lfoStyles;
 
 interface LfoProps {
   lfo: Tone.LFO;
-  input: Tone.Filter;
+  // input: Tone.Filter;
 }
 
 const setAnimDuration = (lfo: Tone.LFO) => {
@@ -26,22 +26,8 @@ const setAnimDuration = (lfo: Tone.LFO) => {
 const lfoDescription =
   "an LFO (low frequency oscillator) generates a wave that can be used to modulate other parameters. The LFO is currently routed to the frequency of the filter.";
 
-export default function LFOmodule({ lfo, input }: LfoProps): JSX.Element {
+export default function LFOmodule({ lfo }: LfoProps): JSX.Element {
   const classes = useStyles();
-
-  function evaluateConnection(value: number) {
-    // console.log(input);
-    // // disconnect lfo if value is below certain treshold
-    // if (value < 0.05) {
-    //   const currInputValue = input.frequency.value;
-    //   lfo.disconnect();
-    //   input.frequency.value = currInputValue;
-    //   return;
-    // }
-    // // if (typeof this.props.input.value !== "undefined") {
-    // // }
-    // lfo.connect(input.frequency);
-  }
 
   function switchWaveform(isSquare: boolean) {
     lfo.stop();
@@ -61,7 +47,7 @@ export default function LFOmodule({ lfo, input }: LfoProps): JSX.Element {
           <div className={classes.button}>
             <Knob
               changeInput={(value: number) => {
-                lfo.frequency.value = value;
+                lfo.frequency.rampTo(value, 0);
               }}
               minVal={0.1}
               maxVal={200}
@@ -77,12 +63,10 @@ export default function LFOmodule({ lfo, input }: LfoProps): JSX.Element {
           <div className={classes.button}>
             <Knob
               changeInput={(value: number) => {
-                lfo.amplitude.value = value;
+                lfo.amplitude.linearRampTo(value, 0);
               }}
               minVal={0}
               maxVal={1}
-              afterSweep={evaluateConnection}
-              whileSweep={evaluateConnection}
               isLinear
               initialValue={0.333}
             />

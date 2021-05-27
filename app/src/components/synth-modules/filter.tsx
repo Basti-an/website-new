@@ -27,20 +27,15 @@ export default function FilterModule({ filter }: FilterProps): JSX.Element {
         <Knob
           changeInput={(value: number) => {
             // @TODO refactor this mess and find out why the if below works..
-            const lfoAverage =
-              (window.erebus.lfo.amplitude.value *
-                (window.erebus.lfo.max - window.erebus.lfo.min)) /
-              2;
-            console.log(`test ${value - lfoAverage}`);
-            console.log(lfoAverage);
-            let newValue = value - lfoAverage;
-            if (lfoAverage < window.erebus.lfo.max / 2) {
-              newValue -= lfoAverage;
-            }
-            if (window.erebus.lfo.amplitude.value < 0.05) {
-              newValue -= window.erebus.lfo.max / 2;
-            }
-            window.erebus.add.addend.rampTo(newValue);
+            // const lfoAverage =
+            //   (window.erebus.lfo.amplitude.value *
+            //     (window.erebus.lfo.max - window.erebus.lfo.min)) /
+            //   2;
+            // console.log(`test ${value - lfoAverage}`);
+            // console.log(lfoAverage);
+            // const newValue = value - lfoAverage;
+            // window.erebus.add.addend.rampTo(newValue);
+            window.erebus.filterFreq.rampTo(value, 0);
             // filter.frequency.set({ value });
             // filter.frequency.value = value;
           }}
@@ -59,7 +54,7 @@ export default function FilterModule({ filter }: FilterProps): JSX.Element {
           }}
           minVal={3}
           maxVal={33}
-          initialValue={9}
+          initialValue={7}
         />
       </div>
     </div>

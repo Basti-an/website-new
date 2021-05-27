@@ -28,7 +28,7 @@ export default function DelayModule({
         <div className={classes.button}>
           <Knob
             changeInput={(value) => {
-              delay.delayTime.value = value;
+              delay.delayTime.rampTo(value, window.erebus.output.blockTime * 42);
             }}
             minVal={0.1}
             maxVal={1.0}
@@ -38,7 +38,7 @@ export default function DelayModule({
         <div className={classes.button}>
           <Knob
             changeInput={(value) => {
-              delay.feedback.value = value;
+              delay.feedback.rampTo(value, 0);
             }}
             minVal={0.1}
             maxVal={1.0}
@@ -51,7 +51,7 @@ export default function DelayModule({
         <div className={classes.button}>
           <Knob
             changeInput={(value) => {
-              delay.wet.value = value;
+              delay.wet.rampTo(value, 0);
             }}
             minVal={0}
             maxVal={1}

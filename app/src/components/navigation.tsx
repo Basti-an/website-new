@@ -8,7 +8,7 @@ const { hostUrl } = Config;
 
 // this component is a PoC stuffed into a react component while not using react idioms
 //  a refactor would be in order
-// it`s an emulation of Mac OS X magnifying dock behaviour
+// it`s a crude emulation of Mac OS X magnifying dock behaviour
 
 export default function Navigation(): JSX.Element {
   useEffect(() => {
@@ -21,7 +21,7 @@ export default function Navigation(): JSX.Element {
     }
 
     const fallOffX = 220;
-    const fallOffY = 100;
+    const fallOffY = 56;
     const maxMagnification = 0.6;
     const defaultWidth = 68;
     const defaultHeight = 68;
@@ -56,12 +56,12 @@ export default function Navigation(): JSX.Element {
         genie.style.height = `${defaultHeight}px`;
         return defaultWidth;
       }
-      if (y < fallOffY - 5) {
-        genie.style.transition = "none";
-        if (innerStage) {
-          innerStage.style.transition = "none";
-        }
-      }
+      // if (y < fallOffY - 5) {
+      //   genie.style.transition = "none";
+      //   if (innerStage) {
+      //     innerStage.style.transition = "none";
+      //   }
+      // }
       const newWidth = defaultWidth * scaleX;
       const newHeight = defaultHeight * scaleX;
       genie.style.width = `${newWidth}px`;

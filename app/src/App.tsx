@@ -22,7 +22,7 @@ const isMobile = getIsMobileOS();
 const useStyles = appStyles;
 
 const views = {
-  "/cv": { name: "CV", Component: React.lazy(() => import("./pages/cv")) },
+  // "/cv": { name: "CV", Component: React.lazy(() => import("./pages/cv")) },
   // Synthesizer is currently not available due to tone.js being a harsh mistress
   "/synth": { name: "Synthesizer", Component: React.lazy(() => import("./pages/synth")) },
   "/": { name: "Home", Component: React.lazy(() => import("./pages/home")) },

@@ -380,7 +380,7 @@ a {
 #innerStage {
   position: absolute;
   bottom: 10px;
-  width: 350px;
+  width: 260px;
   height: 89px;
   backdrop-filter: blur(14px);
   background-color: rgba(0, 0, 0, 0.2);

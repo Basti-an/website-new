@@ -32,7 +32,7 @@ export default function DelayModule({
             }}
             minVal={0.1}
             maxVal={1.0}
-            initialValue={0.666}
+            initialValue={0.5}
           />
         </div>
         <div className={classes.button}>

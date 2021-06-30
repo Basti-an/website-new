@@ -87,4 +87,36 @@ function checkForDevicePerformance(setFancyAnimations: React.Dispatch<boolean>):
   }, cookFor);
 }
 
-export { getIsMobileOS, getIsGoodBrowser, checkForDevicePerformance };
+function getLinValue(sliderValue: number, min: number, max: number): number {
+  const maxp = 280;
+  const linVal = sliderValue / maxp;
+  const range = max - min;
+  const inRangeVal = linVal * range;
+  return min + inRangeVal;
+}
+
+function getLogRemapped(value: number, min: number, max: number, minp: number, maxp: number) {
+  if (min === 0) {
+    min += 1;
+    max += 1;
+  }
+  const minv = Math.log(min);
+  const maxv = Math.log(max);
+
+  // calculate adjustment factor
+  const scale = (maxv - minv) / (maxp - minp);
+  return Math.exp(minv + scale * (value - minp));
+}
+
+function getLogValue(sliderValue: number, min: number, max: number): number {
+  return getLogRemapped(sliderValue, min, max, 0, 280);
+}
+
+export {
+  getIsMobileOS,
+  getIsGoodBrowser,
+  checkForDevicePerformance,
+  getLinValue,
+  getLogValue,
+  getLogRemapped,
+};

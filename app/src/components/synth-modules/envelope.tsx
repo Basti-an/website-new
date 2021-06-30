@@ -57,7 +57,7 @@ export default function LFOmodule({ lfo }: LfoProps): JSX.Element {
               whileSweep={() => {
                 setAnimDuration(lfo);
               }}
-              initialValue={0.6}
+              initialValue={0.2}
             />
           </div>
           <div className={classes.button}>

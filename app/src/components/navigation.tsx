@@ -56,12 +56,12 @@ export default function Navigation(): JSX.Element {
         genie.style.height = `${defaultHeight}px`;
         return defaultWidth;
       }
-      // if (y < fallOffY - 5) {
-      //   genie.style.transition = "none";
-      //   if (innerStage) {
-      //     innerStage.style.transition = "none";
-      //   }
-      // }
+      if (y < fallOffY - 5) {
+        genie.style.transition = "none";
+        if (innerStage) {
+          innerStage.style.transition = "none";
+        }
+      }
       const newWidth = defaultWidth * scaleX;
       const newHeight = defaultHeight * scaleX;
       genie.style.width = `${newWidth}px`;
@@ -139,7 +139,7 @@ export default function Navigation(): JSX.Element {
           </Link>
         </div>
       </Tooltip>
-      <Tooltip title="CV / Work history">
+      {/* <Tooltip title="CV / Work history">
         <div className="genie">
           <Link to="/cv">
             <img
@@ -149,7 +149,7 @@ export default function Navigation(): JSX.Element {
             />
           </Link>
         </div>
-      </Tooltip>
+      </Tooltip> */}
       <Tooltip title="Contact me via email">
         <div className="genie">
           <a href="mailto:sebastian@wiendlocha.org">

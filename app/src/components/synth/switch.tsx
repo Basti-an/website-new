@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import * as Tone from "tone";
 import Config from "../../config";
 import { switchStyles } from "../../jss/synth";
 
@@ -8,6 +9,25 @@ interface SwitchProps {
   onInput: (isActive: boolean) => void;
   initialState?: 0 | 1;
 }
+
+const switchClick = {
+  up: new Tone.Player({
+    url: `${Config.hostUrl}/audio/erebus_switch_click_up.mp3`,
+    volume: -15,
+  }).toDestination(),
+  up2: new Tone.Player({
+    url: `${Config.hostUrl}/audio/erebus_switch_click_up2.mp3`,
+    volume: -18,
+  }).toDestination(),
+  down: new Tone.Player({
+    url: `${Config.hostUrl}/audio/erebus_switch_click_down.mp3`,
+    volume: -21,
+  }).toDestination(),
+  down2: new Tone.Player({
+    url: `${Config.hostUrl}/audio/erebus_switch_click_down2.mp3`,
+    volume: -18,
+  }).toDestination(),
+};
 
 export default function Switch({ onInput, initialState }: SwitchProps): JSX.Element {
   const [active, setActive] = useState(initialState || false);
@@ -20,13 +40,17 @@ export default function Switch({ onInput, initialState }: SwitchProps): JSX.Elem
   }, []);
 
   const switchHandler = () => {
+    // click sound
     if (switchEl.current) {
       const element = switchEl.current;
       // change view
       if (active) {
         element.style.transform = "rotate(0deg)";
+        // click sound
+        switchClick.down.start();
       } else {
         element.style.transform = "rotate(180deg)";
+        switchClick.up.start();
       }
     }
     onInput(!active);

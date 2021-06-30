@@ -5,24 +5,22 @@ import { makeStyles } from "@material-ui/core/styles";
 import React, { useState, useEffect } from "react";
 import * as Tone from "tone";
 
+import { getLogRemapped } from "../utils";
+
 import Keyboard from "../components/keyboard";
 import DelayModule from "../components/synth-modules/delay";
 import Filtermodule from "../components/synth-modules/filter";
 import LFOmodule from "../components/synth-modules/lfo";
 import OSCModule from "../components/synth-modules/osc";
 import Ampmodule from "../components/synth-modules/vca";
-
-/* @TODO:
-  refactor everything, clean everything up
-  implement routing for lfo
-  implement adsr instead of ar
-  osc controls
-  octave up, down buttons
-*/
+import { IOscillators } from "../interfaces/oscillators";
+import { IErebus } from "../interfaces/erebus";
+import { IFilter } from "../interfaces/filter";
+import { ModSource } from "../types/modSource.d";
 
 declare global {
   interface Window {
-    erebus: Erebus;
+    erebus: IErebus;
     prohibitFlowing: boolean;
   }
 }
@@ -61,47 +59,127 @@ interface AudioOptions {
   lfo?: Tone.LFOOptions;
 }
 
-interface Erebus {
-  filter: Tone.Filter;
-  lfo: Tone.LFO;
-  osc1: Tone.OmniOscillator<Tone.Oscillator>;
-  osc2: Tone.OmniOscillator<Tone.Oscillator>;
-  ampEnv: Tone.AmplitudeEnvelope;
-  feedbackDelay: Tone.FeedbackDelay;
-  noise: Tone.Noise;
-  add: Tone.Add;
-  filterFreq: Tone.Signal<"hertz">;
-  output: Tone.Gain;
+function createOscillators(): IOscillators {
+  const osc1 = new Tone.OmniOscillator("C1", "sawtooth");
+  const osc2 = new Tone.OmniOscillator("C2", "sawtooth");
+
+  // combined output of both oscillators
+  const oscMixOut = new Tone.Limiter(-12);
+
+  // we want to control the frequency by knob while being able to
+  // simultaniously modulate the frequency from another component
+  // in order to do that, we create an add node to mix 2 signals together (knob + mod)
+  const osc1FreqConnect = new Tone.Add();
+  const osc2FreqConnect = new Tone.Add();
+  const osc1Freq = new Tone.Signal(0, "frequency");
+  const osc2Freq = new Tone.Signal(0, "frequency");
+  osc1Freq.connect(osc1FreqConnect.addend);
+  osc2Freq.connect(osc2FreqConnect.addend);
+  osc1FreqConnect.connect(osc1.frequency);
+  osc2FreqConnect.connect(osc2.frequency);
+
+  // start oscillators and sum them into one audio node, connecting mixer out to filter
+  const osc1Volume = new Tone.Volume(-15);
+  const osc2Volume = new Tone.Volume(-15);
+  osc1.connect(osc1Volume).start();
+  osc2.connect(osc2Volume).start();
+  osc1Volume.connect(oscMixOut);
+  osc2Volume.connect(oscMixOut);
+
+  // helper function to translate linear values 0-100 to natural log between min-max
+  function getLogValue(sliderValue: number, min: number, max: number): number {
+    return getLogRemapped(sliderValue, min, max, 0, 100);
+  }
+
+  function setOscMix(input: number): void {
+    // translate input between 0-100 into decibel mix of 2 oscillators,
+    // where 0 translates to osc1 at 100% & osc2 at 0 and
+    // 100 translates to osc1 at 0% & osc2 at 100% volumes
+    const percentageOsc1 = 100 - input;
+    const percentageOsc2 = input;
+    const decibelsOsc1 =
+      percentageOsc1 < 1 ? -Infinity : getLogValue(100 - percentageOsc1, 12, 24) * -1;
+    const decibelsOsc2 =
+      percentageOsc2 < 1 ? -Infinity : getLogValue(100 - percentageOsc2, 12, 24) * -1;
+
+    osc1Volume.set({ volume: decibelsOsc1 });
+    osc2Volume.set({ volume: decibelsOsc2 });
+  }
+
+  return {
+    osc1: {
+      oscillator: osc1,
+      volume: osc1Volume,
+      glide: 0,
+      waveform: osc1.type,
+      possibleWaveforms: ["sawtooth", "pulse"],
+      frequency: osc1Freq,
+    },
+    osc2: {
+      oscillator: osc2,
+      volume: osc2Volume,
+      glide: 0,
+      waveform: osc2.type,
+      possibleWaveforms: ["sawtooth", "triangle"],
+      frequency: osc2Freq,
+      detune: 0,
+    },
+    oscMixOut,
+    setOscMix,
+    inputs: {
+      freqOsc1: (input: ModSource) => input.connect(osc1FreqConnect),
+      freqOsc2: (input: ModSource) => input.connect(osc2FreqConnect),
+    },
+  };
 }
 
-function initAudio(options: AudioOptions = {}): Erebus {
-  // @TODO add defaults everywhere
+function createFilter(options: AudioOptions = {}): IFilter {
   const filterOpt = options.filter;
-  const filter = new Tone.Filter({
+  const filter12db = new Tone.Filter({
     frequency: filterOpt?.frequency ?? 0,
     Q: filterOpt?.Q || 2.4,
   });
 
-  const lfoOpt = options.lfo;
-  const lfo = new Tone.LFO(lfoOpt?.frequency ?? 0.7, lfoOpt?.min ?? 0, lfoOpt?.max ?? 1000);
-  // const merge = Tone.Merge()
-  lfo.set({ units: "hertz" });
-  const add = new Tone.Add(2);
-  const filterFreq = new Tone.Signal(0, "hertz");
-  filterFreq.connect(add);
-  // try subtracting instead, as add is fucky
-  // lfo.connect(add.addend);
-  add.connect(filter.frequency);
+  // setup filter to accept a modulation source
+  const filterConnect = new Tone.Add();
+  const filterFreq = new Tone.Signal(0, "frequency");
+  filterFreq.connect(filterConnect.addend);
+  filterConnect.connect(filter12db.frequency);
 
+  return {
+    filter: filter12db,
+    frequency: filterFreq,
+    inputs: {
+      frequency: (input: ModSource) => input.connect(filter12db.detune),
+    },
+  };
+}
+
+function initAudio(options: AudioOptions = {}): IErebus {
+  // create filter
+  const filter = createFilter(options);
+
+  // create lfo
+  const lfoOpt = options.lfo;
+  const lfo = new Tone.LFO(lfoOpt?.frequency ?? 0.7, lfoOpt?.min ?? -1200, lfoOpt?.max ?? 1200);
+  lfo.set({ units: "number" });
   lfo.start();
 
-  const osc1 = new Tone.OmniOscillator("C2", "sawtooth");
-  const osc2 = new Tone.OmniOscillator("C2", "sawtooth");
+  // connect lfo to filter frequency
+  filter.inputs.frequency(lfo);
 
-  // create noise floor at -62Db, which is the noise floor of my personal Dreadbox Erebus serial no. 777
+  // create oscillators
+  const oscillators = createOscillators();
+
+  // OSC´s audio -> filter
+  oscillators.oscMixOut.connect(filter.filter);
+
+  // create noise floor similar to my personal Dreadbox Erebus serial no. 777
   const noise = new Tone.Noise("white");
-  noise.volume.value = -80;
+  noise.volume.value = -60;
+  noise.connect(filter.filter).start();
 
+  // create Amplitude Envelope
   const ampEnv = new Tone.AmplitudeEnvelope({
     attack: 0.42,
     decay: 0.33,
@@ -111,27 +189,14 @@ function initAudio(options: AudioOptions = {}): Erebus {
 
   const feedbackDelay = new Tone.FeedbackDelay("0.4", 0.3);
   const output = new Tone.Gain(0.9);
-  const limiter = new Tone.Limiter(-12);
 
-  // connect modules
-  // ampEnv.toDestination();
   const distortion = new Tone.Distortion(0.05);
   distortion.connect(feedbackDelay);
 
-  // detune oscillators slightly
-  osc2.detune.value = 8;
-  osc1.detune.value = -3;
-
-  // start oscillatros and sum them into one audio node, connecting mixer out to filter
-  osc1.connect(limiter).start();
-  osc2.connect(limiter).start();
-  limiter.connect(filter);
-  // distortion.connect();
-
-  filter.connect(ampEnv);
+  // Filter audio -> Amplitude Envelope
+  filter.filter.connect(ampEnv);
   ampEnv.connect(feedbackDelay);
 
-  noise.connect(output).start();
   feedbackDelay.connect(output);
   output.toDestination();
 
@@ -139,14 +204,12 @@ function initAudio(options: AudioOptions = {}): Erebus {
   return {
     filter,
     lfo,
-    osc1,
-    osc2,
     ampEnv,
     feedbackDelay,
     noise,
-    add,
-    filterFreq,
+    lfoConnect: filter.inputs.frequency,
     output,
+    oscillators,
   };
 }
 
@@ -158,7 +221,7 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
   const classes = useStyles();
   const [oscOctaveShift, setOscOctaveShift] = useState({ one: 0, two: 1 });
   const [init, setInit] = useState(false);
-  const [ready, setReady] = useState(false);
+  const [erebus, setErebus] = useState<IErebus | null>(null);
 
   useEffect(() => {
     setIsFlowing(false);
@@ -167,13 +230,34 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
   useEffect(() => {
     if (init) {
       window.erebus = initAudio();
-      setReady(true);
+      setErebus(window.erebus);
     }
   }, [init]);
 
   function changeOscOctave(osc: "one" | "two", value: number) {
-    oscOctaveShift[osc] = value;
+    oscOctaveShift[osc] = osc === "one" ? value - 1 : value;
     setOscOctaveShift(oscOctaveShift);
+  }
+
+  function sendCVs(cv1: string, cv2: string) {
+    if (!erebus) {
+      return;
+    }
+
+    const osc1Frequency =
+      cv1.substring(0, cv1.length - 1) + (parseInt(cv1[cv1.length - 1], 10) + oscOctaveShift.one);
+    const osc2Frequency =
+      cv2.substring(0, cv2.length - 1) + (parseInt(cv2[cv2.length - 1], 10) + oscOctaveShift.two);
+
+    const { oscillators } = erebus;
+
+    if (oscillators.osc1.glide > 0.01 || oscillators.osc2.glide > 0.01) {
+      oscillators.osc1.frequency.rampTo(osc1Frequency, oscillators.osc1.glide);
+      oscillators.osc2.frequency.rampTo(osc2Frequency, oscillators.osc2.glide);
+    } else {
+      oscillators.osc1.frequency.value = osc1Frequency;
+      oscillators.osc2.frequency.value = osc2Frequency;
+    }
   }
 
   return (
@@ -200,66 +284,41 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
         <Typography variant="h5" color="inherit" className={classes.title}>
           Click on this box to enable WebAudio and load the synthesizer.
         </Typography>
-        <Typography variant="h5" color="inherit" className={classes.title}>
-          How to play: click on the keyboard or press the keys on your keyboard (a-k for white keys,
-          w-z for black keys).
-        </Typography>
-        <Typography variant="h5" color="inherit" className={classes.title}>
-          Sound parameters are changed by clicking and dragging on the knobs.
-        </Typography>
+
         <Typography className={classes.error} variant="h5" color="error">
           This is a work in progress and currently Not Working on Mobile
         </Typography>
       </div>
       <link href="https://fonts.googleapis.com/css?family=Comfortaa:700" rel="stylesheet" />
-      {ready && (
+      {erebus && (
         <>
           <div style={{ minWidth: 510 }} className={classes.erebusBox}>
             <div className="spacer">
-              <LFOmodule lfo={window.erebus.lfo} />
-
-              <DelayModule delay={window.erebus.feedbackDelay} />
+              <LFOmodule lfo={erebus.lfo} />
+              <DelayModule delay={erebus.feedbackDelay} />
             </div>
             <div className="spacer">
-              <OSCModule
-                osc1={window.erebus.osc1}
-                osc2={window.erebus.osc2}
-                changeOscOctave={changeOscOctave}
-              />
-              <Filtermodule filter={window.erebus.filter} />
+              <OSCModule oscillators={erebus.oscillators} changeOscOctave={changeOscOctave} />
+              <Filtermodule filter={erebus.filter} />
               <Ampmodule
                 setAmpEnv={({ attack, release }) => {
                   if (attack) {
-                    window.erebus.ampEnv.set({ attack });
+                    erebus.ampEnv.set({ attack });
                   }
                   if (release) {
-                    window.erebus.ampEnv.set({ release });
+                    erebus.ampEnv.set({ release });
                   }
                 }}
               />
             </div>
           </div>
           <Keyboard
-            sendCVs={(cv1, cv2) => {
-              const osc1Frequency =
-                cv1.substring(0, cv1.length - 1) +
-                (parseInt(cv1[cv1.length - 1], 10) + oscOctaveShift.one);
-              const osc2Frequency =
-                cv2.substring(0, cv2.length - 1) +
-                (parseInt(cv2[cv2.length - 1], 10) + oscOctaveShift.two);
-
-              window.erebus.osc1.frequency.value = osc1Frequency;
-              window.erebus.osc2.frequency.value = osc2Frequency;
-            }}
+            sendCVs={sendCVs}
             sendGate={(newgate) => {
               if (newgate) {
-                // if (!isPlaying) {
-                window.erebus.ampEnv.triggerAttack(undefined, 1.0);
-                // setIsPlaying(true);
-                // }
+                erebus.ampEnv.triggerAttack(undefined, 1.0);
               } else {
-                window.erebus.ampEnv.triggerRelease();
-                // setIsPlaying(false);
+                erebus.ampEnv.triggerRelease();
               }
             }}
           />

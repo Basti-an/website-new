@@ -16,7 +16,8 @@ function Home(): JSX.Element {
           Hello There! I`m a Fullstack Software Developer from Cologne, Germany
         </Typography>
         <Typography className={classes.headline} variant="h3">
-          Check out this <Link to="/synth">Synthesizer</Link> built for the browser
+          Check out this <Link to="/synth">Synthesizer</Link> I&apos;m currently building for the
+          web
         </Typography>
       </Paper>
       {/* <nav>

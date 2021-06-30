@@ -1,13 +1,10 @@
 import React from "react";
 import Tone from "tone";
+import { IFilter } from "../../interfaces/filter";
 import { filterStyles } from "../../jss/synth";
 import Knob from "../synth/knob";
 
 const useStyles = filterStyles;
-
-interface FilterProps {
-  filter: Tone.Filter;
-}
 
 const filterDescription =
   "The filter is used to cut away frequencies from the oscillators signal. Try playing around with the cutoff knob to get a feeling for how it works.";
@@ -15,8 +12,12 @@ const filterDescription =
 const resonanceDescription =
   "The resonance is the amount of filter signal that is fed back into the filter - creating a feedback around the cutoff frequency.";
 
+interface IFilterProps {
+  filter: IFilter;
+}
+
 // @TODO: implement CV Input to filter frequency
-export default function FilterModule({ filter }: FilterProps): JSX.Element {
+export default function FilterModule({ filter }: IFilterProps): JSX.Element {
   const classes = useStyles();
 
   return (
@@ -26,18 +27,7 @@ export default function FilterModule({ filter }: FilterProps): JSX.Element {
       <div className={classes.freqKnob}>
         <Knob
           changeInput={(value: number) => {
-            // @TODO refactor this mess and find out why the if below works..
-            // const lfoAverage =
-            //   (window.erebus.lfo.amplitude.value *
-            //     (window.erebus.lfo.max - window.erebus.lfo.min)) /
-            //   2;
-            // console.log(`test ${value - lfoAverage}`);
-            // console.log(lfoAverage);
-            // const newValue = value - lfoAverage;
-            // window.erebus.add.addend.rampTo(newValue);
-            window.erebus.filterFreq.rampTo(value, 0);
-            // filter.frequency.set({ value });
-            // filter.frequency.value = value;
+            filter.frequency.rampTo(value, 0);
           }}
           minVal={32}
           maxVal={20000}
@@ -50,7 +40,7 @@ export default function FilterModule({ filter }: FilterProps): JSX.Element {
       <div className={classes.resKnob} title={resonanceDescription}>
         <Knob
           changeInput={(value: number) => {
-            filter.Q.value = value;
+            filter.filter.Q.value = value;
           }}
           minVal={3}
           maxVal={33}

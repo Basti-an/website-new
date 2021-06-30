@@ -4,7 +4,7 @@ const hostname = window && window.location && window.location.hostname;
 let host = `https://wiendlocha.org`;
 const env = process.env.NODE_ENV;
 
-if (env === "development") {
+if (env === "development" || hostname === "localhost") {
   host = `http://${hostname}:8080`;
 }
 

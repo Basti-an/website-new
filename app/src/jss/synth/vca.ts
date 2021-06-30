@@ -31,7 +31,7 @@ export const vcaStyles = makeStyles(() => ({
     paddingBottom: 15,
     paddingRight: 5,
     paddingLeft: 5,
-    paddingTop: 35,
+    paddingTop: 50,
     backgroundColor: "rgb(143, 235, 181)",
     color: "rgb(55, 62, 70)",
     textAlign: "center",
@@ -56,11 +56,13 @@ export const vcaStyles = makeStyles(() => ({
     marginTop: "5px",
     textAlign: "center",
     color: "rgb(143, 235, 181)",
+    fontVariant: "all-Petite-caps",
   },
   textBottom: {
     width: "50%",
     textAlign: "center",
     color: "rgb(55, 62, 70)",
+    fontVariant: "all-Petite-caps",
   },
   textContainer: {
     display: "flex",
@@ -92,5 +94,6 @@ export const vcaStyles = makeStyles(() => ({
   },
   knobContainer: {
     marginTop: 6,
+    display: "flex",
   },
 }));

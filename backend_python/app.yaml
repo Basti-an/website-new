@@ -11,7 +11,14 @@ handlers:
   - url: /images
     static_dir: public/images
     http_headers:
-      Access-Control-Allow-Origin: '*'
+      Access-Control-Allow-Origin: "*"
+    secure: always
+    expiration: 1m 7d 0h
+
+  - url: /audio
+    static_dir: public/audio
+    http_headers:
+      Access-Control-Allow-Origin: "*"
     secure: always
     expiration: 1m 7d 0h
 
@@ -19,7 +26,7 @@ handlers:
     mime_type: application/json
     static_dir: public/cv.json
     http_headers:
-      Access-Control-Allow-Origin: '*'
+      Access-Control-Allow-Origin: "*"
     secure: always
 
   - url: /cv/
@@ -46,5 +53,5 @@ handlers:
     static_files: www/\1
     upload: www/(.+)
     http_headers:
-      Access-Control-Allow-Origin: '*'
+      Access-Control-Allow-Origin: "*"
     secure: always

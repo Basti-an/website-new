@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import ZingTouch from "zingtouch";
 import Config from "../../config";
 import { knobStyles } from "../../jss/synth";
+import { getLinValue, getLogValue } from "../../utils";
 
 const useStyles = knobStyles;
 
@@ -21,23 +22,6 @@ interface KnobProps {
   changeInput: (value: number) => void;
   whileSweep?: (value: number) => void;
   afterSweep?: (value: number) => void;
-}
-
-function getLogRemapped(value: number, min: number, max: number, minp: number, maxp: number) {
-  if (min === 0) {
-    min += 1;
-    max += 1;
-  }
-  const minv = Math.log(min);
-  const maxv = Math.log(max);
-
-  // calculate adjustment factor
-  const scale = (maxv - minv) / (maxp - minp);
-  return Math.exp(minv + scale * (value - minp));
-}
-
-function getLogValue(sliderValue: number, min: number, max: number) {
-  return getLogRemapped(sliderValue, min, max, 0, 280);
 }
 
 function getSliderValueForLogValue(value: number, min: number, max: number) {
@@ -60,14 +44,6 @@ function getSliderValueForLinValue(value: number, min: number, max: number) {
     return max;
   }
   return (value / max) * 280 - 140;
-}
-
-function getLinValue(sliderValue: number, min: number, max: number) {
-  const maxp = 280;
-  const linVal = sliderValue / maxp;
-  const range = max - min;
-  const inRangeVal = linVal * range;
-  return min + inRangeVal;
 }
 
 export default function Knob({

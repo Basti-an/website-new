@@ -32,8 +32,8 @@ const switchClick = {
 };
 
 export default function ThreeWaySwitch({ onInput, initialState }: SwitchProps): JSX.Element {
-  const [state, setState] = useState<Ternary>(initialState || -1);
-  const [prevState, setPrevState] = useState<Ternary>(initialState || -1);
+  const [state, setState] = useState<Ternary>(initialState ?? -1);
+  const [prevState, setPrevState] = useState<Ternary>(initialState ?? -1);
   const switchEl = useRef<HTMLImageElement>(null);
   const classes = useStyles();
 
@@ -51,18 +51,23 @@ export default function ThreeWaySwitch({ onInput, initialState }: SwitchProps): 
       setState(0);
       setPrevState(1);
       switchClick.down.start();
+      return;
     }
+
     if (state === -1) {
       setState(0);
       setPrevState(-1);
       switchClick.up.start();
+      return;
     }
+
     if (state === 0) {
       if (prevState === 1) {
         setState(-1);
         switchClick.down2.start();
+        return;
       }
-      if (prevState === -1) {
+      if (prevState <= 0) {
         setState(1);
         switchClick.up2.start();
       }

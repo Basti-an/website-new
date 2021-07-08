@@ -4,6 +4,7 @@ import Knob from "../synth/knob";
 import Switch from "../synth/switch";
 
 import { lfoStyles } from "../../jss/synth";
+import Config from "../../config";
 
 const useStyles = lfoStyles;
 
@@ -73,7 +74,7 @@ export default function LFOmodule({ lfo }: LfoProps): JSX.Element {
               minVal={0}
               maxVal={1}
               isLinear
-              initialValue={0.333}
+              initialValue={0.3}
             />
           </div>
         </div>
@@ -87,9 +88,17 @@ export default function LFOmodule({ lfo }: LfoProps): JSX.Element {
         </div>
       </div>
       <div className={classes.shape}>
-        <div className={classes.switchText}>⎍</div>
+        <img
+          className={classes.waveform}
+          src={`${Config.hostUrl}/images/waveform_square_bright.png`}
+          alt="square wave"
+        />
         <Switch onInput={switchWaveform} />
-        <div className={classes.switchText}>⟁</div>
+        <img
+          className={classes.waveform}
+          src={`${Config.hostUrl}/images/waveform_triangle_bright.png`}
+          alt="square wave"
+        />
       </div>
     </div>
   );

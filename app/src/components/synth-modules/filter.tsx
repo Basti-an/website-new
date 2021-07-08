@@ -1,5 +1,4 @@
 import React from "react";
-import Tone from "tone";
 import { IFilter } from "../../interfaces/filter";
 import { filterStyles } from "../../jss/synth";
 import Knob from "../synth/knob";
@@ -31,7 +30,7 @@ export default function FilterModule({ filter }: IFilterProps): JSX.Element {
           }}
           minVal={32}
           maxVal={20000}
-          initialValue={333}
+          initialValue={70}
           isBig
         />
       </div>

@@ -2,14 +2,15 @@ import { makeStyles } from "@material-ui/core";
 
 export const lfoStyles = makeStyles(() => ({
   plate: {
+    margin: 4,
     display: "inline-flex",
     height: "100px",
     zIndex: 100,
     position: "relative",
     borderRadius: "1rem",
     marginRight: "7px",
-    border: "5px solid rgb(143, 235, 181)",
-    backgroundColor: "rgb(143, 235, 181)",
+    border: "5px solid rgb(133, 225, 171)",
+    backgroundColor: "rgb(133, 225, 171)",
     boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 2px 4px 0 rgba(0, 0, 0, 0.08)",
   },
   text: {
@@ -63,10 +64,18 @@ export const lfoStyles = makeStyles(() => ({
     padding: 5,
     backgroundColor: "rgb(55, 62, 70)",
     borderRadius: 12,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
   },
   switchText: {
-    color: "rgb(143, 235, 181)",
+    color: "rgb(133, 225, 171)",
     fontSize: "20px",
   },
   components: {},
+  waveform: {
+    width: 14,
+    margin: 8,
+  },
 }));

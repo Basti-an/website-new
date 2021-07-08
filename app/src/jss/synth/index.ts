@@ -5,3 +5,5 @@ export * from "./vca";
 export * from "./lfo";
 export * from "./switch";
 export * from "./knob";
+export * from "./envelope";
+export * from "./sequencer";

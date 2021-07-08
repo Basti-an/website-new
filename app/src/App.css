@@ -187,7 +187,7 @@ body {
   position: relative;
   border-radius: 1rem;
   background-color: rgb(55, 62, 70);
-  border: 5px solid rgb(143, 235, 181);
+  border: 5px solid rgb(133, 225, 171);
 
   display: none;
 }
@@ -198,7 +198,7 @@ body {
   width: 0;
   border-left: 50px solid transparent;
   border-right: 50px solid transparent;
-  border-top: 80px solid rgb(143, 235, 181);
+  border-top: 80px solid rgb(133, 225, 171);
   margin-right: auto;
   margin-left: auto;
 }
@@ -213,7 +213,7 @@ body {
   padding-right: 5px;
   padding-left: 5px;
   padding-top: 35px;
-  background-color: rgb(143, 235, 181);
+  background-color: rgb(133, 225, 171);
   color: rgb(55, 62, 70);
   text-align: center;
   font-size: 14px;
@@ -250,7 +250,7 @@ body {
 .erebus--vca-text {
   margin-top: 5px;
   text-align: center;
-  color: rgb(143, 235, 181);
+  color: rgb(133, 225, 171);
 }
 
 .erebus--filter-headertext {

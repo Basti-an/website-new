@@ -12,6 +12,7 @@ export interface IErebus {
   lfoConnect: (input: ModSource) => void;
   output: Tone.Gain;
   oscillators: IOscillators;
+  envelope: { envelope: Tone.Envelope; filterScaler: Tone.Scale };
   // switchClick: {
   //   up: Tone.Player;
   //   up2: Tone.Player;

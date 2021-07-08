@@ -2,6 +2,7 @@ import { makeStyles } from "@material-ui/core";
 
 export const vcaStyles = makeStyles(() => ({
   plate: {
+    margin: 4,
     height: 240,
     display: "inline-block",
     width: 140,
@@ -9,7 +10,7 @@ export const vcaStyles = makeStyles(() => ({
     position: "relative",
     borderRadius: "1rem",
     backgroundColor: "rgb(55, 62, 70)",
-    border: "5px solid rgb(143, 235, 181)",
+    border: "5px solid rgb(133, 225, 171)",
     boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 2px 4px 0 rgba(0, 0, 0, 0.08)",
   },
   topplate: {
@@ -18,7 +19,7 @@ export const vcaStyles = makeStyles(() => ({
     width: 0,
     borderLeft: "50px solid transparent",
     borderRight: "50px solid transparent",
-    borderTop: "80px solid rgb(143, 235, 181)",
+    borderTop: "80px solid rgb(133, 225, 171)",
     marginRight: "auto",
     marginLeft: "auto",
   },
@@ -28,11 +29,11 @@ export const vcaStyles = makeStyles(() => ({
     bottom: 0,
     height: "10px",
     width: "calc(100% - 10px)",
-    paddingBottom: 15,
+    paddingBottom: 17,
     paddingRight: 5,
     paddingLeft: 5,
-    paddingTop: 50,
-    backgroundColor: "rgb(143, 235, 181)",
+    paddingTop: 46,
+    backgroundColor: "rgb(133, 225, 171)",
     color: "rgb(55, 62, 70)",
     textAlign: "center",
   },
@@ -55,7 +56,7 @@ export const vcaStyles = makeStyles(() => ({
   text: {
     marginTop: "5px",
     textAlign: "center",
-    color: "rgb(143, 235, 181)",
+    color: "rgb(133, 225, 171)",
     fontVariant: "all-Petite-caps",
   },
   textBottom: {

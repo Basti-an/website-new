@@ -14,18 +14,22 @@ const switchClick = {
   up: new Tone.Player({
     url: `${Config.hostUrl}/audio/erebus_switch_click_up.mp3`,
     volume: -15,
+    playbackRate: 0.75,
   }).toDestination(),
   up2: new Tone.Player({
     url: `${Config.hostUrl}/audio/erebus_switch_click_up2.mp3`,
     volume: -18,
+    playbackRate: 0.75,
   }).toDestination(),
   down: new Tone.Player({
     url: `${Config.hostUrl}/audio/erebus_switch_click_down.mp3`,
     volume: -21,
+    playbackRate: 0.75,
   }).toDestination(),
   down2: new Tone.Player({
     url: `${Config.hostUrl}/audio/erebus_switch_click_down2.mp3`,
     volume: -18,
+    playbackRate: 0.75,
   }).toDestination(),
 };
 

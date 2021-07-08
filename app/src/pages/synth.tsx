@@ -4,6 +4,7 @@ import { Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import React, { useState, useEffect } from "react";
 import * as Tone from "tone";
+import classnames from "classnames";
 
 import { getLogRemapped } from "../utils";
 
@@ -17,11 +18,16 @@ import { IOscillators } from "../interfaces/oscillators";
 import { IErebus } from "../interfaces/erebus";
 import { IFilter } from "../interfaces/filter";
 import { ModSource } from "../types/modSource.d";
+import EnvelopeModule from "../components/synth-modules/envelope";
+import Sequencer from "../components/synth-modules/sequencer";
+import Config from "../config";
 
 declare global {
   interface Window {
     erebus: IErebus;
     prohibitFlowing: boolean;
+    audioContext: AudioContext;
+    webkitAudioContext?: AudioContext;
   }
 }
 
@@ -32,6 +38,9 @@ const useStyles = makeStyles({
   },
   synth: {
     fontSize: "1rem",
+    webkitTouchCallout: "none",
+    webkitUserSelect: "none",
+    userSelect: "none",
   },
   link: {
     "&:visited": {
@@ -39,25 +48,33 @@ const useStyles = makeStyles({
     },
   },
   erebusBox: {
+    boxSizing: "border-box",
+    maxWidth: 700,
     marginLeft: "auto",
     marginRight: "auto",
-    maxWidth: 800,
-    margin: "1rem",
+    margin: "1rem 0",
     padding: "1rem",
     backgroundColor: "rgb(55, 62, 70)",
-    border: "5px solid rgb(143, 235, 181)",
+    border: "5px solid rgb(133, 225, 171)",
     borderRadius: "1rem",
     boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08)",
+  },
+  wood: {
+    backgroundImage: `url("${Config.hostUrl}/images/wood-texture-unsplash.jpg")`,
+    backgroundSize: "cover",
   },
   error: {
     fontWeight: 500,
   },
+  row: {
+    "margin-right": "auto",
+    "margin-left": "auto",
+    display: "flex",
+    "align-items": "center",
+    "justify-content": "center",
+    "flex-wrap": "wrap",
+  },
 });
-
-interface AudioOptions {
-  filter?: Tone.AutoFilterOptions & { Q?: number }; // q ("resonance") is not part of AutoFilterOptions unfortunately
-  lfo?: Tone.LFOOptions;
-}
 
 function createOscillators(): IOscillators {
   const osc1 = new Tone.OmniOscillator("C1", "sawtooth");
@@ -133,11 +150,11 @@ function createOscillators(): IOscillators {
   };
 }
 
-function createFilter(options: AudioOptions = {}): IFilter {
-  const filterOpt = options.filter;
+function createFilter(): IFilter {
   const filter12db = new Tone.Filter({
-    frequency: filterOpt?.frequency ?? 0,
-    Q: filterOpt?.Q || 2.4,
+    frequency: 700,
+    Q: 2.4,
+    rolloff: -12,
   });
 
   // setup filter to accept a modulation source
@@ -155,18 +172,27 @@ function createFilter(options: AudioOptions = {}): IFilter {
   };
 }
 
-function initAudio(options: AudioOptions = {}): IErebus {
+function initAudio(): IErebus {
   // create filter
-  const filter = createFilter(options);
+  const filter = createFilter();
 
   // create lfo
-  const lfoOpt = options.lfo;
-  const lfo = new Tone.LFO(lfoOpt?.frequency ?? 0.7, lfoOpt?.min ?? -1200, lfoOpt?.max ?? 1200);
+  const lfo = new Tone.LFO(0.7, -1800, 1800);
   lfo.set({ units: "number" });
   lfo.start();
 
   // connect lfo to filter frequency
   filter.inputs.frequency(lfo);
+
+  const envelope = new Tone.Envelope({
+    attack: 0,
+    decay: 0.33,
+    sustain: 0.8,
+    release: 2,
+  });
+  const freqEnvScale = new Tone.Scale(0, 4800);
+  envelope.connect(freqEnvScale);
+  filter.inputs.frequency(freqEnvScale);
 
   // create oscillators
   const oscillators = createOscillators();
@@ -176,7 +202,7 @@ function initAudio(options: AudioOptions = {}): IErebus {
 
   // create noise floor similar to my personal Dreadbox Erebus serial no. 777
   const noise = new Tone.Noise("white");
-  noise.volume.value = -60;
+  noise.volume.value = -55;
   noise.connect(filter.filter).start();
 
   // create Amplitude Envelope
@@ -189,6 +215,7 @@ function initAudio(options: AudioOptions = {}): IErebus {
 
   const feedbackDelay = new Tone.FeedbackDelay("0.4", 0.3);
   const output = new Tone.Gain(0.9);
+  const limiter = new Tone.Limiter(-6);
 
   const distortion = new Tone.Distortion(0.05);
   distortion.connect(feedbackDelay);
@@ -197,7 +224,8 @@ function initAudio(options: AudioOptions = {}): IErebus {
   filter.filter.connect(ampEnv);
   ampEnv.connect(feedbackDelay);
 
-  feedbackDelay.connect(output);
+  feedbackDelay.connect(limiter);
+  limiter.connect(output);
   output.toDestination();
 
   // limiter.connect(Tone.Destination); // feedbackDelay
@@ -210,6 +238,7 @@ function initAudio(options: AudioOptions = {}): IErebus {
     lfoConnect: filter.inputs.frequency,
     output,
     oscillators,
+    envelope: { envelope, filterScaler: freqEnvScale },
   };
 }
 
@@ -224,15 +253,20 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
   const [erebus, setErebus] = useState<IErebus | null>(null);
 
   useEffect(() => {
+    // toggle expensive background animation off to free resources for synth
     setIsFlowing(false);
   }, [setIsFlowing]);
 
-  useEffect(() => {
-    if (init) {
-      window.erebus = initAudio();
-      setErebus(window.erebus);
-    }
-  }, [init]);
+  async function initializeAudio() {
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+    const context = new AudioContext();
+    window.audioContext = context;
+
+    // await context.audioWorklet.addModule(`${Config.hostUrl}/wasm/wasm-worklet-processor.js`);
+    // const moogFilter = new AudioWorkletNode(context, "wasm-worklet-processor");
+    window.erebus = initAudio();
+    setErebus(window.erebus);
+  }
 
   function changeOscOctave(osc: "one" | "two", value: number) {
     oscOctaveShift[osc] = osc === "one" ? value - 1 : value;
@@ -252,8 +286,8 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
     const { oscillators } = erebus;
 
     if (oscillators.osc1.glide > 0.01 || oscillators.osc2.glide > 0.01) {
-      oscillators.osc1.frequency.rampTo(osc1Frequency, oscillators.osc1.glide);
-      oscillators.osc2.frequency.rampTo(osc2Frequency, oscillators.osc2.glide);
+      oscillators.osc1.frequency.exponentialRampTo(osc1Frequency, oscillators.osc1.glide);
+      oscillators.osc2.frequency.exponentialRampTo(osc2Frequency, oscillators.osc2.glide);
     } else {
       oscillators.osc1.frequency.value = osc1Frequency;
       oscillators.osc2.frequency.value = osc2Frequency;
@@ -264,9 +298,11 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
       className={classes.synth}
-      onClick={() => {
+      onClick={async () => {
         if (!init) {
+          await Tone.start();
           setInit(true);
+          initializeAudio();
         }
       }}
     >
@@ -284,20 +320,16 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
         <Typography variant="h5" color="inherit" className={classes.title}>
           Click on this box to enable WebAudio and load the synthesizer.
         </Typography>
-
-        <Typography className={classes.error} variant="h5" color="error">
-          This is a work in progress and currently Not Working on Mobile
-        </Typography>
       </div>
       <link href="https://fonts.googleapis.com/css?family=Comfortaa:700" rel="stylesheet" />
       {erebus && (
         <>
-          <div style={{ minWidth: 510 }} className={classes.erebusBox}>
-            <div className="spacer">
+          <div className={classnames(classes.erebusBox, classes.wood)}>
+            <div className={classes.row}>
               <LFOmodule lfo={erebus.lfo} />
               <DelayModule delay={erebus.feedbackDelay} />
             </div>
-            <div className="spacer">
+            <div className={classes.row}>
               <OSCModule oscillators={erebus.oscillators} changeOscOctave={changeOscOctave} />
               <Filtermodule filter={erebus.filter} />
               <Ampmodule
@@ -311,14 +343,25 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
                 }}
               />
             </div>
+            <div className={classes.row}>
+              <EnvelopeModule
+                filterScaler={erebus.envelope.filterScaler}
+                envelope={erebus.envelope.envelope}
+              />
+            </div>
+          </div>
+          <div className={classes.row}>
+            <Sequencer erebus={erebus} sendCVs={sendCVs} />
           </div>
           <Keyboard
             sendCVs={sendCVs}
             sendGate={(newgate) => {
               if (newgate) {
                 erebus.ampEnv.triggerAttack(undefined, 1.0);
+                erebus.envelope.envelope.triggerAttack(undefined, 1.0);
               } else {
                 erebus.ampEnv.triggerRelease();
+                erebus.envelope.envelope.triggerRelease();
               }
             }}
           />

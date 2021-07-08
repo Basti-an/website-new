@@ -2,7 +2,7 @@ import React from "react";
 import classnames from "classnames";
 import { OmniOscillatorType } from "tone/build/esm/source/oscillator/OscillatorInterface";
 import Knob from "../synth/knob";
-
+import Config from "../../config";
 import { oscStyles } from "../../jss/synth";
 import { IOscillators } from "../../interfaces/oscillators";
 import ThreeWaySwitch, { Ternary } from "../synth/switch3way";
@@ -15,7 +15,7 @@ interface OscProps {
 }
 
 const oscDescription =
-  "These oscillators create the sound that is shaped by the other components, you can change the pitch and octave of each oscillator using the knobs and switches";
+  "These oscillators create the sound that is shaped by the other components, you can change the tuning, octave, waveform and glide time between notes of each oscillator";
 
 function OscillatorKnob({
   headerText,
@@ -66,7 +66,7 @@ function OctaveSwitch({
       <div className={classes.justifyMid}>
         {placement === "right" && (
           <div className={classes.switchRight}>
-            <ThreeWaySwitch onInput={onToggle} initialState={0} />
+            <ThreeWaySwitch onInput={onToggle} initialState={-1} />
           </div>
         )}
         <div className={classes.octaves}>
@@ -100,10 +100,10 @@ function WaveformSwitch({
 }): JSX.Element {
   const classes = useStyles();
   const waveforms: Record<string, string> = {
-    pulse: "⎍",
-    triangle: "⟁",
+    pulse: "waveform_square_dark.png",
+    triangle: "waveform_triangle_dark.png",
     sine: "∿",
-    sawtooth: "⩘ ",
+    sawtooth: "waveform_saw_dark.png",
   };
   const osc = position === "left" ? oscillators.osc1 : oscillators.osc2;
 
@@ -129,9 +129,17 @@ function WaveformSwitch({
           <p className={classnames(classes.nomargin, classes.miniText)}>OFF</p>
         )}
         <div className={classes.column}>
-          <p className={classes.nomargin}>{waveforms[osc.possibleWaveforms[0]]}</p>
-          <ThreeWaySwitch onInput={changeOscWaveform} initialState={position === "left" ? 0 : 1} />
-          <p className={classes.nomargin}>{waveforms[osc.possibleWaveforms[1]]}</p>
+          <img
+            className={classes.waveformLabel}
+            src={`${Config.hostUrl}/images/${waveforms[osc.possibleWaveforms[0]]}`}
+            alt="waveform"
+          />
+          <ThreeWaySwitch onInput={changeOscWaveform} initialState={position === "left" ? -1 : 1} />
+          <img
+            className={classes.waveformLabel}
+            src={`${Config.hostUrl}/images/${waveforms[osc.possibleWaveforms[1]]}`}
+            alt="waveform"
+          />
         </div>
         {position === "right" && (
           <p className={classnames(classes.nomargin, classes.miniText)}>OFF</p>
@@ -159,6 +167,7 @@ export default function OSCModule({ oscillators, changeOscOctave }: OscProps): J
   }
 
   const toggleOscOctave = (oscillator: "one" | "two") => (state: Ternary) => {
+    console.log("test");
     if (state === 1) {
       changeOscOctave(oscillator, 2);
     } else if (state === 0) {
@@ -222,7 +231,7 @@ export default function OSCModule({ oscillators, changeOscOctave }: OscProps): J
                   oscillators.osc1.glide = value - 1;
                 }}
                 minVal={1}
-                maxVal={3}
+                maxVal={2}
                 initialValue={1}
               />
             </div>
@@ -240,7 +249,7 @@ export default function OSCModule({ oscillators, changeOscOctave }: OscProps): J
                   oscillators.osc2.glide = value - 1;
                 }}
                 minVal={1}
-                maxVal={3}
+                maxVal={2}
                 initialValue={1}
               />
             </div>

@@ -106,7 +106,15 @@ export default function Knob({
 
   useEffect(() => {
     if (!knobEl.current) {
+      console.log("oof");
       return;
+    }
+
+    if (typeof initialValue === "number") {
+      changeInput(initialValue);
+      if (afterSweep) {
+        afterSweep(initialValue);
+      }
     }
 
     const knob = knobEl.current;
@@ -115,6 +123,9 @@ export default function Knob({
       ? getSliderValueForLinValue(initialValue, minVal, maxVal)
       : getSliderValueForLogValue(initialValue, minVal, maxVal);
 
+    // init Knob position
+    knob.style.transform = `rotate(${currentAngle}deg)`;
+
     if (isMobileDevice()) {
       const region = new ZingTouch.Region(knob);
       region.bind(knob, "rotate", (e) => {
@@ -122,12 +133,17 @@ export default function Knob({
         if (currentAngle < 140 && currentAngle > -140) {
           knob.style.transform = `rotate(${currentAngle}deg)`;
           handleInputChange(currentAngle + 140);
+          const currentValue = currentAngle + 140;
+          setLastValue(currentValue);
+          // check if value sweep has ended
+          if (!isCheckingForChange) {
+            checkForChange(currentValue);
+            setIsCheckingforChange(true);
+          }
         }
       });
       return;
     }
-    // init Knob position
-    knob.style.transform = `rotate(${currentAngle}deg)`;
 
     const moveKnob = (e: MouseEvent) => {
       e.preventDefault();
@@ -166,12 +182,6 @@ export default function Knob({
       return false;
     });
 
-    if (typeof initialValue === "number") {
-      changeInput(initialValue);
-      if (afterSweep) {
-        afterSweep(initialValue);
-      }
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

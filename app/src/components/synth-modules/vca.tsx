@@ -28,7 +28,7 @@ export default function Ampmodule({ setAmpEnv }: VcaProps): JSX.Element {
           }}
           minVal={1}
           maxVal={300}
-          initialValue={80}
+          initialValue={150}
           isBig
           isLinear
         />
@@ -52,7 +52,7 @@ export default function Ampmodule({ setAmpEnv }: VcaProps): JSX.Element {
             }}
             minVal={0.1}
             maxVal={100}
-            initialValue={6}
+            initialValue={0.6}
           />
         </div>
       </div>

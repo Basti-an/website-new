@@ -2,6 +2,7 @@ import { makeStyles } from "@material-ui/core";
 
 export const oscStyles = makeStyles(() => ({
   plate: {
+    margin: 4,
     width: 260,
     display: "flex",
     flexFlow: "column",
@@ -9,13 +10,13 @@ export const oscStyles = makeStyles(() => ({
     position: "relative",
     borderRadius: "1rem",
     marginRight: 7,
-    border: "5px solid rgb(143, 235, 181)",
+    border: "5px solid rgb(133, 225, 171)",
     borderBottom: "none",
     backgroundColor: "rgb(55, 62, 70)",
     boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 2px 4px 0 rgba(0, 0, 0, 0.08)",
   },
   mixPanel: {
-    backgroundColor: "rgb(143, 235, 181)",
+    backgroundColor: "rgb(133, 225, 171)",
     borderBottomLeftRadius: "14px",
     borderBottomRightRadius: "14px",
     alignSelf: "center",
@@ -28,7 +29,7 @@ export const oscStyles = makeStyles(() => ({
     fontVariant: "all-petite-caps",
   },
   brightText: {
-    color: "rgb(143, 235, 181)",
+    color: "rgb(133, 225, 171)",
     marginTop: 0,
     marginBottom: 4,
     fontSize: 16,
@@ -74,16 +75,16 @@ export const oscStyles = makeStyles(() => ({
   osc: {
     display: "flex",
     flexDirection: "column",
-    marginBottom: 15,
+    marginBottom: 18,
   },
   rightOsc: {
     display: "flex",
     flexDirection: "row",
   },
   headertext: {
-    color: "rgb(143, 235, 181)",
+    color: "rgb(133, 225, 171)",
     textAlign: "center",
-    marginTop: 8,
+    marginTop: 5,
     marginBottom: 0,
   },
   ledOff: {
@@ -145,16 +146,18 @@ export const oscStyles = makeStyles(() => ({
     marginTop: 5,
   },
   glideLeft: {
-    backgroundColor: "rgb(143, 235, 181)",
+    backgroundColor: "rgb(133, 225, 171)",
     display: "flex",
+    alignItems: "center",
     width: 126,
     borderBottomRightRadius: 16,
     borderBottomLeftRadius: 12,
     borderTopRightRadius: 16,
   },
   glideRight: {
-    backgroundColor: "rgb(143, 235, 181)",
+    backgroundColor: "rgb(133, 225, 171)",
     display: "flex",
+    alignItems: "center",
     width: 126,
     borderBottomRightRadius: 12,
     borderBottomLeftRadius: 16,
@@ -162,7 +165,7 @@ export const oscStyles = makeStyles(() => ({
   },
   glideButton: {
     width: 93,
-    marginTop: -12,
+    marginTop: -21,
   },
   justifyMid: {
     display: "flex",
@@ -174,6 +177,7 @@ export const oscStyles = makeStyles(() => ({
     justifyContent: "flex-end",
     alignItems: "flex-end",
   },
+  waveformLabel: { width: 14, margin: 2 },
   nomargin: {
     margin: 0,
   },

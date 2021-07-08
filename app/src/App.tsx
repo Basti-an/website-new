@@ -57,7 +57,7 @@ function App(): JSX.Element {
 
   return (
     <div className={classes.root}>
-      <AppBar className={classes.titlebar} position="static">
+      <AppBar className={classes.titlebar} position="relative">
         <Toolbar>
           <Grid container className={classes.grid} style={{ maxWidth: "initial" }}>
             <Grid item xs={1}>

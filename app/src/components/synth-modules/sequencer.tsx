@@ -6,35 +6,16 @@ import { sequencerStyles } from "../../jss/synth";
 import { allSequencerNotes } from "../../utils";
 
 import Knob from "../synth/knob";
+import { Led } from "../synth/led";
+import { SequencerButton } from "../synth/sequencerButton";
+import { SequencerKnob } from "../synth/sequencerKnob";
 
 const useStyles = sequencerStyles;
 
 const sequencerDescription = "";
 
-function Led({ on }: { on: boolean }): JSX.Element {
-  const classes = useStyles();
-
-  return <div id="led" className={on ? classes.ledOn : classes.ledOff} />;
-}
-
-function SequencerButton({
-  onClick,
-  children,
-}: {
-  onClick: () => void;
-  children?: React.ReactNode;
-}): JSX.Element {
-  const classes = useStyles();
-
-  return (
-    <button className={classes.sequencerButton} type="button" {...{ onClick }}>
-      {children}
-    </button>
-  );
-}
-
-// bass sequence for Giorgio Moroders "chase"
 const defaultSequence = [
+  // bass sequence for Giorgio Moroders "chase"
   "A#1",
   "C2",
   "C2",
@@ -98,17 +79,19 @@ export default function Sequencer({ erebus, sendCVs }: SequencerProps): JSX.Elem
     const newNote = allSequencerNotes[newNoteValue];
 
     sequencerNotes[index] = newNote;
-
-    // makes it easier to dial in notes
-    trigger(50, activeStep)(undefined, newNote);
-
     setSequencerNotes([...sequencerNotes]);
+
+    // stop playback to reduce audio glitches
+    Tone.Transport.stop();
+    sequence?.stop();
+
+    // makes it easier to dial in notes by playing them while changing pitch
+    trigger(50, -1)(undefined, newNote);
   };
 
   useEffect(() => {
     const newLoop = new Tone.Sequence(trigger(gate, activeStep), sequencerNotes, "8n");
     setSequence(newLoop);
-    setActiveStep(-1);
 
     return () => {
       Tone.Transport.stop();
@@ -165,30 +148,28 @@ export default function Sequencer({ erebus, sendCVs }: SequencerProps): JSX.Elem
       <div className={classes.row}>
         <div className={classnames(classes.row, classes.padLeft)}>
           <div className={classnames(classes.column, classes.padded)}>
-            <p className={classes.noteTextBright}>tempo</p>
-            <Knob
-              changeInput={(input: number) => {
+            <SequencerKnob
+              label="tempo"
+              value={tempo}
+              onChange={(input: number) => {
                 setTempo(Math.floor(input));
               }}
-              isLinear
-              minVal={33}
-              maxVal={300}
-              initialValue={160}
+              min={33}
+              max={300}
+              initial={162}
             />
-            <p className={classes.noteTextBright}>{tempo}</p>
           </div>
           <div className={classnames(classes.column, classes.padded)}>
-            <p className={classes.noteTextBright}>gate</p>
-            <Knob
-              changeInput={(input: number) => {
+            <SequencerKnob
+              label="gate"
+              value={gate}
+              onChange={(input: number) => {
                 setGate(Math.floor(input));
               }}
-              isLinear
-              minVal={1}
-              maxVal={100}
-              initialValue={33}
+              min={1}
+              max={100}
+              initial={27}
             />
-            <p className={classes.noteTextBright}>{gate}</p>
           </div>
           <SequencerButton onClick={startLoop}>start</SequencerButton>
           <SequencerButton onClick={stopLoop}>stop</SequencerButton>

@@ -308,14 +308,15 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
     >
       <div className={classes.erebusBox}>
         <Typography variant="h5" color="inherit" className={classes.title}>
+          Digital rebuild of the{" "}
           <a
             href="https://www.dreadbox-fx.com/erebus/"
             target="_blank"
             rel="noopener noreferrer"
             className={classes.link}
           >
-            Dreadbox Erebus Clone
-          </a>{" "}
+            Dreadbox Erebus V2 Synthesizer
+          </a>
         </Typography>
         <Typography variant="h5" color="inherit" className={classes.title}>
           Click on this box to enable WebAudio and load the synthesizer.

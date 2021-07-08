@@ -19,14 +19,13 @@
 }
 
 #keyboard {
-  margin-top: 1rem;
+  margin: 1rem auto 100px auto;
   width: 100%;
   height: 40vh;
+  max-height: 500px;
   display: block;
   box-sizing: border-box;
   max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
   display: inline-flex;
 }
 
@@ -186,7 +185,7 @@ body {
   position: relative;
   border-radius: 1rem;
   background-color: rgb(55, 62, 70);
-  border: 5px solid rgb(143, 235, 181);
+  border: 5px solid rgb(133, 225, 171);
 
   display: none;
 }
@@ -197,7 +196,7 @@ body {
   width: 0;
   border-left: 50px solid transparent;
   border-right: 50px solid transparent;
-  border-top: 80px solid rgb(143, 235, 181);
+  border-top: 80px solid rgb(133, 225, 171);
   margin-right: auto;
   margin-left: auto;
 }
@@ -212,7 +211,7 @@ body {
   padding-right: 5px;
   padding-left: 5px;
   padding-top: 35px;
-  background-color: rgb(143, 235, 181);
+  background-color: rgb(133, 225, 171);
   color: rgb(55, 62, 70);
   text-align: center;
   font-size: 14px;
@@ -249,7 +248,7 @@ body {
 .erebus--vca-text {
   margin-top: 5px;
   text-align: center;
-  color: rgb(143, 235, 181);
+  color: rgb(133, 225, 171);
 }
 
 .erebus--filter-headertext {
@@ -327,7 +326,6 @@ body,
 html {
   width: 100vw;
   -webkit-overflow-scrolling: touch;
-  overflow-y: hidden;
 }
 
 body {
@@ -341,10 +339,6 @@ body {
 
 a {
   color: #fff;
-}
-
-A {
-  text-decoration: none;
 }
 
 .genie {
@@ -373,7 +367,8 @@ A {
   padding: 150px 0 20px 0;
   position: fixed;
   bottom: 0;
-  width: 100%;
+  left: calc(50% - 333px);
+  width: 666px;
   display: flex;
   justify-content: center;
   align-items: baseline;
@@ -385,7 +380,7 @@ A {
   bottom: 10px;
   width: 260px;
   height: 89px;
-  backdrop-filter: blur(120px);
+  backdrop-filter: blur(14px);
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 12px;
 }

@@ -1,6 +1,6 @@
 # Homepage
 
-My personal Website (currently containing my CV) build with React, Material-UI for React, NodeJS and Python.
+My personal Website (currently containing my CV) build with React, Material-UI for React, NodeJS, and Typescript.
 
 Currently hosted on Google App Engine for Python at [sebastian.wiendlocha.org](https://sebastian.wiendlocha.org).
 
@@ -22,9 +22,9 @@ build static site for node and python webapp2 (Google App Engine) environment:
 
 ## Run:
 
-Start dev-server:
-`yarn start`
+1. Start node or python backend for serving static files
+   `yarn start:node` or
+   `yarn start:python`
 
-Start node or python backend:
-`yarn start:node`
-`yarn start:python`
+2. Start Dev server
+   `cd app; yarn start`

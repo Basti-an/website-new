@@ -13,7 +13,14 @@ handlers:
     http_headers:
       Access-Control-Allow-Origin: "*"
     secure: always
-    expiration: 7d 0h
+    expiration: 1m 7d 0h
+
+  - url: /audio
+    static_dir: public/audio
+    http_headers:
+      Access-Control-Allow-Origin: "*"
+    secure: always
+    expiration: 1m 7d 0h
 
   - url: /cv.json
     mime_type: application/json

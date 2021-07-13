@@ -11,4 +11,7 @@ export const switchStyles = makeStyles(() => ({
     outline: "none",
     background: "inherit",
   },
+  hide: {
+    display: "none",
+  },
 }));

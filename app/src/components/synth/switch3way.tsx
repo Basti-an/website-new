@@ -1,3 +1,4 @@
+import classnames from "classnames";
 import React, { useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
 import Config from "../../config";
@@ -85,31 +86,19 @@ export default function ThreeWaySwitch({ onInput, initialState }: SwitchProps): 
         }
       }}
     >
-      {state === 0 && (
-        <img
-          ref={switchEl}
-          alt="synthesizer switch"
-          className={classes.switch}
-          src={`${Config.hostUrl}/images/erebus_switch_neutral.png`}
-        />
-      )}
-      {state === -1 && (
-        <img
-          ref={switchEl}
-          alt="synthesizer switch"
-          className={classes.switch}
-          src={`${Config.hostUrl}/images/erebus_switch.png`}
-        />
-      )}
-      {state === 1 && (
-        <img
-          style={{ transform: "rotate(180deg)" }}
-          ref={switchEl}
-          alt="synthesizer switch"
-          className={classes.switch}
-          src={`${Config.hostUrl}/images/erebus_switch.png`}
-        />
-      )}
+      <img
+        ref={switchEl}
+        alt="synthesizer switch"
+        className={classnames(classes.switch, state !== 0 && classes.hide)}
+        src={`${Config.hostUrl}/images/erebus_switch_neutral.png`}
+      />
+      <img
+        style={state === 1 ? { transform: "rotate(180deg)" } : {}}
+        ref={switchEl}
+        alt="synthesizer switch"
+        className={classnames(classes.switch, state === 0 && classes.hide)}
+        src={`${Config.hostUrl}/images/erebus_switch.png`}
+      />
     </button>
   );
 }

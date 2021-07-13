@@ -2,14 +2,14 @@ import classNames from "classnames";
 import React from "react";
 import Tone from "tone";
 import { envelopeStyles } from "../../jss/synth";
+import Envelope from "../../synth/envelope";
 
 import Knob from "../synth/knob";
 
 const useStyles = envelopeStyles;
 
 interface EnvelopeProps {
-  envelope: Tone.Envelope;
-  filterScaler: Tone.Scale;
+  envelope: Envelope;
 }
 
 interface ADSRButtonProps {
@@ -40,15 +40,15 @@ function ADSRButton({ minVal, maxVal, initialValue, onChange, text, isLinear }: 
   );
 }
 
-export default function EnvelopeModule({ filterScaler, envelope }: EnvelopeProps): JSX.Element {
+export default function EnvelopeModule({ envelope }: EnvelopeProps): JSX.Element {
   const classes = useStyles();
 
   const changeADSR = (property: ADSRPhase) => (eventInput: number) => {
-    envelope.set({ [property]: eventInput - 1 });
+    envelope.envelope.set({ [property]: eventInput - 1 });
   };
 
   const changeDepth = (eventInput: number) => {
-    filterScaler.set({ max: eventInput });
+    envelope.setMaxOutput(eventInput);
   };
 
   return (

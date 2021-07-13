@@ -1,6 +1,6 @@
 import React from "react";
-import { IFilter } from "../../interfaces/filter";
 import { filterStyles } from "../../jss/synth";
+import Filter from "../../synth/filter";
 import Knob from "../synth/knob";
 
 const useStyles = filterStyles;
@@ -12,7 +12,7 @@ const resonanceDescription =
   "The resonance is the amount of filter signal that is fed back into the filter - creating a feedback around the cutoff frequency.";
 
 interface IFilterProps {
-  filter: IFilter;
+  filter: Filter;
 }
 
 // @TODO: implement CV Input to filter frequency

@@ -2,7 +2,7 @@ import { makeStyles } from "@material-ui/core";
 
 export const knobStyles = makeStyles(() => ({
   knobBig: {
-    cursor: "grabbing",
+    cursor: "pointer",
     height: 85,
     transform: "rotate(0deg)",
     marginRight: "auto",
@@ -10,7 +10,7 @@ export const knobStyles = makeStyles(() => ({
     display: "block",
   },
   knobSmall: {
-    cursor: "grabbing",
+    cursor: "pointer",
     height: 52,
     transform: "rotate(0deg)",
     marginRight: "auto",

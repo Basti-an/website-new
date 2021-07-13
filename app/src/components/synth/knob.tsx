@@ -135,9 +135,12 @@ export default function Knob({
     };
 
     knob.addEventListener("mousedown", () => {
+      knob.style.cursor = "grabbing";
       window.addEventListener("mousemove", moveKnob);
+
       window.addEventListener("mouseup", () => {
         window.removeEventListener("mousemove", moveKnob);
+        knob.style.cursor = "pointer";
       });
     });
 

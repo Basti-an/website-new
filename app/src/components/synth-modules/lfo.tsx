@@ -47,23 +47,23 @@ export default function LFOmodule({ lfo }: LfoProps): JSX.Element {
         <div className={classes.rateKnob}>
           <div className={classes.button}>
             <Knob
-              changeInput={(value: number) => {
+              onChange={(value: number) => {
                 lfo.frequency.rampTo(value, 0);
               }}
-              minVal={0.1}
-              maxVal={200}
+              min={0.1}
+              max={200}
               afterSweep={() => {
                 setAnimDuration(lfo);
               }}
               whileSweep={() => {
                 setAnimDuration(lfo);
               }}
-              initialValue={0.6}
+              initial={0.6}
             />
           </div>
           <div className={classes.button}>
             <Knob
-              changeInput={(value: number) => {
+              onChange={(value: number) => {
                 if (value < 0.05) {
                   lfo.disconnect();
                 } else if (window.erebus.lfoTarget) {
@@ -71,10 +71,10 @@ export default function LFOmodule({ lfo }: LfoProps): JSX.Element {
                 }
                 lfo.amplitude.linearRampTo(value, 0);
               }}
-              minVal={0}
-              maxVal={1}
+              min={0}
+              max={1}
               isLinear
-              initialValue={0.3}
+              initial={0.3}
             />
           </div>
         </div>

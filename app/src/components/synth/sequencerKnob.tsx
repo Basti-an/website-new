@@ -25,7 +25,7 @@ export function SequencerKnob({
   return (
     <div className={classnames(classes.column, classes.padded)}>
       <p className={classes.noteTextBright}>{label}</p>
-      <Knob changeInput={onChange} isLinear minVal={min} maxVal={max} initialValue={initial} />
+      <Knob onChange={onChange} isLinear min={min} max={max} initial={initial} />
       <p className={classes.noteTextBright}>{value}</p>
     </div>
   );

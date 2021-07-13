@@ -78,19 +78,15 @@ function Notes({ sendCV }: { sendCV: (cv: Note) => void }): JSX.Element {
             sendCV(value);
           }}
           onTouchMove={() => {
-            console.log("touch move");
             sendCV(value);
           }}
           onTouchStart={() => {
-            console.log("touch start");
             sendCV(value);
           }}
           onTouchEnd={() => {
-            console.log("touch end");
             sendCV(value);
           }}
           onClick={() => {
-            console.log("onClick");
             sendCV(value);
           }}
           className="blackNote"
@@ -106,19 +102,15 @@ function Notes({ sendCV }: { sendCV: (cv: Note) => void }): JSX.Element {
           sendCV(value);
         }}
         onTouchMove={() => {
-          console.log("touch move");
           sendCV(value);
         }}
         onTouchStart={() => {
-          console.log("touch start");
           sendCV(value);
         }}
         onTouchEnd={() => {
-          console.log("touch end");
           sendCV(value);
         }}
         onClick={() => {
-          console.log("onClick");
           sendCV(value);
         }}
         className="whiteNote"
@@ -293,12 +285,10 @@ export default function Keyboard({ sendCVs, sendGate }: KeyboardProps): JSX.Elem
         sendGate(false);
       }}
       onTouchStart={(event) => {
-        console.log("sending gate");
         sendGate(true);
         event.preventDefault();
       }}
       onTouchEnd={(event) => {
-        console.log("stopping gate");
         sendGate(false);
         event.preventDefault();
       }}

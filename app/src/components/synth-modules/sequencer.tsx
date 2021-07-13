@@ -176,14 +176,15 @@ export default function Sequencer({ erebus, sendCVs }: SequencerProps): JSX.Elem
       <div className={classnames(classes.row, classes.sequence)}>
         {sequencerNotes.map((note, index) => {
           return (
-            <div className={classnames(classes.column, classes.padded)}>
+            // eslint-disable-next-line react/no-array-index-key
+            <div key={`step-${index}`} className={classnames(classes.column, classes.padded)}>
               <Led on={index === activeStep} />
               <Knob
                 isLinear
-                minVal={0}
-                maxVal={24}
-                initialValue={allSequencerNotes.findIndex((val) => val === sequencerNotes[index])}
-                changeInput={changeSequenceAtIndex(index)}
+                min={0}
+                max={24}
+                initial={allSequencerNotes.findIndex((val) => val === sequencerNotes[index])}
+                onChange={changeSequenceAtIndex(index)}
               />
               <p className={classes.noteText}>{sequencerNotes[index]}</p>
             </div>

@@ -2,145 +2,125 @@ import React, { useEffect, useRef, useState } from "react";
 import ZingTouch from "zingtouch";
 import Config from "../../config";
 import { knobStyles } from "../../jss/synth";
-import { getLinValue, getLogValue } from "../../utils";
+import {
+  getIsMobileDevice,
+  getLinValue,
+  getLogValue,
+  getSliderValueForLinValue,
+  getSliderValueForLogValue,
+} from "../../utils";
 
 const useStyles = knobStyles;
 
-function isMobileDevice() {
-  // detect mobile device
-  return (
-    typeof window.orientation !== "undefined" || navigator.userAgent.indexOf("IEMobile") !== -1
-  );
-}
-
 interface KnobProps {
-  minVal: number;
-  maxVal: number;
-  initialValue: number;
+  min: number;
+  max: number;
+  initial: number;
   isBig?: boolean;
   isLinear?: boolean;
-  changeInput: (value: number) => void;
+  onChange: (value: number) => void;
   whileSweep?: (value: number) => void;
   afterSweep?: (value: number) => void;
 }
 
-function getSliderValueForLogValue(value: number, min: number, max: number) {
-  // inverse order of operations, as we map from log space to linear space
-  if (min === 0) {
-    min += 1;
-    max += 1;
-  }
-  const minLog = Math.log(min);
-  const maxLog = Math.log(max) - minLog;
-  const valueLog = Math.log(value) - minLog;
-  return (valueLog / maxLog) * 280 - 140;
-}
-
-function getSliderValueForLinValue(value: number, min: number, max: number) {
-  if (value < min) {
-    return min;
-  }
-  if (value > max) {
-    return max;
-  }
-  return (value / max) * 280 - 140;
-}
-
+/**
+ * The Knob is an UI Element that can be rotated between -140 and 140 degrees by mouse or (multi) touch
+ * whenever the rotation changes, a corresponding value will be computated which maps
+ * from the linear range of [-140, 140] to [min, max], either linearly or logarithmically
+ */
 export default function Knob({
-  minVal,
-  maxVal,
-  initialValue = 0,
+  min,
+  max,
+  initial = 0,
   isBig,
   isLinear = false,
-  changeInput,
+  onChange,
   whileSweep,
   afterSweep,
 }: KnobProps): JSX.Element {
   const [isCheckingForChange, setIsCheckingforChange] = useState(false);
-  const [lastValue, setLastValue] = useState(initialValue || maxVal / 2);
+  const [lastValue, setLastValue] = useState(initial || max / 2);
 
   const knobEl = useRef<HTMLImageElement>(null);
   const classes = useStyles();
 
   function handleInputChange(value: number) {
-    if (isLinear) {
-      changeInput(getLinValue(value, minVal, maxVal));
-      return;
-    }
-    changeInput(getLogValue(value, minVal, maxVal));
+    // takes a value between [0, 280] and remaps it to [min, max]
+    onChange(isLinear ? getLinValue(value, min, max) : getLogValue(value, min, max));
   }
 
   function executeWhileSweep() {
     if (typeof whileSweep === "function") {
-      if (isLinear) {
-        whileSweep(getLinValue(lastValue, minVal, maxVal));
-        return;
-      }
-      whileSweep(getLogValue(lastValue, minVal, maxVal));
+      whileSweep(isLinear ? getLinValue(lastValue, min, max) : getLogValue(lastValue, min, max));
     }
   }
 
   function executeAfterSweep() {
     if (typeof afterSweep === "function") {
-      if (isLinear) {
-        afterSweep(getLinValue(lastValue, minVal, maxVal));
-        return;
-      }
-      afterSweep(getLogValue(lastValue, minVal, maxVal));
+      afterSweep(isLinear ? getLinValue(lastValue, min, max) : getLogValue(lastValue, min, max));
     }
   }
 
   function checkForChange(currentValue: number) {
     // periodically check if knob value still changing
     // can trigger an event as soon as values not changing anymore
+    if (!whileSweep && !afterSweep) {
+      return;
+    }
+
     setTimeout(() => {
       if (lastValue === currentValue) {
         setIsCheckingforChange(false);
         executeAfterSweep();
         return;
       }
+
       executeWhileSweep();
       checkForChange(lastValue);
-    }, 250);
+    }, 333);
+  }
+
+  function doKnobStuff(knob: HTMLImageElement, currentAngle: number) {
+    // do not allow knob rotation beyond 140 degrees
+    if (currentAngle > 140 || currentAngle < -140) {
+      return;
+    }
+
+    knob.style.transform = `rotate(${currentAngle}deg)`;
+
+    // normalize to [0, 280]
+    const currentValue = currentAngle + 140;
+
+    handleInputChange(currentValue);
+    setLastValue(currentValue);
+
+    // check if value sweep has ended
+    if (!isCheckingForChange) {
+      checkForChange(currentValue);
+      setIsCheckingforChange(true);
+    }
   }
 
   useEffect(() => {
     if (!knobEl.current) {
-      console.log("oof");
       return;
-    }
-
-    if (typeof initialValue === "number") {
-      changeInput(initialValue);
-      if (afterSweep) {
-        afterSweep(initialValue);
-      }
     }
 
     const knob = knobEl.current;
 
-    let currentAngle = isLinear
-      ? getSliderValueForLinValue(initialValue, minVal, maxVal)
-      : getSliderValueForLogValue(initialValue, minVal, maxVal);
+    let initialAngle = isLinear
+      ? getSliderValueForLinValue(initial, min, max)
+      : getSliderValueForLogValue(initial, min, max);
 
-    // init Knob position
-    knob.style.transform = `rotate(${currentAngle}deg)`;
+    doKnobStuff(knob, initialAngle);
 
-    if (isMobileDevice()) {
+    if (getIsMobileDevice()) {
       const region = new ZingTouch.Region(knob);
+
       region.bind(knob, "rotate", (e) => {
-        currentAngle += e.detail.distanceFromLast;
-        if (currentAngle < 140 && currentAngle > -140) {
-          knob.style.transform = `rotate(${currentAngle}deg)`;
-          handleInputChange(currentAngle + 140);
-          const currentValue = currentAngle + 140;
-          setLastValue(currentValue);
-          // check if value sweep has ended
-          if (!isCheckingForChange) {
-            checkForChange(currentValue);
-            setIsCheckingforChange(true);
-          }
-        }
+        initialAngle += e.detail.distanceFromLast;
+
+        doKnobStuff(knob, initialAngle);
       });
       return;
     }
@@ -148,25 +128,10 @@ export default function Knob({
     const moveKnob = (e: MouseEvent) => {
       e.preventDefault();
 
-      let curr = parseInt(knob.style.transform.split("(")[1].split("d").join(), 10);
-      if (e.movementY < 0) {
-        curr += -e.movementY;
-      } else {
-        curr -= e.movementY;
-      }
+      let angle = parseInt(knob.style.transform.split("(")[1].split("d").join(), 10);
+      angle -= e.movementY;
 
-      // do not allow knob rotation beyond 140 degrees
-      if (curr < 140 && curr > -140) {
-        knob.style.transform = `rotate(${curr}deg)`;
-        const currentValue = curr + 140;
-        handleInputChange(currentValue);
-        setLastValue(currentValue);
-        // check if value sweep has ended
-        if (!isCheckingForChange) {
-          checkForChange(currentValue);
-          setIsCheckingforChange(true);
-        }
-      }
+      doKnobStuff(knob, angle);
     };
 
     knob.addEventListener("mousedown", () => {
@@ -185,7 +150,6 @@ export default function Knob({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // @TODO use image provided by my own server
   return (
     <img
       ref={knobEl}

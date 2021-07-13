@@ -27,38 +27,38 @@ export default function DelayModule({
       <div className={classes.rateKnob}>
         <div className={classes.button}>
           <Knob
-            changeInput={(value) => {
+            onChange={(value) => {
               delay.delayTime.rampTo(value, window.erebus.output.blockTime * 42);
             }}
-            minVal={0.1}
-            maxVal={1.0}
-            initialValue={0.5}
+            min={0.1}
+            max={1.0}
+            initial={0.5}
           />
         </div>
         <div className={classes.button}>
           <Knob
-            changeInput={(value) => {
+            onChange={(value) => {
               delay.feedback.rampTo(value, 0);
             }}
-            minVal={0.1}
-            maxVal={1.0}
+            min={0.1}
+            max={1.0}
             afterSweep={evaluateConnection}
             whileSweep={evaluateConnection}
             isLinear
-            initialValue={0.25}
+            initial={0.25}
           />
         </div>
         <div className={classes.button}>
           <Knob
-            changeInput={(value) => {
+            onChange={(value) => {
               delay.wet.rampTo(value, 0);
             }}
-            minVal={0}
-            maxVal={1}
+            min={0}
+            max={1}
             afterSweep={evaluateConnection}
             whileSweep={evaluateConnection}
             isLinear
-            initialValue={0}
+            initial={0}
           />
         </div>
       </div>

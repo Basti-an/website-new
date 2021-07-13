@@ -16,7 +16,7 @@ interface SwitchProps {
 const switchClick = {
   up: new Tone.Player({
     url: `${Config.hostUrl}/audio/erebus_switch_click_up.mp3`,
-    volume: -15,
+    volume: -18,
   }).toDestination(),
   up2: new Tone.Player({
     url: `${Config.hostUrl}/audio/erebus_switch_click_up2.mp3`,
@@ -28,7 +28,7 @@ const switchClick = {
   }).toDestination(),
   down2: new Tone.Player({
     url: `${Config.hostUrl}/audio/erebus_switch_click_down2.mp3`,
-    volume: -18,
+    volume: -21,
   }).toDestination(),
 };
 

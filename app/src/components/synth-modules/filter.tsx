@@ -25,12 +25,12 @@ export default function FilterModule({ filter }: IFilterProps): JSX.Element {
       <div className={classes.headertext}>VCF</div>
       <div className={classes.freqKnob}>
         <Knob
-          changeInput={(value: number) => {
+          onChange={(value: number) => {
             filter.frequency.rampTo(value, 0);
           }}
-          minVal={32}
-          maxVal={20000}
-          initialValue={70}
+          min={32}
+          max={20000}
+          initial={70}
           isBig
         />
       </div>
@@ -38,12 +38,12 @@ export default function FilterModule({ filter }: IFilterProps): JSX.Element {
       <div className={classes.bottomplate}>resonance</div>
       <div className={classes.resKnob} title={resonanceDescription}>
         <Knob
-          changeInput={(value: number) => {
+          onChange={(value: number) => {
             filter.filter.Q.value = value;
           }}
-          minVal={3}
-          maxVal={33}
-          initialValue={7}
+          min={3}
+          max={33}
+          initial={7}
         />
       </div>
     </div>

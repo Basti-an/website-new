@@ -21,12 +21,12 @@ function OscillatorKnob({
   headerText,
   subText,
   onChangeInput,
-  initialValue = 500,
+  initial = 500,
 }: {
   headerText: string;
   subText: string;
   onChangeInput: (value: number) => void;
-  initialValue?: number;
+  initial?: number;
 }): JSX.Element {
   const classes = useStyles();
 
@@ -34,14 +34,7 @@ function OscillatorKnob({
     <div className={classes.osc}>
       <p className={classes.headertext}>{headerText}</p>
       <div className={classes.smallButton}>
-        <Knob
-          changeInput={onChangeInput}
-          isBig
-          isLinear
-          minVal={0}
-          maxVal={1000}
-          initialValue={initialValue}
-        />
+        <Knob onChange={onChangeInput} isBig isLinear min={0} max={1000} initial={initial} />
       </div>
       <p className={classes.brightText}>{subText}</p>
     </div>
@@ -72,6 +65,7 @@ function OctaveSwitch({
         <div className={classes.octaves}>
           {octaves.map((octave) => (
             <span
+              key={`octave-${octave}`}
               className={classnames(
                 placement === "left" ? classes.octaveTextLeft : classes.octaveTextRight,
                 classes.brightText,
@@ -167,7 +161,6 @@ export default function OSCModule({ oscillators, changeOscOctave }: OscProps): J
   }
 
   const toggleOscOctave = (oscillator: "one" | "two") => (state: Ternary) => {
-    console.log("test");
     if (state === 1) {
       changeOscOctave(oscillator, 2);
     } else if (state === 0) {
@@ -184,13 +177,13 @@ export default function OSCModule({ oscillators, changeOscOctave }: OscProps): J
       <div className={classes.mixPanel}>
         <div className={classes.smallButton}>
           <Knob
-            changeInput={(value: number) => {
+            onChange={(value: number) => {
               oscillators.setOscMix(value);
             }}
             isLinear
-            minVal={0}
-            maxVal={100}
-            initialValue={50}
+            min={0}
+            max={100}
+            initial={50}
           />
         </div>
         <p className={classes.darkText}>Mix</p>
@@ -217,7 +210,7 @@ export default function OSCModule({ oscillators, changeOscOctave }: OscProps): J
             headerText="OSC 2"
             subText="detune"
             onChangeInput={changeOsc2Frequency}
-            initialValue={510}
+            initial={510}
           />
         </div>
       </div>
@@ -227,12 +220,12 @@ export default function OSCModule({ oscillators, changeOscOctave }: OscProps): J
           <div className={classes.glideButton}>
             <div className={classes.smallButton}>
               <Knob
-                changeInput={(value: number) => {
+                onChange={(value: number) => {
                   oscillators.osc1.glide = value - 1;
                 }}
-                minVal={1}
-                maxVal={2}
-                initialValue={1}
+                min={1}
+                max={2}
+                initial={1}
               />
             </div>
             <p className={classes.darkText}>glide</p>
@@ -245,12 +238,12 @@ export default function OSCModule({ oscillators, changeOscOctave }: OscProps): J
           <div className={classes.glideButton} style={{ float: "right" }}>
             <div className={classes.smallButton}>
               <Knob
-                changeInput={(value: number) => {
+                onChange={(value: number) => {
                   oscillators.osc2.glide = value - 1;
                 }}
-                minVal={1}
-                maxVal={2}
-                initialValue={1}
+                min={1}
+                max={2}
+                initial={1}
               />
             </div>
             <p className={classes.darkText}>glide</p>

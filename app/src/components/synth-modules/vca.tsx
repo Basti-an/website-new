@@ -22,13 +22,12 @@ export default function Ampmodule({ setAmpEnv }: VcaProps): JSX.Element {
       <div className={classes.headertext}>VCA</div>
       <div className={classes.knobLevel}>
         <Knob
-          changeInput={(value: number) => {
-            console.log(value / 1000);
+          onChange={(value: number) => {
             window.erebus.output.gain.rampTo(value / 1000, 0);
           }}
-          minVal={1}
-          maxVal={300}
-          initialValue={150}
+          min={1}
+          max={300}
+          initial={150}
           isBig
           isLinear
         />
@@ -37,22 +36,22 @@ export default function Ampmodule({ setAmpEnv }: VcaProps): JSX.Element {
       <div className={classes.knobContainer}>
         <div className={classes.knobAttack}>
           <Knob
-            changeInput={(value: number) => {
+            onChange={(value: number) => {
               setAmpEnv({ attack: value });
             }}
-            minVal={0.01}
-            maxVal={2}
-            initialValue={0.01}
+            min={0.01}
+            max={2}
+            initial={0.01}
           />
         </div>
         <div className={classes.knobRelease}>
           <Knob
-            changeInput={(value: number) => {
+            onChange={(value: number) => {
               setAmpEnv({ release: value });
             }}
-            minVal={0.1}
-            maxVal={100}
-            initialValue={0.6}
+            min={0.1}
+            max={100}
+            initial={0.6}
           />
         </div>
       </div>

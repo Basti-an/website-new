@@ -118,6 +118,36 @@ function getLogValue(sliderValue: number, min: number, max: number): number {
   return getLogRemapped(sliderValue, min, max, 0, 280);
 }
 
+function getSliderValueForLogValue(value: number, min: number, max: number): number {
+  // log doesnt work for 0
+  if (min === 0 || value === 0) {
+    min += 1;
+    max += 1;
+    value += 1;
+  }
+  const minLog = Math.log(min);
+  const maxLog = Math.log(max) - minLog;
+  const valueLog = Math.log(value) - minLog;
+  return (valueLog / maxLog) * 280 - 140;
+}
+
+function getSliderValueForLinValue(value: number, min: number, max: number): number {
+  if (value < min) {
+    return min;
+  }
+  if (value > max) {
+    return max;
+  }
+  return (value / max) * 280 - 140;
+}
+
+function getIsMobileDevice(): boolean {
+  // detect mobile device
+  return (
+    typeof window.orientation !== "undefined" || navigator.userAgent.indexOf("IEMobile") !== -1
+  );
+}
+
 const allSequencerNotes = [
   "F1",
   "F#1",
@@ -154,4 +184,7 @@ export {
   getLogValue,
   getLogRemapped,
   allSequencerNotes,
+  getSliderValueForLinValue,
+  getSliderValueForLogValue,
+  getIsMobileDevice,
 };

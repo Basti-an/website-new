@@ -14,7 +14,7 @@ export const sequencerStyles = makeStyles(() => ({
     alignItems: "center",
     position: "relative",
     borderRadius: "1rem",
-    border: "5px solid rgb(133, 225, 171)",
+    border: "5px solid #4D5458",
     backgroundColor: "rgb(55, 62, 70)",
     boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 2px 4px 0 rgba(0, 0, 0, 0.08)",
   },
@@ -35,8 +35,8 @@ export const sequencerStyles = makeStyles(() => ({
     color: "rgb(133, 225, 171)",
     margin: 5,
   },
-  textDark: {
-    color: "rgb(55, 62, 70)",
+  noteText: {
+    color: "rgb(133, 225, 171)",
     margin: 5,
   },
   tempo: {
@@ -65,11 +65,15 @@ export const sequencerStyles = makeStyles(() => ({
   headerText: {
     color: "rgb(133, 225, 171)",
     fontSize: "20px",
-    marginTop: 8,
+    backgroundColor: "#4D5458",
+    margin: 0,
+    padding: "1rem",
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
   },
   sequence: {
     maxWidth: 530,
-    backgroundColor: "rgb(133, 225, 171)",
+    backgroundColor: "#4D5458",
     borderTopLeftRadius: "1rem",
     borderTopRightRadius: "1rem",
   },
@@ -90,5 +94,10 @@ export const sequencerStyles = makeStyles(() => ({
     transition: "background-color 0.1s ease-in-out",
     boxShadow: "0 4px 8px 0 rgba(254, 27, 7, 0.3), 0 2px 4px 0 rgba(254, 27, 7, 0.3)",
     marginBottom: 5,
+  },
+  tempoPlate: {
+    backgroundColor: "#4D5458",
+    borderRadius: 16,
+    margin: "1rem",
   },
 }));

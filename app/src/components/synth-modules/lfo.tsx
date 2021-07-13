@@ -66,8 +66,8 @@ export default function LFOmodule({ lfo }: LfoProps): JSX.Element {
               changeInput={(value: number) => {
                 if (value < 0.05) {
                   lfo.disconnect();
-                } else {
-                  window.erebus.lfoConnect(lfo);
+                } else if (window.erebus.lfoTarget) {
+                  window.erebus.lfoTarget(lfo);
                 }
                 lfo.amplitude.linearRampTo(value, 0);
               }}

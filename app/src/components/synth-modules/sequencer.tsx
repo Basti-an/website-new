@@ -1,8 +1,8 @@
 import classnames from "classnames";
 import React, { useEffect, useState } from "react";
 import * as Tone from "tone";
-import { IErebus } from "../../interfaces/erebus";
 import { sequencerStyles } from "../../jss/synth";
+import Erebus from "../../synth/erebus";
 import { allSequencerNotes } from "../../utils";
 
 import Knob from "../synth/knob";
@@ -29,13 +29,13 @@ const defaultSequence = [
   "G1",
   "G1",
   "F1",
-  "G2",
+  "G1",
   "A#1",
   "G1",
 ];
 
 interface SequencerProps {
-  erebus: IErebus;
+  erebus: Erebus;
   sendCVs: (cv1: string, cv2: string) => void;
 }
 
@@ -104,6 +104,7 @@ export default function Sequencer({ erebus, sendCVs }: SequencerProps): JSX.Elem
     if (!sequence) {
       return;
     }
+
     Tone.Transport.start();
     sequence.start(0);
   };
@@ -146,31 +147,28 @@ export default function Sequencer({ erebus, sendCVs }: SequencerProps): JSX.Elem
     <div className={classes.plate} title={sequencerDescription}>
       <p className={classes.headerText}>Sequencer</p>
       <div className={classes.row}>
-        <div className={classnames(classes.row, classes.padLeft)}>
-          <div className={classnames(classes.column, classes.padded)}>
-            <SequencerKnob
-              label="tempo"
-              value={tempo}
-              onChange={(input: number) => {
-                setTempo(Math.floor(input));
-              }}
-              min={33}
-              max={300}
-              initial={162}
-            />
-          </div>
-          <div className={classnames(classes.column, classes.padded)}>
-            <SequencerKnob
-              label="gate"
-              value={gate}
-              onChange={(input: number) => {
-                setGate(Math.floor(input));
-              }}
-              min={1}
-              max={100}
-              initial={27}
-            />
-          </div>
+        <div className={classnames(classes.row, classes.tempoPlate)}>
+          <SequencerKnob
+            label="tempo"
+            value={tempo}
+            onChange={(input: number) => {
+              setTempo(Math.floor(input));
+            }}
+            min={33}
+            max={300}
+            initial={162}
+          />
+          <SequencerKnob
+            label="gate"
+            value={gate}
+            onChange={(input: number) => {
+              setGate(Math.floor(input));
+            }}
+            min={1}
+            max={100}
+            initial={27}
+          />
+
           <SequencerButton onClick={startLoop}>start</SequencerButton>
           <SequencerButton onClick={stopLoop}>stop</SequencerButton>
         </div>
@@ -187,7 +185,7 @@ export default function Sequencer({ erebus, sendCVs }: SequencerProps): JSX.Elem
                 initialValue={allSequencerNotes.findIndex((val) => val === sequencerNotes[index])}
                 changeInput={changeSequenceAtIndex(index)}
               />
-              <p className={classes.textDark}>{sequencerNotes[index]}</p>
+              <p className={classes.noteText}>{sequencerNotes[index]}</p>
             </div>
           );
         })}

@@ -4,13 +4,13 @@ import { OmniOscillatorType } from "tone/build/esm/source/oscillator/OscillatorI
 import Knob from "../synth/knob";
 import Config from "../../config";
 import { oscStyles } from "../../jss/synth";
-import { IOscillators } from "../../interfaces/oscillators";
 import ThreeWaySwitch, { Ternary } from "../synth/switch3way";
+import Oscillators from "../../synth/oscillators";
 
 const useStyles = oscStyles;
 
 interface OscProps {
-  oscillators: IOscillators;
+  oscillators: Oscillators;
   changeOscOctave: (osc: "one" | "two", octave: number) => void;
 }
 
@@ -95,7 +95,7 @@ function WaveformSwitch({
   oscillators,
   position,
 }: {
-  oscillators: IOscillators;
+  oscillators: Oscillators;
   position: "left" | "right";
 }): JSX.Element {
   const classes = useStyles();
@@ -155,15 +155,15 @@ export default function OSCModule({ oscillators, changeOscOctave }: OscProps): J
   function changeOsc1Frequency(value: number) {
     const { osc1, osc2 } = oscillators;
     osc1.oscillator.detune.value = value - 500;
-    osc2.oscillator.detune.value = value - 500 - osc2.detune;
+    osc2.oscillator.detune.value = value - 500 - osc2.oscillator.detune.value;
   }
 
   function changeOsc2Frequency(value: number) {
     const { osc1, osc2 } = oscillators;
-    osc2.detune = value - 500;
+    osc2.oscillator.detune.value = value - 500;
     const frequencyOsc1 = osc1.oscillator.detune.value;
 
-    osc2.oscillator.detune.value = frequencyOsc1 - osc2.detune;
+    osc2.oscillator.detune.value -= frequencyOsc1;
   }
 
   const toggleOscOctave = (oscillator: "one" | "two") => (state: Ternary) => {

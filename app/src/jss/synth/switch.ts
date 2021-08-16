@@ -6,6 +6,7 @@ export const switchStyles = makeStyles(() => ({
     height: 37,
   },
   switchButton: {
+    cursor: "pointer",
     padding: 0,
     border: "none",
     outline: "none",

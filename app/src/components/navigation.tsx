@@ -6,8 +6,8 @@ import { getIsMobileOS } from "../utils";
 
 const { hostUrl } = Config;
 
-// this component is a PoC stuffed into a react component while not using react idioms
-//  a refactor would be in order
+// this component is a PoC stuffed into a react component while not using react idioms like element references
+// a refactor would be in order
 // it`s a crude emulation of Mac OS X magnifying dock behaviour
 
 export default function Navigation(): JSX.Element {
@@ -20,9 +20,12 @@ export default function Navigation(): JSX.Element {
       return;
     }
 
+    // bounding box for mouse events
     const fallOffX = 220;
     const fallOffY = 56;
+
     const maxMagnification = 0.6;
+
     const defaultWidth = 68;
     const defaultHeight = 68;
 

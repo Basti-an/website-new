@@ -148,6 +148,23 @@ function getIsMobileDevice(): boolean {
   );
 }
 
+function getRandomColor() {
+  const cableColors = [
+    "orange",
+    "red",
+    "darkblue",
+    "teal",
+    "aqua",
+    "navy",
+    "fuchsia",
+    "lime",
+    "olive",
+    "maroon",
+    "purple",
+  ];
+  return cableColors[Math.floor(Math.random() * cableColors.length)];
+}
+
 const allSequencerNotes = [
   "F1",
   "F#1",
@@ -187,4 +204,5 @@ export {
   getSliderValueForLinValue,
   getSliderValueForLogValue,
   getIsMobileDevice,
+  getRandomColor,
 };

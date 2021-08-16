@@ -8,7 +8,7 @@ export const sequencerStyles = makeStyles(() => ({
     backgroundSize: "cover",
     backgroundPositionY: "bottom",
     width: "100%",
-    maxWidth: 700,
+    maxWidth: 800,
     display: "flex",
     flexFlow: "column",
     alignItems: "center",

@@ -13,9 +13,11 @@ import LFOmodule from "../components/synth-modules/lfo";
 import OSCModule from "../components/synth-modules/osc";
 import Ampmodule from "../components/synth-modules/vca";
 import EnvelopeModule from "../components/synth-modules/envelope";
+import PatchBay from "../components/synth-modules/patchbay";
 import Sequencer from "../components/synth-modules/sequencer";
 import Config from "../config";
 import Erebus from "../synth/erebus";
+import { ModSource } from "../types/modSource.d";
 
 declare global {
   interface Window {
@@ -44,7 +46,7 @@ const useStyles = makeStyles({
   },
   erebusBox: {
     boxSizing: "border-box",
-    maxWidth: 700,
+    maxWidth: 800,
     marginLeft: "auto",
     marginRight: "auto",
     margin: "1rem 0",
@@ -138,7 +140,7 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
       {!erebus && (
         <div className={classes.erebusBox}>
           <Typography variant="h5" color="inherit" className={classes.title}>
-            Digital rebuild of the{" "}
+            Web-native digital implementation of the{" "}
             <a
               href="https://www.dreadbox-fx.com/erebus/"
               target="_blank"
@@ -149,7 +151,7 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
             </a>
           </Typography>
           <Typography variant="h5" color="inherit" className={classes.title}>
-            Click on this box to enable WebAudio and load the synthesizer.
+            Click on this box to enable WebAudio and load the synth.
           </Typography>
         </div>
       )}
@@ -158,7 +160,7 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
         <>
           <div className={classnames(classes.erebusBox, classes.wood)}>
             <div className={classes.row}>
-              <LFOmodule lfo={erebus.lfo.lfo} />
+              <LFOmodule lfo={erebus.lfo} />
               <DelayModule delay={erebus.delay.delay} />
             </div>
             <div className={classes.row}>
@@ -167,12 +169,44 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
               <Ampmodule
                 setAmpEnv={({ attack, release }) => {
                   if (attack) {
-                    erebus.ampEnv.set({ attack });
+                    erebus.vca.ampEnv.set({ attack });
                   }
                   if (release) {
-                    erebus.ampEnv.set({ release });
+                    erebus.vca.ampEnv.set({ release });
                   }
                 }}
+              />
+              <PatchBay
+                outputs={[
+                  { label: "ENV", output: erebus.envelope.output },
+                  { label: "LFO", output: erebus.lfo.output, connectedWith: 0 },
+                ]}
+                inputs={[
+                  {
+                    label: "VCF",
+                    connectInput: (output: ModSource) => {
+                      erebus.filter.inputs.frequency(output);
+                    },
+                  },
+                  {
+                    label: "ECHO",
+                    connectInput: (output: ModSource) => {
+                      window.erebus.delay.inputs.delayTime(output);
+                    },
+                  },
+                  {
+                    label: "VCA",
+                    connectInput: (output: ModSource) => {
+                      window.erebus.vca.inputs.volume(output);
+                    },
+                  },
+                  {
+                    label: "PW",
+                    connectInput: (output: ModSource) => {
+                      erebus.oscillators.osc1.inputs.pulsewidth(output);
+                    },
+                  },
+                ]}
               />
             </div>
             <div className={classes.row}>
@@ -186,10 +220,10 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
             sendCVs={sendCVs}
             sendGate={(newgate) => {
               if (newgate) {
-                erebus.ampEnv.triggerAttack(undefined, 1.0);
+                erebus.vca.ampEnv.triggerAttack(undefined, 1.0);
                 erebus.envelope.envelope.triggerAttack(undefined, 1.0);
               } else {
-                erebus.ampEnv.triggerRelease();
+                erebus.vca.ampEnv.triggerRelease();
                 erebus.envelope.envelope.triggerRelease();
               }
             }}

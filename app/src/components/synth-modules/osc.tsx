@@ -105,10 +105,10 @@ function WaveformSwitch({
     if (state === 0) {
       osc.oscillator.stop();
     } else if (state === 1) {
-      osc.oscillator.type = osc.possibleWaveforms[0] as OmniOscillatorType;
+      osc.setWaveform(osc.possibleWaveforms[0] as OmniOscillatorType);
       osc.oscillator.start();
     } else {
-      osc.oscillator.type = osc.possibleWaveforms[1] as OmniOscillatorType;
+      osc.setWaveform(osc.possibleWaveforms[1] as OmniOscillatorType);
       osc.oscillator.start();
     }
   };
@@ -168,8 +168,8 @@ export default function OSCModule({ oscillators, changeOscOctave }: OscProps): J
     } else {
       changeOscOctave(oscillator, 0);
     }
-    window.erebus.ampEnv.triggerRelease();
-    window.erebus.ampEnv.triggerAttack(0.1, 1.0);
+    window.erebus.vca.ampEnv.triggerRelease();
+    window.erebus.vca.ampEnv.triggerAttack(0.1, 1.0);
   };
 
   return (

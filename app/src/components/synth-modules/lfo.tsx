@@ -5,11 +5,12 @@ import Switch from "../synth/switch";
 
 import { lfoStyles } from "../../jss/synth";
 import Config from "../../config";
+import LFO from "../../synth/lfo";
 
 const useStyles = lfoStyles;
 
 interface LfoProps {
-  lfo: Tone.LFO;
+  lfo: LFO;
   // input: Tone.Filter;
 }
 
@@ -31,13 +32,13 @@ export default function LFOmodule({ lfo }: LfoProps): JSX.Element {
   const classes = useStyles();
 
   function switchWaveform(isSquare: boolean) {
-    lfo.stop();
+    lfo.lfo.stop();
     if (isSquare) {
-      lfo.type = "square";
+      lfo.lfo.type = "square";
     } else {
-      lfo.type = "triangle";
+      lfo.lfo.type = "triangle";
     }
-    lfo.start();
+    lfo.lfo.start();
   }
 
   return (
@@ -48,15 +49,15 @@ export default function LFOmodule({ lfo }: LfoProps): JSX.Element {
           <div className={classes.button}>
             <Knob
               onChange={(value: number) => {
-                lfo.frequency.rampTo(value, 0);
+                lfo.lfo.frequency.rampTo(value, 0);
               }}
               min={0.1}
               max={200}
               afterSweep={() => {
-                setAnimDuration(lfo);
+                setAnimDuration(lfo.lfo);
               }}
               whileSweep={() => {
-                setAnimDuration(lfo);
+                setAnimDuration(lfo.lfo);
               }}
               initial={0.6}
             />
@@ -64,12 +65,12 @@ export default function LFOmodule({ lfo }: LfoProps): JSX.Element {
           <div className={classes.button}>
             <Knob
               onChange={(value: number) => {
-                if (value < 0.05) {
-                  lfo.disconnect();
-                } else if (window.erebus.lfoTarget) {
-                  window.erebus.lfoTarget(lfo);
-                }
-                lfo.amplitude.linearRampTo(value, 0);
+                // if (value < 0.05) {
+                // lfo.output.disconnect();
+                // } else if (window.erebus.lfoTarget) {
+                // window.erebus.lfoTarget(lfo.output);
+                // }
+                lfo.lfo.amplitude.linearRampTo(value, 0);
               }}
               min={0}
               max={1}

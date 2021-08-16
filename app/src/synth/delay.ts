@@ -6,12 +6,12 @@ export default class Delay {
 
   inputs: { delayTime: (input: ModSource) => void };
 
-  private inputSignal: Tone.Signal<"number">;
+  private inputSignal: Tone.Scale;
 
   constructor(delayTime?: number, feedback?: number) {
     this.delay = new Tone.FeedbackDelay(delayTime ?? 0.4, feedback ?? 0.3);
 
-    this.inputSignal = new Tone.Signal(0, "number");
+    this.inputSignal = new Tone.Scale(0, 1);
 
     // setup delay to accept modulation sources
     const delayConnect = new Tone.Add();

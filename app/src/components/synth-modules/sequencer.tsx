@@ -54,16 +54,16 @@ export default function Sequencer({ erebus, sendCVs }: SequencerProps): JSX.Elem
 
     if (time === undefined) {
       // play note immediately
-      erebus.ampEnv.triggerAttackRelease(gateLength, undefined, 1.0);
+      erebus.vca.ampEnv.triggerAttackRelease(gateLength, undefined, 1.0);
       erebus.envelope.envelope.triggerAttackRelease(gateLength, undefined, 1.0);
       return;
     }
 
     // schedule note to be played at time
-    erebus.ampEnv.triggerAttack(time, 1.0);
+    erebus.vca.ampEnv.triggerAttack(time, 1.0);
     erebus.envelope.envelope.triggerAttack(time, 1.0);
 
-    erebus.ampEnv.triggerRelease(time + gateLength);
+    erebus.vca.ampEnv.triggerRelease(time + gateLength);
     erebus.envelope.envelope.triggerRelease(time + gateLength);
 
     // update UI LED

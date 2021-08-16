@@ -5,6 +5,7 @@ import Envelope from "./envelope";
 import Filter from "./filter";
 import LFO from "./lfo";
 import Oscillators from "./oscillators";
+import VCA from "./vca";
 
 type TargetFunction = (input: ModSource) => void;
 
@@ -19,7 +20,7 @@ export default class Erebus {
 
   delay: Delay;
 
-  ampEnv: Tone.AmplitudeEnvelope;
+  vca: VCA;
 
   lfoTarget: TargetFunction | undefined;
 
@@ -39,33 +40,28 @@ export default class Erebus {
     this.lfo = new LFO();
     this.envelope = new Envelope();
     this.delay = new Delay();
+    this.vca = new VCA();
 
     this.noise = new Tone.Noise("white").start();
     this.noise.volume.value = -55;
-    this.ampEnv = new Tone.AmplitudeEnvelope({
-      attack: 0.42,
-      decay: 0,
-      sustain: 1.0,
-      release: 0.5,
-    });
     this.output = new Tone.Gain(0.9);
     this.limiter = new Tone.Limiter(-6);
 
-    this.distortion = new Tone.Distortion(0.0666);
+    this.distortion = new Tone.Distortion(0.0777);
 
     // lfo, envelope -> filter freq
-    this.filter.inputs.frequency(this.lfo.lfo);
-    this.filter.inputs.frequency(this.envelope.output);
+    this.filter.inputs.frequency(this.lfo.output);
+    this.filter.inputs.frequency(this.envelope.filterOutput);
 
     // osc´s + white noise -> filter
     this.noise.connect(this.filter.filter);
     this.oscillators.oscMixOut.connect(this.filter.filter);
 
     // filter -> amp in
-    this.filter.filter.connect(this.ampEnv);
+    this.filter.filter.connect(this.vca.ampEnv);
 
     // amp out + distortion -> delay
-    this.ampEnv.connect(this.delay.delay);
+    this.vca.output.connect(this.delay.delay);
     this.distortion.connect(this.delay.delay);
 
     // delay -> limiter -> output

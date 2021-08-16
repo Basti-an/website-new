@@ -23,10 +23,10 @@ export default function Ampmodule({ setAmpEnv }: VcaProps): JSX.Element {
       <div className={classes.knobLevel}>
         <Knob
           onChange={(value: number) => {
-            window.erebus.output.gain.rampTo(value / 1000, 0);
+            window.erebus.vca.output.gain.rampTo(value / 1000, 0);
           }}
           min={1}
-          max={300}
+          max={400}
           initial={150}
           isBig
           isLinear

@@ -15,7 +15,6 @@ interface IFilterProps {
   filter: Filter;
 }
 
-// @TODO: implement CV Input to filter frequency
 export default function FilterModule({ filter }: IFilterProps): JSX.Element {
   const classes = useStyles();
 
@@ -28,7 +27,7 @@ export default function FilterModule({ filter }: IFilterProps): JSX.Element {
           onChange={(value: number) => {
             filter.frequency.rampTo(value, 0);
           }}
-          min={32}
+          min={10}
           max={20000}
           initial={70}
           isBig

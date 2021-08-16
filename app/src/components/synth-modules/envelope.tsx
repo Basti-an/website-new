@@ -68,14 +68,7 @@ export default function EnvelopeModule({ envelope }: EnvelopeProps): JSX.Element
           <ADSRButton onChange={changeADSR("release")} min={1} max={6.5} initial={1.7} text="R" />
         </div>
         <div className={classNames(classes.row, classes.depthPlate)}>
-          <ADSRButton
-            onChange={changeDepth}
-            min={1}
-            max={12001}
-            initial={5000}
-            text="depth"
-            isLinear
-          />
+          <ADSRButton onChange={changeDepth} min={0} max={1} initial={0.4} text="depth" isLinear />
         </div>
       </div>
     </div>

@@ -8,10 +8,12 @@ export default class Filter {
 
   frequency: Tone.Signal<"frequency">;
 
-  constructor(frequency?: number, q?: number) {
+  private frequencyInputScale: Tone.Scale;
+
+  constructor(frequency = 700, Q = 2.4) {
     this.filter = new Tone.Filter({
-      frequency: frequency ?? 700,
-      Q: q ?? 2.4,
+      frequency,
+      Q,
       rolloff: -12,
     });
 
@@ -21,7 +23,9 @@ export default class Filter {
     const filterConnect = new Tone.Add();
     this.frequency.connect(filterConnect.addend);
     filterConnect.connect(this.filter.frequency);
+    this.frequencyInputScale = new Tone.Scale(0, 5000);
+    this.frequencyInputScale.connect(this.filter.detune);
 
-    this.inputs = { frequency: (input: ModSource) => input.connect(this.filter.detune) };
+    this.inputs = { frequency: (input: ModSource) => input.connect(this.frequencyInputScale) };
   }
 }

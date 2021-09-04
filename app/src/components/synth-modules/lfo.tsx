@@ -14,11 +14,15 @@ interface LfoProps {
   // input: Tone.Filter;
 }
 
-const setAnimDuration = (lfo: Tone.LFO) => {
+const setLedAnimationDuration = (frequency: number) => {
   // make lfo led blink according to lfo rate
-  const freq = lfo.frequency.value as number;
-  const duration = (1 / freq).toFixed(3);
-  const led = document.getElementById("led");
+  if (frequency <= 0) {
+    return;
+  }
+
+  const duration = (1 / frequency).toFixed(3);
+
+  const led = document.getElementById("lfo-led");
   if (!led) {
     return;
   }
@@ -26,7 +30,7 @@ const setAnimDuration = (lfo: Tone.LFO) => {
 };
 
 const lfoDescription =
-  "an LFO (low frequency oscillator) generates a wave that can be used to modulate other parameters. The LFO is currently routed to the frequency of the filter.";
+  "an LFO (low frequency oscillator) generates a wave that can be used to modulate parameters of other synthesizer modules. The LFO is currently routed to the frequency of the filter.";
 
 export default function LFOmodule({ lfo }: LfoProps): JSX.Element {
   const classes = useStyles();
@@ -49,15 +53,15 @@ export default function LFOmodule({ lfo }: LfoProps): JSX.Element {
           <div className={classes.button}>
             <Knob
               onChange={(value: number) => {
-                lfo.lfo.frequency.rampTo(value, 0);
+                lfo.lforate.rampTo(value, 0);
               }}
               min={0.1}
               max={200}
               afterSweep={() => {
-                setAnimDuration(lfo.lfo);
+                setLedAnimationDuration(lfo.lforate.value as number);
               }}
               whileSweep={() => {
-                setAnimDuration(lfo.lfo);
+                setLedAnimationDuration(lfo.lforate.value as number);
               }}
               initial={0.6}
             />
@@ -83,7 +87,7 @@ export default function LFOmodule({ lfo }: LfoProps): JSX.Element {
           <div className={classes.text}>rate</div>
           <div className={classes.ledContainer}>
             <div className={classes.ledOff} />
-            <div id="led" className={classes.ledOn} />
+            <div id="lfo-led" className={classes.ledOn} />
           </div>
           <div className={classes.text}>depth</div>
         </div>

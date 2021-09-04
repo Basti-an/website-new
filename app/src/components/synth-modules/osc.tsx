@@ -77,7 +77,7 @@ function OctaveSwitch({
         </div>
         {placement === "left" && (
           <div className={classes.switchLeft}>
-            <ThreeWaySwitch onInput={onToggle} initialState={0} />
+            <ThreeWaySwitch onInput={onToggle} initialState={-1} />
           </div>
         )}
       </div>
@@ -148,16 +148,16 @@ export default function OSCModule({ oscillators, changeOscOctave }: OscProps): J
 
   function changeOsc1Frequency(value: number) {
     const { osc1, osc2 } = oscillators;
-    osc1.oscillator.detune.value = value - 500;
-    osc2.oscillator.detune.value = value - 500 - osc2.oscillator.detune.value;
+    osc1.detune.value = value - 500;
+    osc2.detune.value = value - 500 - osc2.oscillator.detune.value;
   }
 
   function changeOsc2Frequency(value: number) {
     const { osc1, osc2 } = oscillators;
-    osc2.oscillator.detune.value = value - 500;
+    osc2.detune.value = value - 500;
     const frequencyOsc1 = osc1.oscillator.detune.value;
 
-    osc2.oscillator.detune.value -= frequencyOsc1;
+    osc2.detune.value -= frequencyOsc1;
   }
 
   const toggleOscOctave = (oscillator: "one" | "two") => (state: Ternary) => {

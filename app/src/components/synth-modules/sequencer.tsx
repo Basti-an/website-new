@@ -16,22 +16,22 @@ const sequencerDescription = "";
 
 const defaultSequence = [
   // bass sequence for Giorgio Moroders "chase"
-  "A#1",
-  "C2",
-  "C2",
-  "C2",
-  "A#1",
-  "C2",
-  "D#2",
-  "C2",
-  "F1",
-  "G1",
-  "G1",
-  "G1",
-  "F1",
-  "G1",
-  "A#1",
-  "G1",
+  "A#2",
+  "C3",
+  "C3",
+  "C3",
+  "A#2",
+  "C3",
+  "D#3",
+  "C3",
+  "F2",
+  "G2",
+  "G2",
+  "G2",
+  "F2",
+  "G2",
+  "A#2",
+  "G2",
 ];
 
 interface SequencerProps {
@@ -104,7 +104,7 @@ export default function Sequencer({ erebus, sendCVs }: SequencerProps): JSX.Elem
     if (!sequence) {
       return;
     }
-
+    Tone.context.lookAhead = 0.05;
     Tone.Transport.start();
     sequence.start(0);
   };
@@ -113,7 +113,7 @@ export default function Sequencer({ erebus, sendCVs }: SequencerProps): JSX.Elem
     if (!sequence) {
       return;
     }
-
+    Tone.context.lookAhead = 0.003;
     Tone.Transport.stop();
     sequence.stop();
 

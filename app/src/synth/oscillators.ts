@@ -1,5 +1,4 @@
 import * as Tone from "tone";
-import { getLogValue } from "../utils";
 import Oscillator from "./oscillator";
 
 export default class Oscillators {

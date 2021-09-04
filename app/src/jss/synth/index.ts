@@ -8,3 +8,4 @@ export * from "./knob";
 export * from "./envelope";
 export * from "./sequencer";
 export * from "./patchbay";
+export * from "./synth";

@@ -1,8 +1,9 @@
 /* eslint-disable react/no-unused-prop-types */
-import React, { MouseEvent, SyntheticEvent, useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { patchbayStyles } from "../../jss/synth";
 import { ModSource } from "../../types/modSource.d";
 import { getRandomColor } from "../../utils";
+import Knob from "../synth/knob";
 
 const useStyles = patchbayStyles;
 
@@ -88,7 +89,38 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
   const [storedLines, setStoredLines] = useState<Line[]>([]);
   const [currentLine, setCurrentLine] = useState<Line | null>(null);
 
-  const drawJacks = () => {
+  const drawCurve = useCallback(
+    (line: Line) => {
+      /**
+       * draws a simple parable between two patch holes to simulate a cable connection
+       */
+      if (!ctx) {
+        return;
+      }
+
+      const { x1, y1, x2, y2, color } = line;
+
+      const initialLineWidth = ctx.lineWidth;
+      const initialStrokeStyle = ctx.strokeStyle;
+      ctx.lineWidth = 10;
+      ctx.strokeStyle = color || "orange";
+
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+
+      const bezier1 = x1 + (x2 - x1) / 2; // makes cable "sag"
+      const bezier2 = y1 + 200; // makes cable "sag"
+      ctx.quadraticCurveTo(bezier1, bezier2, x2, y2);
+      ctx.stroke();
+      ctx.closePath();
+
+      ctx.lineWidth = initialLineWidth;
+      ctx.strokeStyle = initialStrokeStyle;
+    },
+    [ctx],
+  );
+
+  const drawJacks = useCallback(() => {
     /**
      * draws inputs/outputs as eurorack modular patch holes in a 3 column grid
      */
@@ -111,35 +143,7 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
         y: initialPos.y + Math.floor(i / 3) * 50,
       });
     });
-  };
-
-  function drawCurve(line: Line) {
-    /**
-     * draws a simple parable between two patch holes to simulate a cable connection
-     */
-    if (!ctx) {
-      return;
-    }
-
-    const { x1, y1, x2, y2, color } = line;
-
-    const initialLineWidth = ctx.lineWidth;
-    const initialStrokeStyle = ctx.strokeStyle;
-    ctx.lineWidth = 10;
-    ctx.strokeStyle = color || "orange";
-
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-
-    const bezier1 = x1 + (x2 - x1) / 2; // makes cable "sag"
-    const bezier2 = y1 + 200; // makes cable "sag"
-    ctx.quadraticCurveTo(bezier1, bezier2, x2, y2);
-    ctx.stroke();
-    ctx.closePath();
-
-    ctx.lineWidth = initialLineWidth;
-    ctx.strokeStyle = initialStrokeStyle;
-  }
+  }, [ctx, inputs, outputs]);
 
   const onJackDown = (index: number, output: ModSource) => () => {
     /**
@@ -181,12 +185,11 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     drawJacks();
+    storedLines.forEach((line: Line) => drawCurve(line));
 
     const currentTargetRect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - currentTargetRect.left;
     const y = e.clientY - currentTargetRect.top;
-
-    storedLines.forEach((line: Line) => drawCurve(line));
     drawCurve({ ...currentLine, x2: x, y2: y });
   };
 
@@ -198,15 +201,15 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
 
     drawJacks();
 
-    const x = 25 + (index % 3) * 50;
-    const y = 160 + Math.floor(index / 3) * 50;
-
     connectInput(currentLine.output);
 
+    const x = 25 + (index % 3) * 50;
+    const y = 160 + Math.floor(index / 3) * 50;
     setStoredLines([
       ...storedLines,
       { ...currentLine, x2: x, y2: y, color: JSON.parse(JSON.stringify(currentLine.color)) },
     ]);
+    storedLines.forEach((line: Line) => drawCurve(line));
     setCurrentLine(null);
   };
 
@@ -233,13 +236,11 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
       }
     });
     setStoredLines(connections);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ctx]);
+  }, [ctx, drawJacks, outputs]);
 
   useEffect(() => {
     storedLines.forEach((line: Line) => drawCurve(line));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [storedLines]);
+  }, [storedLines, drawCurve]);
 
   useEffect(() => {
     const c = document.getElementById("patchbay") as HTMLCanvasElement;
@@ -254,11 +255,26 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
 
     setCanvas(c);
     setCtx(context);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <div className={classes.patchbay}>
+      <div className={classes.knobContainer}>
+        {outputs.map(({ output }: OutputJack) => (
+          <div className={classes.miniknob}>
+            <Knob
+              min={0}
+              max={1}
+              initial={0.8}
+              onChange={(value: number) => {
+                output.max = value;
+              }}
+              isLinear
+            />
+          </div>
+        ))}
+      </div>
+
       <canvas id="patchbay" width="150" height="250" />
       <div className={classes.jacks} onMouseMove={onMove}>
         {outputs.map(({ label, output }: OutputJack, index: number) => (

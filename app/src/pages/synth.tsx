@@ -4,7 +4,7 @@ import { Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import React, { useState, useEffect } from "react";
 import * as Tone from "tone";
-import classnames from "classnames";
+import { createAudioContext } from "tone/build/esm/core/context/AudioContext";
 
 import Keyboard from "../components/keyboard";
 import DelayModule from "../components/synth-modules/delay";
@@ -15,9 +15,11 @@ import Ampmodule from "../components/synth-modules/vca";
 import EnvelopeModule from "../components/synth-modules/envelope";
 import PatchBay from "../components/synth-modules/patchbay";
 import Sequencer from "../components/synth-modules/sequencer";
+import Oscilloscope from "../components/synth-modules/oscilloscope";
 import Config from "../config";
 import Erebus from "../synth/erebus";
 import { ModSource } from "../types/modSource.d";
+import { synthStyles } from "../jss/synth";
 
 declare global {
   interface Window {
@@ -28,50 +30,18 @@ declare global {
   }
 }
 
-const useStyles = makeStyles({
-  title: {
-    color: "#fff",
-    margin: "1rem auto",
-  },
-  synth: {
-    fontSize: "1rem",
-    webkitTouchCallout: "none",
-    webkitUserSelect: "none",
-    userSelect: "none",
-  },
-  link: {
-    "&:visited": {
-      color: "inherit",
-    },
-  },
-  erebusBox: {
-    boxSizing: "border-box",
-    maxWidth: 800,
-    marginLeft: "auto",
-    marginRight: "auto",
-    margin: "1rem 0",
-    padding: "1rem",
-    backgroundColor: "rgb(55, 62, 70)",
-    border: "5px solid rgb(133, 225, 171)",
-    borderRadius: "1rem",
-    boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08)",
-  },
-  wood: {
-    backgroundImage: `url("${Config.hostUrl}/images/wood-texture-unsplash.jpg")`,
-    backgroundSize: "cover",
-  },
-  error: {
-    fontWeight: 500,
-  },
-  row: {
-    "margin-right": "auto",
-    "margin-left": "auto",
-    display: "flex",
-    "align-items": "center",
-    "justify-content": "center",
-    "flex-wrap": "wrap",
-  },
-});
+const useStyles = synthStyles;
+
+function NamePlate(): JSX.Element {
+  const classes = useStyles();
+
+  return (
+    <div className={classes.namePlate}>
+      <h1 className={classes.namePlateTitle}>EREBUS</h1>
+      <h2 className={classes.namePlateSubTitle}>DIGITAL SYNTHESIZER</h2>
+    </div>
+  );
+}
 
 interface SynthProps {
   setIsFlowing: (flowState: boolean) => void;
@@ -132,8 +102,8 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
       onClick={async () => {
         if (!init) {
           await Tone.start();
-          setInit(true);
           initializeAudio();
+          setInit(true);
         }
       }}
     >
@@ -155,66 +125,42 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
           </Typography>
         </div>
       )}
-      <link href="https://fonts.googleapis.com/css?family=Comfortaa:700" rel="stylesheet" />
       {erebus && (
         <>
-          <div className={classnames(classes.erebusBox, classes.wood)}>
+          <div className={classes.erebusBox}>
             <div className={classes.row}>
               <LFOmodule lfo={erebus.lfo} />
               <DelayModule delay={erebus.delay.delay} />
+              <NamePlate />
             </div>
             <div className={classes.row}>
-              <OSCModule oscillators={erebus.oscillators} changeOscOctave={changeOscOctave} />
-              <Filtermodule filter={erebus.filter} />
-              <Ampmodule
-                setAmpEnv={({ attack, release }) => {
-                  if (attack) {
-                    erebus.vca.ampEnv.set({ attack });
-                  }
-                  if (release) {
-                    erebus.vca.ampEnv.set({ release });
-                  }
-                }}
-              />
-              <PatchBay
-                outputs={[
-                  { label: "ENV", output: erebus.envelope.output },
-                  { label: "LFO", output: erebus.lfo.output, connectedWith: 0 },
-                ]}
-                inputs={[
-                  {
-                    label: "VCF",
-                    connectInput: (output: ModSource) => {
-                      erebus.filter.inputs.frequency(output);
-                    },
-                  },
-                  {
-                    label: "ECHO",
-                    connectInput: (output: ModSource) => {
-                      window.erebus.delay.inputs.delayTime(output);
-                    },
-                  },
-                  {
-                    label: "VCA",
-                    connectInput: (output: ModSource) => {
-                      window.erebus.vca.inputs.volume(output);
-                    },
-                  },
-                  {
-                    label: "PW",
-                    connectInput: (output: ModSource) => {
-                      erebus.oscillators.osc1.inputs.pulsewidth(output);
-                    },
-                  },
-                ]}
-              />
-            </div>
-            <div className={classes.row}>
-              <EnvelopeModule envelope={erebus.envelope} />
+              <div className={classes.row}>
+                <div className={classes.column}>
+                  <div className={classes.row}>
+                    <OSCModule oscillators={erebus.oscillators} changeOscOctave={changeOscOctave} />
+                    <Filtermodule filter={erebus.filter} />
+                    <Ampmodule
+                      setAmpEnv={({ attack, release }) => {
+                        if (attack) {
+                          erebus.vca.ampEnv.set({ attack });
+                        }
+                        if (release) {
+                          erebus.vca.ampEnv.set({ release });
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className={classes.rowVertical}>
+                    <EnvelopeModule envelope={erebus.envelope} />
+                    <Oscilloscope erebus={erebus} />
+                  </div>
+                </div>
+                <PatchBay outputs={erebus.outputs} inputs={erebus.inputs} />
+              </div>
             </div>
           </div>
-          <div className={classes.row}>
-            <Sequencer erebus={erebus} sendCVs={sendCVs} />
+          <div className={classes.rowCenter}>
+            {/* <Sequencer erebus={erebus} sendCVs={sendCVs} /> */}
           </div>
           <Keyboard
             sendCVs={sendCVs}

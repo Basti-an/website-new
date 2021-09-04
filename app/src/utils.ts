@@ -73,11 +73,9 @@ function checkForDevicePerformance(setFancyAnimations: React.Dispatch<boolean>):
     console.log(`FPS after ${Math.floor(cookFor / 1000)} seconds:`, Math.floor(fps));
 
     // disable "flowing" background
-    // @TODO trigger a snackbar message, informing about feature being disabled
-    // due to poor performance, basically telling the user that his device sucks XD
     if (getIsMobileOS()) {
+      // mobile animation uses different turbulence values and still looks nice™ at lower fps
       if (fps < 10) {
-        // mobile animation uses different turbulence values and still looks nice™ even at lower fps
         setFancyAnimations(false);
         window.prohibitFlowing = true;
       }
@@ -92,6 +90,7 @@ function getLinValue(sliderValue: number, min: number, max: number): number {
   const linVal = sliderValue / maxp;
   const range = max - min;
   const inRangeVal = linVal * range;
+
   return min + inRangeVal;
 }
 
@@ -106,6 +105,7 @@ function getLogRemapped(
     min += 1;
     max += 1;
   }
+
   const minv = Math.log(min);
   const maxv = Math.log(max);
 
@@ -125,6 +125,7 @@ function getSliderValueForLogValue(value: number, min: number, max: number): num
     max += 1;
     value += 1;
   }
+
   const minLog = Math.log(min);
   const maxLog = Math.log(max) - minLog;
   const valueLog = Math.log(value) - minLog;
@@ -148,7 +149,7 @@ function getIsMobileDevice(): boolean {
   );
 }
 
-function getRandomColor() {
+function getRandomColor(): string {
   const cableColors = [
     "orange",
     "red",

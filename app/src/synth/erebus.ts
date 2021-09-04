@@ -8,6 +8,11 @@ import Oscillators from "./oscillators";
 import VCA from "./vca";
 
 type TargetFunction = (input: ModSource) => void;
+type Output = { label: string; output: ModSource; connectedWith?: number };
+type Input = {
+  label: string;
+  connectInput: (output: ModSource) => void;
+};
 
 export default class Erebus {
   filter: Filter;
@@ -28,6 +33,12 @@ export default class Erebus {
 
   output: Tone.Gain;
 
+  inputs: Input[];
+
+  outputs: Output[];
+
+  analyser: Tone.Analyser;
+
   private noise: Tone.Noise;
 
   private limiter: Tone.Limiter;
@@ -35,6 +46,9 @@ export default class Erebus {
   private distortion: Tone.Distortion;
 
   constructor() {
+    // reduce latency
+    Tone.context.lookAhead = 0.003; // 3ms;
+
     this.filter = new Filter();
     this.oscillators = new Oscillators();
     this.lfo = new LFO();
@@ -49,8 +63,11 @@ export default class Erebus {
 
     this.distortion = new Tone.Distortion(0.0777);
 
+    this.analyser = new Tone.Analyser("waveform", 4096);
+
     // lfo, envelope -> filter freq
     this.filter.inputs.frequency(this.lfo.output);
+    this.oscillators.osc1.inputs.pulsewidth(this.lfo.output2);
     this.filter.inputs.frequency(this.envelope.filterOutput);
 
     // osc´s + white noise -> filter
@@ -67,9 +84,60 @@ export default class Erebus {
     // delay -> limiter -> output
     this.delay.delay.connect(this.limiter);
     this.limiter.connect(this.output);
-    this.output.toDestination();
+    this.output.connect(this.analyser);
+    this.analyser.toDestination();
 
     // configure internal cv routing
     this.lfoTarget = this.filter.inputs.frequency;
+
+    this.outputs = [
+      { label: "ENV", output: this.envelope.output },
+      { label: "LFO", output: this.lfo.output, connectedWith: 0 },
+      { label: "LFO2", output: this.lfo.output2, connectedWith: 5 },
+    ];
+    this.inputs = [
+      {
+        label: "VCF",
+        connectInput: (output: ModSource) => {
+          this.filter.inputs.frequency(output);
+        },
+      },
+      {
+        label: "OSC1",
+        connectInput: (output: ModSource) => {
+          this.oscillators.osc1.inputs.frequency(output);
+        },
+      },
+      {
+        label: "OSC2",
+        connectInput: (output: ModSource) => {
+          this.oscillators.osc2.inputs.frequency(output);
+        },
+      },
+      // {
+      //   label: "ECHO",
+      //   connectInput: (output: ModSource) => {
+      //     window.erebus.delay.inputs.delayTime(output);
+      //   },
+      // },
+      {
+        label: "LFO/R",
+        connectInput: (output: ModSource) => {
+          this.lfo.inputs.lforate(output);
+        },
+      },
+      {
+        label: "VCA",
+        connectInput: (output: ModSource) => {
+          this.vca.inputs.volume(output);
+        },
+      },
+      {
+        label: "PW",
+        connectInput: (output: ModSource) => {
+          this.oscillators.osc1.inputs.pulsewidth(output);
+        },
+      },
+    ];
   }
 }

@@ -7,12 +7,12 @@ export const patchbayStyles = makeStyles(() => ({
     border: "5px solid rgb(133, 225, 171)",
     position: "relative",
     zIndex: 1,
-    height: 240,
+    height: 300,
     margin: 6,
   },
   jacks: {
     position: "absolute",
-    top: 0,
+    top: 50,
     width: 150,
     display: "flex",
     flexWrap: "wrap",
@@ -32,5 +32,13 @@ export const patchbayStyles = makeStyles(() => ({
     zIndex: -1,
     position: "relative",
     fontVariant: "all-petite-caps",
+  },
+  knobContainer: {
+    display: "flex",
+    flexWrap: "wrap",
+  },
+  miniknob: {
+    transform: "scale(0.7,0.7)",
+    width: 50,
   },
 }));

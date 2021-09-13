@@ -1,5 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import ZingTouch from "zingtouch";
+import { debounce } from "lodash";
+
 import Config from "../../config";
 import { knobStyles } from "../../jss/synth";
 import {
@@ -21,6 +23,7 @@ interface KnobProps {
   onChange: (value: number) => void;
   whileSweep?: (value: number) => void;
   afterSweep?: (value: number) => void;
+  name?: string;
 }
 
 /**
@@ -37,10 +40,8 @@ export default function Knob({
   onChange,
   whileSweep,
   afterSweep,
+  name,
 }: KnobProps): JSX.Element {
-  const [isCheckingForChange, setIsCheckingforChange] = useState(false);
-  const [lastValue, setLastValue] = useState(initial || max / 2);
-
   const knobEl = useRef<HTMLImageElement>(null);
   const classes = useStyles();
 
@@ -49,36 +50,31 @@ export default function Knob({
     onChange(isLinear ? getLinValue(value, min, max) : getLogValue(value, min, max));
   }
 
-  function executeWhileSweep() {
-    if (typeof whileSweep === "function") {
-      whileSweep(isLinear ? getLinValue(lastValue, min, max) : getLogValue(lastValue, min, max));
+  function executeAfterSweep(currentValue: number) {
+    const value = isLinear
+      ? getLinValue(currentValue, min, max)
+      : getLogValue(currentValue, min, max);
+    // if knob has a name, save the current knob value to localStorage
+    if (name) {
+      console.log("committing value to localStorage", value.toString());
+      localStorage.setItem(`erebus-knobs-${name}`, value.toString());
     }
-  }
 
-  function executeAfterSweep() {
     if (typeof afterSweep === "function") {
-      afterSweep(isLinear ? getLinValue(lastValue, min, max) : getLogValue(lastValue, min, max));
+      afterSweep(value);
     }
   }
 
-  function checkForChange(currentValue: number) {
-    // periodically check if knob value still changing
-    // can trigger an event as soon as values not changing anymore
-    if (!whileSweep && !afterSweep) {
-      return;
+  function executeWhileSweep(currentValue: number) {
+    if (typeof whileSweep === "function") {
+      whileSweep(
+        isLinear ? getLinValue(currentValue, min, max) : getLogValue(currentValue, min, max),
+      );
     }
-
-    setTimeout(() => {
-      if (lastValue === currentValue) {
-        setIsCheckingforChange(false);
-        executeAfterSweep();
-        return;
-      }
-
-      executeWhileSweep();
-      checkForChange(lastValue);
-    }, 333);
   }
+
+  const debouncedWhileSweep = debounce(executeWhileSweep, 333);
+  const debouncedAfterSweep = debounce(executeAfterSweep, 1000, { trailing: true });
 
   function doKnobStuff(knob: HTMLImageElement, currentAngle: number) {
     // do not allow knob rotation beyond 140 degrees
@@ -92,13 +88,9 @@ export default function Knob({
     const currentValue = currentAngle + 140;
 
     handleInputChange(currentValue);
-    setLastValue(currentValue);
 
-    // check if value sweep has ended
-    if (!isCheckingForChange) {
-      checkForChange(currentValue);
-      setIsCheckingforChange(true);
-    }
+    debouncedWhileSweep(currentValue);
+    debouncedAfterSweep(currentValue);
   }
 
   useEffect(() => {
@@ -108,9 +100,19 @@ export default function Knob({
 
     const knob = knobEl.current;
 
-    let initialAngle = isLinear
-      ? getSliderValueForLinValue(initial, min, max)
-      : getSliderValueForLogValue(initial, min, max);
+    let storedInitialValue: number | null = null;
+    if (name) {
+      // try to initialize knob value from localstorage
+      const localValue = localStorage.getItem(`erebus-knobs-${name}`);
+      if (localValue) {
+        storedInitialValue = parseFloat(localValue);
+      }
+    }
+
+    let initialAngle: number;
+    initialAngle = isLinear
+      ? getSliderValueForLinValue(storedInitialValue || initial, min, max)
+      : getSliderValueForLogValue(storedInitialValue || initial, min, max);
 
     doKnobStuff(knob, initialAngle);
 

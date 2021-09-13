@@ -56,9 +56,9 @@ export default function LFOmodule({ lfo }: LfoProps): JSX.Element {
               }}
               min={0.1}
               max={200}
-              afterSweep={() => {
-                setLedAnimationDuration(lfo.lforate.value as number);
-              }}
+              // afterSweep={() => {
+              //   setLedAnimationDuration(lfo.lforate.value as number);
+              // }}
               whileSweep={() => {
                 setLedAnimationDuration(lfo.lforate.value as number);
               }}

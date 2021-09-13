@@ -31,6 +31,7 @@ export default function FilterModule({ filter }: IFilterProps): JSX.Element {
           max={20000}
           initial={70}
           isBig
+          name="vcf-cutoff"
         />
       </div>
       <div className={classes.text}>Cutoff</div>

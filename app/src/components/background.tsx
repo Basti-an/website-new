@@ -19,7 +19,7 @@ function Background(): JSX.Element {
           <img
             id="background-dummy"
             alt="water shore background"
-            src="https://cdn.spacetelescope.org/archives/images/screen/heic0611b.jpg"
+            src={`${hostUrl}/images/mainBg.jpg`}
           />
           <img id="background" alt="water shore background" src={`${hostUrl}/images/mainBg.jpg`} />
         </>

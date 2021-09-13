@@ -260,7 +260,7 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
   return (
     <div className={classes.patchbay}>
       <div className={classes.knobContainer}>
-        {outputs.map(({ output }: OutputJack) => (
+        {outputs.map(({ output, label }: OutputJack) => (
           <div className={classes.miniknob}>
             <Knob
               min={0}
@@ -270,6 +270,7 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
                 output.max = value;
               }}
               isLinear
+              name={`outputs-${label}-scaling`}
             />
           </div>
         ))}

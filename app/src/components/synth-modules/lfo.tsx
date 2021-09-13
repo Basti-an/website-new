@@ -56,29 +56,23 @@ export default function LFOmodule({ lfo }: LfoProps): JSX.Element {
               }}
               min={0.1}
               max={200}
-              // afterSweep={() => {
-              //   setLedAnimationDuration(lfo.lforate.value as number);
-              // }}
               whileSweep={() => {
                 setLedAnimationDuration(lfo.lforate.value as number);
               }}
               initial={0.6}
+              name="lfo-rate"
             />
           </div>
           <div className={classes.button}>
             <Knob
               onChange={(value: number) => {
-                // if (value < 0.05) {
-                // lfo.output.disconnect();
-                // } else if (window.erebus.lfoTarget) {
-                // window.erebus.lfoTarget(lfo.output);
-                // }
                 lfo.lfo.amplitude.linearRampTo(value, 0);
               }}
               min={0}
               max={1}
               isLinear
               initial={0.3}
+              name="lfo-amplitude"
             />
           </div>
         </div>
@@ -97,7 +91,7 @@ export default function LFOmodule({ lfo }: LfoProps): JSX.Element {
           src={`${Config.hostUrl}/images/waveform_square_bright.png`}
           alt="square wave"
         />
-        <Switch onInput={switchWaveform} />
+        <Switch onInput={switchWaveform} name="lfo-waveform" />
         <img
           className={classes.waveform}
           src={`${Config.hostUrl}/images/waveform_triangle_bright.png`}

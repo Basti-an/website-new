@@ -30,6 +30,8 @@ interface KnobProps {
  * The Knob is an UI Element that can be rotated between -140 and 140 degrees by mouse or (multi) touch
  * whenever the rotation changes, a corresponding value will be computated which maps
  * from the linear range of [-140, 140] to [min, max], either linearly or logarithmically
+ * The Knob also provides a whileSweep function, which is called with the current knob value while the knob is being moved
+ * and an afterSweep function, which is called with the knobs last value, 1 second after it was last moved
  */
 export default function Knob({
   min,
@@ -54,9 +56,9 @@ export default function Knob({
     const value = isLinear
       ? getLinValue(currentValue, min, max)
       : getLogValue(currentValue, min, max);
+
     // if knob has a name, save the current knob value to localStorage
     if (name) {
-      console.log("committing value to localStorage", value.toString());
       localStorage.setItem(`erebus-knobs-${name}`, value.toString());
     }
 
@@ -76,7 +78,7 @@ export default function Knob({
   const debouncedWhileSweep = debounce(executeWhileSweep, 333);
   const debouncedAfterSweep = debounce(executeAfterSweep, 1000, { trailing: true });
 
-  function doKnobStuff(knob: HTMLImageElement, currentAngle: number) {
+  function doKnobStuff(knob: HTMLImageElement, currentAngle: number, skipAfterSweep?: boolean) {
     // do not allow knob rotation beyond 140 degrees
     if (currentAngle > 140 || currentAngle < -140) {
       return;
@@ -90,7 +92,12 @@ export default function Knob({
     handleInputChange(currentValue);
 
     debouncedWhileSweep(currentValue);
-    debouncedAfterSweep(currentValue);
+
+    if (!skipAfterSweep) {
+      // on initial invocation for example, we do not want to have the side effects of the afterSweep,
+      // therefore we provide the option of skipping invocation of the debounced afterSweep function
+      debouncedAfterSweep(currentValue);
+    }
   }
 
   useEffect(() => {
@@ -114,7 +121,7 @@ export default function Knob({
       ? getSliderValueForLinValue(storedInitialValue || initial, min, max)
       : getSliderValueForLogValue(storedInitialValue || initial, min, max);
 
-    doKnobStuff(knob, initialAngle);
+    doKnobStuff(knob, initialAngle, true);
 
     if (getIsMobileDevice()) {
       const region = new ZingTouch.Region(knob);

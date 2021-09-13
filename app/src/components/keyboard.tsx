@@ -58,7 +58,10 @@ Object.entries(noteToKeyboardMap).forEach(([key, value]) => {
 
 function Notes({ sendCV }: { sendCV: (cv: Note) => void }): JSX.Element {
   const noteJSX = notes.map((value) => {
-    const setCV = () => {
+    const setCV = (
+      event: React.TouchEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement, MouseEvent>,
+    ) => {
+      event.preventDefault();
       sendCV(value);
     };
 

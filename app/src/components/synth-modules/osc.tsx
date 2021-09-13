@@ -34,7 +34,15 @@ function OscillatorKnob({
     <div className={classes.osc}>
       <p className={classes.headertext}>{headerText}</p>
       <div className={classes.smallButton}>
-        <Knob onChange={onChangeInput} isBig isLinear min={0} max={1000} initial={initial} />
+        <Knob
+          onChange={onChangeInput}
+          isBig
+          isLinear
+          min={0}
+          max={1000}
+          initial={initial}
+          name={`osc-${headerText}-tuning`}
+        />
       </div>
       <p className={classes.brightText}>{subText}</p>
     </div>
@@ -59,7 +67,7 @@ function OctaveSwitch({
       <div className={classes.justifyMid}>
         {placement === "right" && (
           <div className={classes.switchRight}>
-            <ThreeWaySwitch onInput={onToggle} initialState={-1} />
+            <ThreeWaySwitch onInput={onToggle} initialState={-1} name="osc-octave-right" />
           </div>
         )}
         <div className={classes.octaves}>
@@ -77,7 +85,7 @@ function OctaveSwitch({
         </div>
         {placement === "left" && (
           <div className={classes.switchLeft}>
-            <ThreeWaySwitch onInput={onToggle} initialState={-1} />
+            <ThreeWaySwitch onInput={onToggle} initialState={-1} name="osc-octave-left" />
           </div>
         )}
       </div>
@@ -128,7 +136,11 @@ function WaveformSwitch({
             src={`${Config.hostUrl}/images/${waveforms[osc.possibleWaveforms[0]]}`}
             alt="waveform"
           />
-          <ThreeWaySwitch onInput={changeOscWaveform} initialState={position === "left" ? -1 : 1} />
+          <ThreeWaySwitch
+            onInput={changeOscWaveform}
+            initialState={position === "left" ? -1 : 1}
+            name={`osc-waveform-${position}`}
+          />
           <img
             className={classes.waveformLabel}
             src={`${Config.hostUrl}/images/${waveforms[osc.possibleWaveforms[1]]}`}
@@ -184,6 +196,7 @@ export default function OSCModule({ oscillators, changeOscOctave }: OscProps): J
             min={0}
             max={100}
             initial={50}
+            name="osc-mix"
           />
         </div>
         <p className={classes.darkText}>Mix</p>
@@ -226,6 +239,7 @@ export default function OSCModule({ oscillators, changeOscOctave }: OscProps): J
                 min={1}
                 max={2}
                 initial={1}
+                name="osc-1-glide"
               />
             </div>
             <p className={classes.darkText}>glide</p>
@@ -244,6 +258,7 @@ export default function OSCModule({ oscillators, changeOscOctave }: OscProps): J
                 min={1}
                 max={2}
                 initial={1}
+                name="osc-2-glide"
               />
             </div>
             <p className={classes.darkText}>glide</p>

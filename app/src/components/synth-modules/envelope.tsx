@@ -18,6 +18,7 @@ interface ADSRButtonProps {
   onChange: (input: number) => void;
   text: string;
   isLinear?: boolean;
+  name?: string;
 }
 
 type ADSRPhase = "attack" | "decay" | "sustain" | "release";
@@ -25,14 +26,14 @@ type ADSRPhase = "attack" | "decay" | "sustain" | "release";
 const envelopeDescription =
   "The envelope gets triggered every time a note is played and consists of four phases - attack, decay, sustain, release. Hit up ADSR on wikipedia to learn more";
 
-function ADSRButton({ min, max, initial, onChange, text, isLinear }: ADSRButtonProps) {
+function ADSRButton({ min, max, initial, onChange, text, isLinear, name }: ADSRButtonProps) {
   const classes = useStyles();
   return (
     <div className={classes.buttonContainer}>
       {/* button here */}
       {/* button text here */}
       <div className={classes.button}>
-        <Knob onChange={onChange} {...{ min, max, initial, isLinear }} />
+        <Knob onChange={onChange} {...{ min, max, initial, isLinear, name }} />
       </div>
       <p className={text === "depth" ? classes.knobTextBright : classes.knobText}>{text}</p>
     </div>
@@ -55,8 +56,22 @@ export default function EnvelopeModule({ envelope }: EnvelopeProps): JSX.Element
       <p className={classes.headerText}>Envelope</p>
       <div className={classes.row}>
         <div className={classNames(classes.adsrPlate, classes.row)}>
-          <ADSRButton onChange={changeADSR("attack")} min={1} max={4} initial={1} text="A" />
-          <ADSRButton onChange={changeADSR("decay")} min={1} max={3.5} initial={1.42} text="D" />
+          <ADSRButton
+            onChange={changeADSR("attack")}
+            min={1}
+            max={4}
+            initial={1}
+            text="A"
+            name="adsr-a"
+          />
+          <ADSRButton
+            onChange={changeADSR("decay")}
+            min={1}
+            max={3.5}
+            initial={1.42}
+            text="D"
+            name="adsr-d"
+          />
           <ADSRButton
             onChange={changeADSR("sustain")}
             min={1}
@@ -64,11 +79,27 @@ export default function EnvelopeModule({ envelope }: EnvelopeProps): JSX.Element
             initial={1.5}
             text="S"
             isLinear
+            name="adsr-s"
           />
-          <ADSRButton onChange={changeADSR("release")} min={1} max={6.5} initial={1.7} text="R" />
+          <ADSRButton
+            onChange={changeADSR("release")}
+            min={1}
+            max={6.5}
+            initial={1.7}
+            text="R"
+            name="adsr-r"
+          />
         </div>
         <div className={classNames(classes.row, classes.depthPlate)}>
-          <ADSRButton onChange={changeDepth} min={0} max={1} initial={0.4} text="depth" isLinear />
+          <ADSRButton
+            onChange={changeDepth}
+            min={0}
+            max={1}
+            initial={0.4}
+            text="depth"
+            isLinear
+            name="adsr-depth"
+          />
         </div>
       </div>
     </div>

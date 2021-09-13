@@ -30,6 +30,7 @@ export default function Ampmodule({ setAmpEnv }: VcaProps): JSX.Element {
           initial={150}
           isBig
           isLinear
+          name="vca-output"
         />
       </div>
       <div className={classes.text}>Level</div>
@@ -40,8 +41,9 @@ export default function Ampmodule({ setAmpEnv }: VcaProps): JSX.Element {
               setAmpEnv({ attack: value });
             }}
             min={0.01}
-            max={2}
+            max={3}
             initial={0.01}
+            name="vca-attack"
           />
         </div>
         <div className={classes.knobRelease}>
@@ -50,8 +52,9 @@ export default function Ampmodule({ setAmpEnv }: VcaProps): JSX.Element {
               setAmpEnv({ release: value });
             }}
             min={0.1}
-            max={100}
-            initial={0.6}
+            max={6}
+            initial={0.42}
+            name="vca-release"
           />
         </div>
       </div>

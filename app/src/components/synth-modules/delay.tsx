@@ -33,6 +33,7 @@ export default function DelayModule({
             min={0.1}
             max={1.0}
             initial={0.5}
+            name="delay-time"
           />
         </div>
         <div className={classes.button}>
@@ -46,6 +47,7 @@ export default function DelayModule({
             whileSweep={evaluateConnection}
             isLinear
             initial={0.25}
+            name="delay-feedback"
           />
         </div>
         <div className={classes.button}>
@@ -59,6 +61,7 @@ export default function DelayModule({
             whileSweep={evaluateConnection}
             isLinear
             initial={0}
+            name="delay-wet"
           />
         </div>
       </div>

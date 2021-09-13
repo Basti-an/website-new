@@ -17,6 +17,7 @@ export default class VCA {
       sustain: 1.0,
       release: 0.5,
     });
+    this.ampEnv.releaseCurve = "linear";
 
     this.output = new Tone.Gain(1.0);
     this.ampEnv.connect(this.output);

@@ -44,6 +44,7 @@ export default function FilterModule({ filter }: IFilterProps): JSX.Element {
           min={3}
           max={33}
           initial={7}
+          name="vcf-resonance"
         />
       </div>
     </div>

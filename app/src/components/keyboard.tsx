@@ -34,7 +34,8 @@ const notes: Note[] = [
   "C3",
 ];
 
-const noteKeyboardMap = {
+// assumes quertz mapping, @TODO: i18n
+const noteToKeyboardMap = {
   C2: "a",
   "C#2": "w",
   D2: "s",
@@ -50,21 +51,10 @@ const noteKeyboardMap = {
   C3: "k",
 };
 
-const keyCodeNoteMap: { [index: number]: Note } = {
-  65: "C2",
-  87: "C#2",
-  83: "D2",
-  69: "D#2",
-  68: "E2",
-  70: "F2",
-  84: "F#2",
-  71: "G2",
-  90: "G#2",
-  72: "A2",
-  85: "A#2",
-  74: "B2",
-  75: "C3",
-};
+const keyToNoteMap: { [index: string]: Note } = {};
+Object.entries(noteToKeyboardMap).forEach(([key, value]) => {
+  keyToNoteMap[value] = key as Note;
+});
 
 function Notes({ sendCV }: { sendCV: (cv: Note) => void }): JSX.Element {
   const noteJSX = notes.map((value) => {
@@ -72,30 +62,29 @@ function Notes({ sendCV }: { sendCV: (cv: Note) => void }): JSX.Element {
       sendCV(value);
     };
 
+    const onMouseOver = setCV;
+    const onTouchMove = setCV;
+    const onTouchStart = setCV;
+    const onClick = setCV;
+
     if (value.indexOf("#") !== -1) {
       return (
         <div
           id={value}
-          onMouseOver={setCV}
-          onTouchMove={setCV}
-          onTouchStart={setCV}
-          onClick={setCV}
+          {...{ onMouseOver, onTouchMove, onTouchStart, onClick }}
           className="blackNote"
         >
-          {noteKeyboardMap[value]}
+          {noteToKeyboardMap[value]}
         </div>
       );
     }
     return (
       <div
         id={value}
-        onMouseOver={setCV}
-        onTouchMove={setCV}
-        onTouchStart={setCV}
-        onClick={setCV}
+        {...{ onMouseOver, onTouchMove, onTouchStart, onClick }}
         className="whiteNote"
       >
-        {noteKeyboardMap[value]}
+        {noteToKeyboardMap[value]}
       </div>
     );
   });
@@ -110,7 +99,6 @@ declare global {
 
 window.pressedKeys = [];
 
-// generates an eventhandler in the scope of the react component below
 function onKeyDown(sendCVs: (cv1: Note, cv2: Note) => void, sendGate: (gate: boolean) => void) {
   return (e: KeyboardEvent) => {
     if (e.repeat) {
@@ -118,8 +106,8 @@ function onKeyDown(sendCVs: (cv1: Note, cv2: Note) => void, sendGate: (gate: boo
     }
 
     e = e || window.event;
-    const charCode = e.keyCode;
-    const pressedKey = keyCodeNoteMap[charCode];
+    const { key } = e;
+    const pressedKey = keyToNoteMap[key];
 
     if (!pressedKey) {
       return;
@@ -132,18 +120,17 @@ function onKeyDown(sendCVs: (cv1: Note, cv2: Note) => void, sendGate: (gate: boo
 
     pressedKeyEl.classList.add("pressed");
     window.pressedKeys.push(pressedKey);
-    sendCVs(window.pressedKeys[0], pressedKey);
 
+    sendCVs(window.pressedKeys[0], pressedKey);
     sendGate(true);
   };
 }
 
-// generates an eventhandler in the scope of the react component below
 function onKeyUp(sendCVs: (cv1: Note, cv2: Note) => void, sendGate: (gate: boolean) => void) {
   return (e: KeyboardEvent) => {
     e = e || window.event;
-    const charCode = e.keyCode;
-    const releasedKey = keyCodeNoteMap[charCode];
+    const { key } = e;
+    const releasedKey = keyToNoteMap[key];
 
     if (!releasedKey) {
       return;
@@ -191,16 +178,16 @@ export default function Keyboard({ sendCVs, sendGate }: KeyboardProps): JSX.Elem
         sendGate(true);
       }}
       onTouchStart={(event) => {
-        sendGate(true);
         event.preventDefault();
+        sendGate(true);
       }}
       onMouseUp={(event) => {
         event.preventDefault();
         sendGate(false);
       }}
       onTouchEnd={(event) => {
-        sendGate(false);
         event.preventDefault();
+        sendGate(false);
       }}
     >
       {/* TODO: add octave shift button */}

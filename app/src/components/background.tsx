@@ -2,6 +2,8 @@ import React from "react";
 import Config from "../config";
 import { getIsMobileOS } from "../utils";
 
+const { hostUrl } = Config;
+
 // this stuff is wild
 // we have an image being used as the source graphic for a discplacement map
 // which is being displaced by a turbulence pattern which is itself being animated through
@@ -9,7 +11,6 @@ import { getIsMobileOS } from "../utils";
 
 function Background(): JSX.Element {
   const isMobileDevice = getIsMobileOS();
-  const { hostUrl } = Config;
 
   return (
     <>
@@ -18,7 +19,7 @@ function Background(): JSX.Element {
           <img
             id="background-dummy"
             alt="water shore background"
-            src={`${hostUrl}/images/mainBg.jpg`}
+            src="https://cdn.spacetelescope.org/archives/images/screen/heic0611b.jpg"
           />
           <img id="background" alt="water shore background" src={`${hostUrl}/images/mainBg.jpg`} />
         </>

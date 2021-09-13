@@ -1,5 +1,5 @@
 import * as Tone from "tone";
-import { ModSource } from "../types/modSource.d";
+import { ModSource } from "../../types/modSource.d";
 import Delay from "./delay";
 import Envelope from "./envelope";
 import Filter from "./filter";
@@ -95,6 +95,7 @@ export default class Erebus {
       { label: "LFO", output: this.lfo.output, connectedWith: 0 },
       { label: "LFO2", output: this.lfo.output2, connectedWith: 5 },
     ];
+
     this.inputs = [
       {
         label: "VCF",
@@ -114,24 +115,24 @@ export default class Erebus {
           this.oscillators.osc2.inputs.frequency(output);
         },
       },
-      // {
-      //   label: "ECHO",
-      //   connectInput: (output: ModSource) => {
-      //     window.erebus.delay.inputs.delayTime(output);
-      //   },
-      // },
+      {
+        label: "ECHO",
+        connectInput: (output: ModSource) => {
+          window.erebus.delay.inputs.delayTime(output);
+        },
+      },
       {
         label: "LFO/R",
         connectInput: (output: ModSource) => {
           this.lfo.inputs.lforate(output);
         },
       },
-      {
-        label: "VCA",
-        connectInput: (output: ModSource) => {
-          this.vca.inputs.volume(output);
-        },
-      },
+      // {
+      //   label: "VCA",
+      //   connectInput: (output: ModSource) => {
+      //     this.vca.inputs.volume(output);
+      //   },
+      // },
       {
         label: "PW",
         connectInput: (output: ModSource) => {

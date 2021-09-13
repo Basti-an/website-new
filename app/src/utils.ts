@@ -194,6 +194,97 @@ const allSequencerNotes = [
   "F3",
 ];
 
+// @TODO finalize MIDI handling
+// if (typeof navigator.requestMIDIAccess === "function") {
+//   console.log("This browser supports WebMIDI!");
+// } else {
+//   console.log("WebMIDI is not supported in this browser.");
+//   return;
+// }
+// type Note =
+//   | "C2"
+//   | "C#2"
+//   | "D2"
+//   | "D#2"
+//   | "E2"
+//   | "F2"
+//   | "F#2"
+//   | "G2"
+//   | "G#2"
+//   | "A2"
+//   | "A#2"
+//   | "B2"
+//   | "C3";
+// const midiNotes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+
+// function getMIDIMessage(message: WebMidi.MIDIMessageEvent) {
+//   const command = message.data[0];
+//   const note = message.data[1];
+//   const velocity = message.data.length > 2 ? message.data[2] : 0; // a velocity value might not be included with a noteOff command
+
+//   switch (command) {
+//     case 144: // note on
+//       if (velocity > 0) {
+//         // todo
+//         const pressedKey = midiNotes[note - 24] as Note;
+//         window.pressedKeys.push(pressedKey);
+//         // sendCVs(window.pressedKeys[0], pressedKey);
+//         // sendGate(true);
+//         console.log(note);
+//         const pressedKeyEl = document.getElementById(pressedKey);
+//         if (!pressedKeyEl) {
+//           console.error("could not find pressedKey in DOM: ", pressedKey);
+//           return;
+//         }
+//         pressedKeyEl.classList.add("pressed");
+//       } else {
+//         console.log(note);
+//       }
+//       break;
+//     case 128: // note off
+//       {
+//         console.log(note);
+//         const releasedKey = midiNotes[note] as Note;
+
+//         // remove releasedKey from pressedKeys
+//         const releasedKeyIndex = window.pressedKeys.indexOf(releasedKey);
+//         if (releasedKeyIndex === -1) {
+//           return;
+//         }
+//         // sendCVs(window.pressedKeys[0], window.pressedKeys[window.pressedKeys.length - 1]);
+
+//         const releasedKeyEl = document.getElementById(releasedKey);
+//         if (!releasedKeyEl) {
+//           console.error("could not find releasedKey in DOM: ", releasedKey);
+//           return;
+//         }
+
+//         // remove key from window.pressedKeys
+//         window.pressedKeys.splice(releasedKeyIndex, 1);
+//         if (window.pressedKeys.length === 0) {
+//           // sendGate(false);
+
+//           releasedKeyEl.classList.remove("pressed");
+//         }
+//       }
+//       break;
+//     default:
+//       break;
+//   }
+// }
+
+// function onMIDISuccess(midiAccess: WebMidi.MIDIAccess) {
+//   midiAccess.inputs.forEach((input) => {
+//     input.onmidimessage = getMIDIMessage;
+//   });
+// }
+
+// function onMIDIFailure() {
+//   console.log("Could not access your MIDI devices.");
+// }
+
+// navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
+
 export {
   getIsMobileOS,
   getIsGoodBrowser,

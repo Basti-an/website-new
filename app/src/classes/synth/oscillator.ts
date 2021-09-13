@@ -1,7 +1,7 @@
 import * as Tone from "tone";
 import { PulseOscillator } from "tone";
 import { OmniOscillatorType } from "tone/build/esm/source/oscillator/OscillatorInterface";
-import { ModSource } from "../types/modSource.d";
+import { ModSource } from "../../types/modSource.d";
 
 export default class Oscillator {
   oscillator: Tone.OmniOscillator<Tone.Oscillator>;

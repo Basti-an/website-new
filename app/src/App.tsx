@@ -94,9 +94,9 @@ function App(): JSX.Element {
           <>
             <div className={classes.content}>
               <Grid container className={classes.grid}>
-                <Grid item sm={1} md={2} lg={1} xl={2} />
+                <Grid item lg={1} xl={2} />
 
-                <Grid item xs={12} sm={10} md={8} lg={10} xl={8}>
+                <Grid item xs={12} lg={10} xl={8}>
                   <Grid container>
                     <Grid item xs={12}>
                       {Object.entries(views).map(([path, view]) => {
@@ -114,7 +114,7 @@ function App(): JSX.Element {
                     </Grid>
                   </Grid>
                 </Grid>
-                <Grid item sm={1} md={2} lg={1} xl={2} />
+                <Grid item lg={1} xl={2} />
               </Grid>
             </div>
           </>

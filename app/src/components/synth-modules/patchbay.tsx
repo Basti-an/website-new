@@ -178,7 +178,7 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
     });
   };
 
-  const onMove = (e: any) => {
+  const onMove = (e: React.MouseEvent<HTMLElement>) => {
     if (!currentLine || !ctx || !canvas) {
       return;
     }
@@ -283,7 +283,7 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
             tabIndex={index + 1}
             className={classes.jack}
             onMouseDown={onJackDown(index, output)}
-            onKeyPress={(e: any) => {
+            onKeyPress={(e: React.KeyboardEvent<HTMLElement>) => {
               console.log(e.key);
               if (e.key === "Enter") {
                 onJackDown(index, output)();
@@ -300,7 +300,7 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
             tabIndex={outputs.length + index}
             className={classes.jack}
             onMouseUp={onJackUp(index, connectInput)}
-            onKeyPress={(e: any) => {
+            onKeyPress={(e: React.KeyboardEvent<HTMLElement>) => {
               if (e.key === "Enter") {
                 onJackUp(index, connectInput)();
               }

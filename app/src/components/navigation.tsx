@@ -22,7 +22,7 @@ export default function Navigation(): JSX.Element {
 
     // bounding box for mouse events
     const fallOffX = 220;
-    const fallOffY = 56;
+    const fallOffY = 42;
 
     const maxMagnification = 0.6;
 

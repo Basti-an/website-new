@@ -1,11 +1,10 @@
 import React from "react";
-import Tone from "tone";
 import Knob from "../synth/knob";
 import Switch from "../synth/switch";
 
 import { lfoStyles } from "../../jss/synth";
 import Config from "../../config";
-import LFO from "../../synth/lfo";
+import LFO from "../../classes/synth/lfo";
 
 const useStyles = lfoStyles;
 

@@ -5,7 +5,7 @@ import Knob from "../synth/knob";
 import Config from "../../config";
 import { oscStyles } from "../../jss/synth";
 import ThreeWaySwitch, { Ternary } from "../synth/switch3way";
-import Oscillators from "../../synth/oscillators";
+import Oscillators from "../../classes/synth/oscillators";
 
 const useStyles = oscStyles;
 

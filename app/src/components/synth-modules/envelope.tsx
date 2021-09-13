@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import React from "react";
 import { envelopeStyles } from "../../jss/synth";
-import Envelope from "../../synth/envelope";
+import Envelope from "../../classes/synth/envelope";
 
 import Knob from "../synth/knob";
 

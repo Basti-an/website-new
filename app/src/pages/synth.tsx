@@ -1,10 +1,8 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
 import { Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
 import React, { useState, useEffect } from "react";
 import * as Tone from "tone";
-import { createAudioContext } from "tone/build/esm/core/context/AudioContext";
 
 import Keyboard from "../components/keyboard";
 import DelayModule from "../components/synth-modules/delay";
@@ -14,11 +12,9 @@ import OSCModule from "../components/synth-modules/osc";
 import Ampmodule from "../components/synth-modules/vca";
 import EnvelopeModule from "../components/synth-modules/envelope";
 import PatchBay from "../components/synth-modules/patchbay";
-import Sequencer from "../components/synth-modules/sequencer";
+// import Sequencer from "../components/synth-modules/sequencer";
 import Oscilloscope from "../components/synth-modules/oscilloscope";
-import Config from "../config";
-import Erebus from "../synth/erebus";
-import { ModSource } from "../types/modSource.d";
+import Erebus from "../classes/synth/erebus";
 import { synthStyles } from "../jss/synth";
 
 declare global {
@@ -96,87 +92,92 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
   }
 
   return (
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-    <div
-      className={classes.synth}
-      onClick={async () => {
-        if (!init) {
-          await Tone.start();
-          initializeAudio();
-          setInit(true);
-        }
-      }}
-    >
-      {!erebus && (
-        <div className={classes.erebusBox}>
-          <Typography variant="h5" color="inherit" className={classes.title}>
-            Web-native digital implementation of the{" "}
-            <a
-              href="https://www.dreadbox-fx.com/erebus/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={classes.link}
-            >
-              Dreadbox Erebus V2 Synthesizer
-            </a>
-          </Typography>
-          <Typography variant="h5" color="inherit" className={classes.title}>
-            Click on this box to enable WebAudio and load the synth.
-          </Typography>
-        </div>
-      )}
-      {erebus && (
-        <>
+    <>
+      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+      <div
+        className={classes.synth}
+        onClick={async () => {
+          if (!init) {
+            await Tone.start();
+            initializeAudio();
+            setInit(true);
+          }
+        }}
+      >
+        {!erebus && (
           <div className={classes.erebusBox}>
-            <div className={classes.row}>
-              <LFOmodule lfo={erebus.lfo} />
-              <DelayModule delay={erebus.delay.delay} />
-              <NamePlate />
-            </div>
-            <div className={classes.row}>
+            <Typography variant="h5" color="inherit" className={classes.title}>
+              Web-native digital implementation of the{" "}
+              <a
+                href="https://www.dreadbox-fx.com/erebus/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={classes.link}
+              >
+                Dreadbox Erebus V2 Synthesizer
+              </a>
+            </Typography>
+            <Typography variant="h5" color="inherit" className={classes.title}>
+              Click on this box to enable WebAudio and load the synth.
+            </Typography>
+          </div>
+        )}
+        {erebus && (
+          <>
+            <div className={classes.erebusBox}>
               <div className={classes.row}>
-                <div className={classes.column}>
-                  <div className={classes.row}>
-                    <OSCModule oscillators={erebus.oscillators} changeOscOctave={changeOscOctave} />
-                    <Filtermodule filter={erebus.filter} />
-                    <Ampmodule
-                      setAmpEnv={({ attack, release }) => {
-                        if (attack) {
-                          erebus.vca.ampEnv.set({ attack });
-                        }
-                        if (release) {
-                          erebus.vca.ampEnv.set({ release });
-                        }
-                      }}
-                    />
+                <LFOmodule lfo={erebus.lfo} />
+                <DelayModule delay={erebus.delay.delay} />
+                <NamePlate />
+              </div>
+              <div className={classes.row}>
+                <div className={classes.row}>
+                  <div className={classes.column}>
+                    <div className={classes.row}>
+                      <OSCModule
+                        oscillators={erebus.oscillators}
+                        changeOscOctave={changeOscOctave}
+                      />
+                      <Filtermodule filter={erebus.filter} />
+                      <Ampmodule
+                        setAmpEnv={({ attack, release }) => {
+                          if (attack) {
+                            erebus.vca.ampEnv.set({ attack });
+                          }
+                          if (release) {
+                            erebus.vca.ampEnv.set({ release });
+                          }
+                        }}
+                      />
+                    </div>
+                    <div className={classes.rowVertical}>
+                      <EnvelopeModule envelope={erebus.envelope} />
+                      <Oscilloscope erebus={erebus} />
+                    </div>
                   </div>
-                  <div className={classes.rowVertical}>
-                    <EnvelopeModule envelope={erebus.envelope} />
-                    <Oscilloscope erebus={erebus} />
-                  </div>
+                  <PatchBay outputs={erebus.outputs} inputs={erebus.inputs} />
                 </div>
-                <PatchBay outputs={erebus.outputs} inputs={erebus.inputs} />
               </div>
             </div>
-          </div>
-          <div className={classes.rowCenter}>
-            {/* <Sequencer erebus={erebus} sendCVs={sendCVs} /> */}
-          </div>
-          <Keyboard
-            sendCVs={sendCVs}
-            sendGate={(newgate) => {
-              if (newgate) {
-                erebus.vca.ampEnv.triggerAttack(undefined, 1.0);
-                erebus.envelope.envelope.triggerAttack(undefined, 1.0);
-              } else {
-                erebus.vca.ampEnv.triggerRelease();
-                erebus.envelope.envelope.triggerRelease();
-              }
-            }}
-          />
-        </>
-      )}
-    </div>
+            <div className={classes.rowCenter}>
+              {/* <Sequencer erebus={erebus} sendCVs={sendCVs} /> */}
+            </div>
+            <Keyboard
+              sendCVs={sendCVs}
+              sendGate={(newgate) => {
+                if (newgate) {
+                  erebus.vca.ampEnv.triggerAttack(undefined, 1.0);
+                  erebus.envelope.envelope.triggerAttack(undefined, 1.0);
+                } else {
+                  erebus.vca.ampEnv.triggerRelease();
+                  erebus.envelope.envelope.triggerRelease();
+                }
+              }}
+            />
+          </>
+        )}
+      </div>
+    </>
   );
 }
 

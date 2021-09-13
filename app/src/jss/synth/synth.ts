@@ -63,6 +63,11 @@ export const synthStyles = makeStyles({
     flexDirection: "column",
     display: "flex",
   },
+  "@media (max-width: 800px)": {
+    namePlate: {
+      display: "none",
+    },
+  },
   namePlateTitle: {
     color: "rgb(133, 225, 171)",
     fontSize: "80px",

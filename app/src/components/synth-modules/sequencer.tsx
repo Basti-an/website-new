@@ -2,7 +2,7 @@ import classnames from "classnames";
 import React, { useEffect, useState } from "react";
 import * as Tone from "tone";
 import { sequencerStyles } from "../../jss/synth";
-import Erebus from "../../synth/erebus";
+import Erebus from "../../classes/synth/erebus";
 import { allSequencerNotes } from "../../utils";
 
 import Knob from "../synth/knob";

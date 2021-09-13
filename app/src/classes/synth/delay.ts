@@ -1,5 +1,5 @@
 import * as Tone from "tone";
-import { ModSource } from "../types/modSource.d";
+import { ModSource } from "../../types/modSource.d";
 
 export default class Delay {
   delay: Tone.FeedbackDelay;

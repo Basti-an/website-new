@@ -1,6 +1,6 @@
 import React from "react";
 import { filterStyles } from "../../jss/synth";
-import Filter from "../../synth/filter";
+import Filter from "../../classes/synth/filter";
 import Knob from "../synth/knob";
 
 const useStyles = filterStyles;

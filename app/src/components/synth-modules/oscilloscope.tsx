@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
 import { synthStyles } from "../../jss/synth";
-import Erebus from "../../synth/erebus";
+import Erebus from "../../classes/synth/erebus";
 
 const useStyles = synthStyles;
 
@@ -33,7 +33,7 @@ export default function Oscilloscope({ erebus }: OscilloscopeProps): JSX.Element
 
       canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
 
-      const drawVisual = requestAnimationFrame(draw);
+      requestAnimationFrame(draw);
 
       // only change this value in tandem with erebus.analyser.fftsize
       const bufferLength = 2048;

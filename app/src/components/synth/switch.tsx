@@ -8,6 +8,7 @@ const useStyles = switchStyles;
 interface SwitchProps {
   onInput: (isActive: boolean) => void;
   initialState?: 0 | 1;
+  name?: string;
 }
 
 const switchClick = {
@@ -21,33 +22,55 @@ const switchClick = {
   }).toDestination(),
 };
 
-export default function Switch({ onInput, initialState }: SwitchProps): JSX.Element {
-  const [active, setActive] = useState(initialState || false);
+export default function Switch({ onInput, initialState, name }: SwitchProps): JSX.Element {
+  const [active, setActive] = useState(!!initialState || false);
   const switchEl = useRef<HTMLImageElement>(null);
   const classes = useStyles();
+
+  useEffect(() => {
+    if (switchEl.current) {
+      const element = switchEl.current;
+      // change view
+      if (!active) {
+        element.style.transform = "rotate(0deg)";
+      } else {
+        element.style.transform = "rotate(180deg)";
+      }
+    }
+  }, [active]);
 
   useEffect(() => {
     onInput(!!active);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (name) {
+      const storedInitialValue = localStorage.getItem(`erebus-switches-${name}`);
+      if (storedInitialValue !== null) {
+        const storedBool = !!parseInt(storedInitialValue, 10);
+        setActive(storedBool);
+        onInput(storedBool);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [name]);
+
   const switchHandler = () => {
     // click sound
-    if (switchEl.current) {
-      const element = switchEl.current;
-      // change view
-      if (active) {
-        element.style.transform = "rotate(0deg)";
-        // click sound
-        switchClick.down.start();
-      } else {
-        element.style.transform = "rotate(180deg)";
-        switchClick.up.start();
-      }
+    if (active) {
+      switchClick.down.start();
+    } else {
+      switchClick.up.start();
     }
 
     onInput(!active);
     setActive(!active);
+
+    if (name) {
+      // commit current value to localStorage
+      localStorage.setItem(`erebus-switches-${name}`, !active ? "1" : "0");
+    }
   };
 
   return (

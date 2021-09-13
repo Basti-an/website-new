@@ -11,6 +11,7 @@ export declare type Ternary = -1 | 0 | 1;
 interface SwitchProps {
   onInput: (state: Ternary) => void;
   initialState?: Ternary;
+  name?: string;
 }
 
 const switchClick = {
@@ -32,7 +33,7 @@ const switchClick = {
   }).toDestination(),
 };
 
-export default function ThreeWaySwitch({ onInput, initialState }: SwitchProps): JSX.Element {
+export default function ThreeWaySwitch({ onInput, initialState, name }: SwitchProps): JSX.Element {
   const [state, setState] = useState<Ternary>(initialState ?? -1);
   const [prevState, setPrevState] = useState<Ternary>(initialState ?? -1);
   const switchEl = useRef<HTMLImageElement>(null);
@@ -45,33 +46,48 @@ export default function ThreeWaySwitch({ onInput, initialState }: SwitchProps): 
 
   useEffect(() => {
     onInput(state);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state, onInput]);
 
+  useEffect(() => {
+    if (name) {
+      const storedInitialValue = localStorage.getItem(`erebus-switches-${name}`);
+      if (storedInitialValue !== null) {
+        const storedTernary = parseInt(storedInitialValue, 10) as Ternary;
+        setState(storedTernary);
+        onInput(storedTernary);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [name]);
+
   const switchHandler = () => {
+    let newState = 0;
+
     if (state === 1) {
-      setState(0);
       setPrevState(1);
       switchClick.down.start();
-      return;
     }
 
     if (state === -1) {
-      setState(0);
       setPrevState(-1);
       switchClick.up.start();
-      return;
     }
 
     if (state === 0) {
       if (prevState === 1) {
-        setState(-1);
+        newState = -1;
         switchClick.down2.start();
-        return;
       }
       if (prevState <= 0) {
-        setState(1);
+        newState = 1;
         switchClick.up2.start();
       }
+    }
+
+    setState(newState as Ternary);
+    if (name) {
+      localStorage.setItem(`erebus-switches-${name}`, newState.toString());
     }
   };
 

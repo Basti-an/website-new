@@ -61,7 +61,7 @@ function Background(): JSX.Element {
                 id="turbulence2"
                 baseFrequency="0.02 0.04"
                 result="NOISE2"
-                numOctaves="2"
+                numOctaves="1"
               />
               <feDisplacementMap
                 in="SourceGraphic"

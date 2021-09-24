@@ -18,7 +18,7 @@ interface ADSRButtonProps {
   onChange: (input: number) => void;
   text: string;
   isLinear?: boolean;
-  name?: string;
+  name: string;
 }
 
 type ADSRPhase = "attack" | "decay" | "sustain" | "release";

@@ -180,8 +180,6 @@ export default function OSCModule({ oscillators, changeOscOctave }: OscProps): J
     } else {
       changeOscOctave(oscillator, 0);
     }
-    window.erebus.vca.ampEnv.triggerRelease();
-    window.erebus.vca.ampEnv.triggerAttack(0.1, 1.0);
   };
 
   return (

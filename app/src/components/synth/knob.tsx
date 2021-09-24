@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import ZingTouch from "zingtouch";
 import { debounce } from "lodash";
 
@@ -10,7 +10,12 @@ import {
   getLogValue,
   getSliderValueForLinValue,
   getSliderValueForLogValue,
+  loadErebusPatchValue,
+  loadErebusValue,
+  storeErebusValue,
 } from "../../utils";
+import { StoreContext } from "../../contexts/store";
+import { LoadContext } from "../../contexts/load";
 
 const useStyles = knobStyles;
 
@@ -23,7 +28,7 @@ interface KnobProps {
   onChange: (value: number) => void;
   whileSweep?: (value: number) => void;
   afterSweep?: (value: number) => void;
-  name?: string;
+  name: string;
 }
 
 /**
@@ -46,10 +51,14 @@ export default function Knob({
 }: KnobProps): JSX.Element {
   const knobEl = useRef<HTMLImageElement>(null);
   const classes = useStyles();
+  const storePatch = useContext(StoreContext);
+  const loadPatch = useContext(LoadContext);
+  const [lastValue, setLastValue] = useState<number | null>(null);
 
   function handleInputChange(value: number) {
     // takes a value between [0, 280] and remaps it to [min, max]
-    onChange(isLinear ? getLinValue(value, min, max) : getLogValue(value, min, max));
+    const remappedValue = isLinear ? getLinValue(value, min, max) : getLogValue(value, min, max);
+    onChange(remappedValue);
   }
 
   function executeAfterSweep(currentValue: number) {
@@ -57,10 +66,8 @@ export default function Knob({
       ? getLinValue(currentValue, min, max)
       : getLogValue(currentValue, min, max);
 
-    // if knob has a name, save the current knob value to localStorage
-    if (name) {
-      localStorage.setItem(`erebus-knobs-${name}`, value.toString());
-    }
+    storeErebusValue(`erebus-knobs-${name}`, value);
+    setLastValue(value);
 
     if (typeof afterSweep === "function") {
       afterSweep(value);
@@ -107,21 +114,18 @@ export default function Knob({
 
     const knob = knobEl.current;
 
-    let storedInitialValue: number | null = null;
-    if (name) {
-      // try to initialize knob value from localstorage
-      const localValue = localStorage.getItem(`erebus-knobs-${name}`);
-      if (localValue) {
-        storedInitialValue = parseFloat(localValue);
-      }
+    const localStorageValue = loadErebusValue(`erebus-knobs-${name}`);
+    let initialValue = initial;
+    if (localStorageValue !== null) {
+      initialValue = localStorageValue as number;
     }
 
-    let initialAngle: number;
-    initialAngle = isLinear
-      ? getSliderValueForLinValue(storedInitialValue || initial, min, max)
-      : getSliderValueForLogValue(storedInitialValue || initial, min, max);
+    let initialAngle = isLinear
+      ? getSliderValueForLinValue(initialValue, min, max)
+      : getSliderValueForLogValue(initialValue, min, max);
 
     doKnobStuff(knob, initialAngle, true);
+    setLastValue(initialValue);
 
     if (getIsMobileDevice()) {
       const region = new ZingTouch.Region(knob);
@@ -162,12 +166,51 @@ export default function Knob({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (storePatch.patchName === "initial-patch") {
+      return;
+    }
+
+    if (!lastValue) {
+      return;
+    }
+
+    console.log("storing knob");
+    const { addToPatch, patchName } = storePatch;
+    addToPatch(patchName, `erebus-knobs-${name}`, lastValue);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storePatch.patchName]);
+
+  useEffect(() => {
+    if (loadPatch === "initial-patch") {
+      return;
+    }
+
+    const knob = knobEl.current;
+    if (!knob) {
+      console.error("couldnt find knob el while loading patch");
+      return;
+    }
+
+    const value = loadErebusPatchValue(loadPatch, `erebus-knobs-${name}`) as number;
+
+    const angle = isLinear
+      ? getSliderValueForLinValue(value, min, max)
+      : getSliderValueForLogValue(value, min, max);
+
+    doKnobStuff(knob, angle, true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loadPatch]);
+
   return (
-    <img
-      ref={knobEl}
-      alt="synthesizer knob"
-      className={isBig ? classes.knobBig : classes.knobSmall}
-      src={`${Config.hostUrl}/images/erebus_knob.png`}
-    />
+    <>
+      <img
+        ref={knobEl}
+        alt="synthesizer knob"
+        className={isBig ? classes.knobBig : classes.knobSmall}
+        src={`${Config.hostUrl}/images/erebus_knob.png`}
+      />
+    </>
   );
 }

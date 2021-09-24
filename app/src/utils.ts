@@ -2,6 +2,8 @@ import { detect } from "detect-browser";
 
 const browser = detect();
 
+export type Primitive = number | boolean | string | undefined;
+
 function getIsMobileOS(): boolean {
   if (!browser) {
     return false;
@@ -133,13 +135,13 @@ function getSliderValueForLogValue(value: number, min: number, max: number): num
 }
 
 function getSliderValueForLinValue(value: number, min: number, max: number): number {
-  if (value < min) {
-    return min;
+  if (value <= min) {
+    return -140;
   }
-  if (value > max) {
-    return max;
+  if (value >= max) {
+    return 140;
   }
-  return (value / max) * 280 - 140;
+  return ((value - min) / (max - min)) * 280 - 140;
 }
 
 function getIsMobileDevice(): boolean {
@@ -285,6 +287,57 @@ const allSequencerNotes = [
 
 // navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
 
+function storeErebusPatchValue(patchName: string, componentName: string, value: Primitive): void {
+  if (patchName === "initial-patch") {
+    return;
+  }
+
+  const patchJSON = localStorage.getItem(`erebus-patches-${patchName}`);
+  if (!patchJSON) {
+    console.error(`patch ${patchName} not found in localStorage while attempting save`);
+    return;
+  }
+
+  const patch = JSON.parse(patchJSON);
+
+  patch[componentName] = value;
+  localStorage.setItem(`erebus-patches-${patchName}`, JSON.stringify(patch));
+}
+
+function loadErebusPatchValue(patchName: string, componentName: string): Primitive | null {
+  if (patchName === "initial-patch") {
+    return null;
+  }
+
+  const patchJSON = localStorage.getItem(`erebus-patches-${patchName}`);
+  if (!patchJSON) {
+    console.error(`patch ${patchName} not found in localStorage while attempting load`);
+    return null;
+  }
+
+  const patch = JSON.parse(patchJSON);
+
+  if (patch[componentName] === undefined) {
+    return null;
+  }
+
+  return patch[componentName];
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}
+
+function storeErebusValue(componenName: string, value: Primitive): void {
+  localStorage.setItem(componenName, JSON.stringify(value));
+}
+
+function loadErebusValue(componenName: string): Primitive | null {
+  const localValue = localStorage.getItem(componenName);
+  if (localValue === null) {
+    return null;
+  }
+
+  return JSON.parse(localValue);
+}
+
 export {
   getIsMobileOS,
   getIsGoodBrowser,
@@ -297,4 +350,8 @@ export {
   getSliderValueForLogValue,
   getIsMobileDevice,
   getRandomColor,
+  storeErebusPatchValue,
+  loadErebusPatchValue,
+  storeErebusValue,
+  loadErebusValue,
 };

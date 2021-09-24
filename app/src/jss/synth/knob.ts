@@ -17,4 +17,7 @@ export const knobStyles = makeStyles(() => ({
     marginLeft: "auto",
     display: "block",
   },
+  hidden: {
+    display: "none",
+  },
 }));

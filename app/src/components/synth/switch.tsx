@@ -1,7 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
 import Config from "../../config";
+import { LoadContext } from "../../contexts/load";
+import { StoreContext } from "../../contexts/store";
 import { switchStyles } from "../../jss/synth";
+import { loadErebusPatchValue, loadErebusValue, storeErebusValue } from "../../utils";
 
 const useStyles = switchStyles;
 
@@ -26,11 +29,13 @@ export default function Switch({ onInput, initialState, name }: SwitchProps): JS
   const [active, setActive] = useState(!!initialState || false);
   const switchEl = useRef<HTMLImageElement>(null);
   const classes = useStyles();
+  const storePatch = useContext(StoreContext);
+  const loadPatch = useContext(LoadContext);
 
   useEffect(() => {
     if (switchEl.current) {
       const element = switchEl.current;
-      // change view
+
       if (!active) {
         element.style.transform = "rotate(0deg)";
       } else {
@@ -46,12 +51,12 @@ export default function Switch({ onInput, initialState, name }: SwitchProps): JS
 
   useEffect(() => {
     if (name) {
-      const storedInitialValue = localStorage.getItem(`erebus-switches-${name}`);
-      if (storedInitialValue !== null) {
-        const storedBool = !!parseInt(storedInitialValue, 10);
-        setActive(storedBool);
-        onInput(storedBool);
+      const storedBool = loadErebusValue(`erebus-switches-${name}`);
+      if (storedBool === null) {
+        return;
       }
+      setActive(storedBool as boolean);
+      onInput(storedBool as boolean);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [name]);
@@ -69,9 +74,35 @@ export default function Switch({ onInput, initialState, name }: SwitchProps): JS
 
     if (name) {
       // commit current value to localStorage
-      localStorage.setItem(`erebus-switches-${name}`, !active ? "1" : "0");
+      storeErebusValue(`erebus-switches-${name}`, !active);
     }
   };
+
+  useEffect(() => {
+    if (storePatch.patchName === "inital-patch") {
+      return;
+    }
+
+    const { addToPatch, patchName } = storePatch;
+    addToPatch(patchName, `erebus-switches-${name}`, active);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storePatch.patchName]);
+
+  useEffect(() => {
+    if (loadPatch === "inital-patch") {
+      return;
+    }
+
+    const value = loadErebusPatchValue(loadPatch, `erebus-switches-${name}`);
+    if (value === null) {
+      return;
+    }
+
+    setActive(value as boolean);
+    onInput(value as boolean);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loadPatch]);
 
   return (
     <button

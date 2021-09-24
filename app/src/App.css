@@ -24,7 +24,7 @@
 }
 
 #keyboard {
-  margin: 1rem auto 100px auto;
+  margin: 1rem auto;
   width: 100%;
   height: 40vh;
   max-height: 500px;
@@ -58,16 +58,16 @@
 .blackNote.pressed {
   background-color: #bbb;
   border: 4px solid #000;
-  -webkit-transition: background-color 120ms ease-out;
-  -ms-transition: background-color 120ms ease-out;
-  transition: background-color 120ms ease-out;
+  -webkit-transition: background-color 80ms ease-out;
+  -ms-transition: background-color 80ms ease-out;
+  transition: background-color 80ms ease-out;
 }
 .whiteNote.pressed {
   background-color: #bbb;
   border: 3px solid #fff;
-  -webkit-transition: background-color 120ms ease-out;
-  -ms-transition: background-color 120ms ease-out;
-  transition: background-color 120ms ease-out;
+  -webkit-transition: background-color 80ms ease-out;
+  -ms-transition: background-color 80ms ease-out;
+  transition: background-color 80ms ease-out;
 }
 
 .whiteNote {
@@ -325,6 +325,7 @@ body {
   position: fixed;
   top: 0;
   left: 0;
+  filter: blur(6px);
 }
 
 body,

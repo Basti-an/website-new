@@ -8,8 +8,8 @@ import Oscillators from "./oscillators";
 import VCA from "./vca";
 
 type TargetFunction = (input: ModSource) => void;
-type Output = { label: string; output: ModSource; connectedWith?: number };
-type Input = {
+export type Output = { label: string; output: ModSource; connectedWith?: number };
+export type Input = {
   label: string;
   connectInput: (output: ModSource) => void;
 };
@@ -39,6 +39,8 @@ export default class Erebus {
 
   analyser: Tone.Analyser;
 
+  keyboard: { cv1: Tone.Signal<"frequency">; cv2: Tone.Signal<"frequency"> };
+
   private noise: Tone.Noise;
 
   private limiter: Tone.Limiter;
@@ -66,8 +68,8 @@ export default class Erebus {
     this.analyser = new Tone.Analyser("waveform", 4096);
 
     // lfo, envelope -> filter freq
-    this.filter.inputs.frequency(this.lfo.output);
-    this.oscillators.osc1.inputs.pulsewidth(this.lfo.output2);
+    // this.filter.inputs.frequency(this.lfo.output);
+    // this.oscillators.osc1.inputs.pulsewidth(this.lfo.output2);
     this.filter.inputs.frequency(this.envelope.filterOutput);
 
     // osc´s + white noise -> filter
@@ -87,22 +89,30 @@ export default class Erebus {
     this.output.connect(this.analyser);
     this.analyser.toDestination();
 
+    // setup keyboard
+    this.keyboard = {
+      cv1: new Tone.Signal({
+        value: "C2",
+        units: "frequency",
+      }),
+      cv2: new Tone.Signal({
+        value: "C2",
+        units: "frequency",
+      }),
+    };
+    this.keyboard.cv1.connect(this.oscillators.osc1.frequency);
+    this.keyboard.cv2.connect(this.oscillators.osc2.frequency);
+
     // configure internal cv routing
     this.lfoTarget = this.filter.inputs.frequency;
 
     this.outputs = [
       { label: "ENV", output: this.envelope.output },
-      { label: "LFO", output: this.lfo.output, connectedWith: 0 },
+      { label: "LFO", output: this.lfo.output, connectedWith: 2 },
       { label: "LFO2", output: this.lfo.output2, connectedWith: 5 },
     ];
 
     this.inputs = [
-      {
-        label: "VCF",
-        connectInput: (output: ModSource) => {
-          this.filter.inputs.frequency(output);
-        },
-      },
       {
         label: "OSC1",
         connectInput: (output: ModSource) => {
@@ -116,15 +126,42 @@ export default class Erebus {
         },
       },
       {
+        label: "VCF",
+        connectInput: (output: ModSource) => {
+          this.filter.inputs.frequency(output);
+        },
+      },
+      // {
+      //  TODO: in order to change cv, I will have to scale the input [0,1] into like 3-5 octaves
+      //        so the scaling will have to be something like [0,1] -> [1200 (cents) per octave]
+
+      //   label: "CV",
+      //   connectInput: (output: ModSource) => {
+      //     this.filter.inputs.frequency(output);
+      //   },
+      // },
+      {
         label: "ECHO",
         connectInput: (output: ModSource) => {
           window.erebus.delay.inputs.delayTime(output);
         },
       },
+      // {
+      //   label: "GATE",
+      //   connectInput: (output: ModSource) => {
+      //     this.ampEnv.triggerAttack???;
+      //   },
+      // },
       {
         label: "LFO/R",
         connectInput: (output: ModSource) => {
           this.lfo.inputs.lforate(output);
+        },
+      },
+      {
+        label: "PW",
+        connectInput: (output: ModSource) => {
+          this.oscillators.osc1.inputs.pulsewidth(output);
         },
       },
       // {
@@ -133,12 +170,6 @@ export default class Erebus {
       //     this.vca.inputs.volume(output);
       //   },
       // },
-      {
-        label: "PW",
-        connectInput: (output: ModSource) => {
-          this.oscillators.osc1.inputs.pulsewidth(output);
-        },
-      },
     ];
   }
 }

@@ -13,6 +13,7 @@ export function SequencerKnob({
   min,
   max,
   initial,
+  name,
 }: {
   onChange: (input: number) => void;
   label: string;
@@ -20,12 +21,13 @@ export function SequencerKnob({
   min: number;
   max: number;
   initial: number;
+  name: string;
 }): JSX.Element {
   const classes = useStyles();
   return (
     <div className={classnames(classes.column, classes.padded)}>
       <p className={classes.noteTextBright}>{label}</p>
-      <Knob onChange={onChange} isLinear min={min} max={max} initial={initial} />
+      <Knob onChange={onChange} isLinear min={min} max={max} initial={initial} name={name} />
       <p className={classes.noteTextBright}>{value}</p>
     </div>
   );

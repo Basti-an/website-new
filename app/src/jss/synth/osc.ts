@@ -13,7 +13,6 @@ export const oscStyles = makeStyles(() => ({
     border: "5px solid rgb(133, 225, 171)",
     borderBottom: "none",
     backgroundColor: "rgb(55, 62, 70)",
-    boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 2px 4px 0 rgba(0, 0, 0, 0.08)",
   },
   mixPanel: {
     backgroundColor: "rgb(133, 225, 171)",

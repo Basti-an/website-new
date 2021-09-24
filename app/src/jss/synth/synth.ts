@@ -1,4 +1,7 @@
 import { makeStyles } from "@material-ui/core";
+import Config from "../../config";
+
+const { hostUrl } = Config;
 
 export const synthStyles = makeStyles({
   title: {
@@ -92,5 +95,14 @@ export const synthStyles = makeStyles({
     borderTopWidth: "medium",
     borderBottomWidth: "medium",
     marginLeft: 3,
+  },
+  keyboardContainer: {
+    maxWidth: 775,
+    margin: "auto",
+    padding: "1rem",
+    backgroundImage: `url('${hostUrl}/images/wood-texture-unsplash.jpg')`,
+    boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08)",
+    borderRadius: 12,
+    boxSizing: "border-box",
   },
 });

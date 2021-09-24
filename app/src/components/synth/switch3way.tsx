@@ -1,8 +1,11 @@
 import classnames from "classnames";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
 import Config from "../../config";
+import { LoadContext } from "../../contexts/load";
+import { StoreContext } from "../../contexts/store";
 import { switchStyles } from "../../jss/synth";
+import { loadErebusPatchValue, loadErebusValue } from "../../utils";
 
 const useStyles = switchStyles;
 
@@ -39,6 +42,9 @@ export default function ThreeWaySwitch({ onInput, initialState, name }: SwitchPr
   const switchEl = useRef<HTMLImageElement>(null);
   const classes = useStyles();
 
+  const storePatch = useContext(StoreContext);
+  const loadPatch = useContext(LoadContext);
+
   useEffect(() => {
     onInput(state);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -51,9 +57,9 @@ export default function ThreeWaySwitch({ onInput, initialState, name }: SwitchPr
 
   useEffect(() => {
     if (name) {
-      const storedInitialValue = localStorage.getItem(`erebus-switches-${name}`);
+      const storedInitialValue = loadErebusValue(`erebus-switches-${name}`);
       if (storedInitialValue !== null) {
-        const storedTernary = parseInt(storedInitialValue, 10) as Ternary;
+        const storedTernary = storedInitialValue as Ternary;
         setState(storedTernary);
         onInput(storedTernary);
       }
@@ -90,6 +96,23 @@ export default function ThreeWaySwitch({ onInput, initialState, name }: SwitchPr
       localStorage.setItem(`erebus-switches-${name}`, newState.toString());
     }
   };
+
+  useEffect(() => {
+    const { addToPatch, patchName } = storePatch;
+    addToPatch(patchName, `erebus-switches-${name}`, state);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storePatch.patchName]);
+
+  useEffect(() => {
+    const value = loadErebusPatchValue(loadPatch, `erebus-switches-${name}`);
+    if (value === null) {
+      return;
+    }
+
+    setState(value as Ternary);
+    onInput(value as Ternary);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loadPatch]);
 
   return (
     <button

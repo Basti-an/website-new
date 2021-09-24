@@ -10,7 +10,6 @@ export const delayStyles = makeStyles(() => ({
     borderRadius: "1rem",
     border: "5px solid rgb(133, 225, 171)",
     backgroundColor: "rgb(133, 225, 171)",
-    boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 2px 4px 0 rgba(0, 0, 0, 0.08)",
   },
   text: {
     width: "33%",

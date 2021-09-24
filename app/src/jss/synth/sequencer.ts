@@ -16,7 +16,6 @@ export const sequencerStyles = makeStyles(() => ({
     borderRadius: "1rem",
     border: "5px solid #4D5458",
     backgroundColor: "rgb(55, 62, 70)",
-    boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 2px 4px 0 rgba(0, 0, 0, 0.08)",
   },
   row: {
     display: "flex",

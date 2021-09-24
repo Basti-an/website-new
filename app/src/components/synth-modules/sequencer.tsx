@@ -157,6 +157,7 @@ export default function Sequencer({ erebus, sendCVs }: SequencerProps): JSX.Elem
             min={33}
             max={300}
             initial={162}
+            name="erebus-knobs-sequencer-tempo"
           />
           <SequencerKnob
             label="gate"
@@ -167,6 +168,7 @@ export default function Sequencer({ erebus, sendCVs }: SequencerProps): JSX.Elem
             min={1}
             max={100}
             initial={27}
+            name="erebus-knobs-sequencer-gate"
           />
 
           <SequencerButton onClick={startLoop}>start</SequencerButton>
@@ -185,6 +187,7 @@ export default function Sequencer({ erebus, sendCVs }: SequencerProps): JSX.Elem
                 max={24}
                 initial={allSequencerNotes.findIndex((val) => val === sequencerNotes[index])}
                 onChange={changeSequenceAtIndex(index)}
+                name={`erebus-knobs-sequencer-${index}`}
               />
               <p className={classes.noteText}>{sequencerNotes[index]}</p>
             </div>

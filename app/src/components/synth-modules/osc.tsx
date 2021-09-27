@@ -114,10 +114,12 @@ function WaveformSwitch({
       osc.oscillator.stop();
     } else if (state === 1) {
       osc.setWaveform(osc.possibleWaveforms[0] as OmniOscillatorType);
-      osc.oscillator.start();
+      osc.oscillator.stop();
+      osc.oscillator.start("+0.25");
     } else {
       osc.setWaveform(osc.possibleWaveforms[1] as OmniOscillatorType);
-      osc.oscillator.start();
+      osc.oscillator.stop();
+      osc.oscillator.start("+0.25");
     }
   };
 

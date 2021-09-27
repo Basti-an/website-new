@@ -99,6 +99,7 @@ export const synthStyles = makeStyles({
   keyboardContainer: {
     maxWidth: 775,
     margin: "auto",
+    marginBottom: 100,
     padding: "1rem",
     backgroundImage: `url('${hostUrl}/images/wood-texture-unsplash.jpg')`,
     boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08)",

@@ -14,6 +14,8 @@ export const memoryBankStyles = makeStyles(() => ({
     backgroundColor: "rgb(55, 62, 70)",
     justifyContent: "space-between",
     marginBottom: "2rem",
+    flexWrap: "wrap",
+    gap: "1rem",
   },
   headerText: {
     color: "rgb(133, 225, 171)",
@@ -51,13 +53,12 @@ export const memoryBankStyles = makeStyles(() => ({
     "&:focus": {
       outline: "none",
     },
-    maxWidth: 200,
+    maxWidth: 165,
     width: "100%",
     borderRadius: 5,
     margin: "0 1rem",
     backgroundColor: "rgb(35, 42, 50)",
     color: "rgb(133, 225, 171)",
     border: "2px solid rgb(133, 225, 171)",
-    textShadow: `0px 0px 2px #fe1400`,
   },
 }));

@@ -277,9 +277,14 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
       if (output.connectedWith === index) {
         output.output.disconnect();
         output.connectedWith = undefined;
+        localStorage.setItem(
+          `erebus-outputs-${output.label}-connectedWith`,
+          JSON.stringify(output.connectedWith),
+        );
       }
       return output;
     });
+    // save output state to localStorage
   };
 
   return (

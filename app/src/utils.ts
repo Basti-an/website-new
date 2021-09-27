@@ -81,7 +81,7 @@ function checkForDevicePerformance(setFancyAnimations: React.Dispatch<boolean>):
         setFancyAnimations(false);
         window.prohibitFlowing = true;
       }
-    } else if (fps < 18) {
+    } else if (fps < 15) {
       setFancyAnimations(false);
     }
   }, cookFor);

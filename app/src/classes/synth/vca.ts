@@ -1,12 +1,13 @@
 import * as Tone from "tone";
 import { ModSource } from "../../types/modSource.d";
+import { SynthInputs } from "../../types/synthinputs";
 
 export default class VCA {
   ampEnv: Tone.AmplitudeEnvelope;
 
   output: Tone.Gain;
 
-  inputs: { volume: (input: ModSource) => void };
+  inputs: SynthInputs;
 
   private inputSignal: Tone.Scale;
 
@@ -29,6 +30,8 @@ export default class VCA {
     this.inputSignal.connect(volumeConnect.addend);
     volumeConnect.connect(this.output.gain);
 
-    this.inputs = { volume: (input: ModSource) => input.connect(this.inputSignal) };
+    this.inputs = {
+      volume: (input: ModSource) => input.connect(this.inputSignal),
+    };
   }
 }

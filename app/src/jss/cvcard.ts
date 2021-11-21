@@ -16,7 +16,7 @@ export const cvCardStyles = makeStyles((theme: Theme) => ({
     height: `${170 + theme.spacing(4)}px`,
     paddingBottom: "2rem",
     margin: 0,
-    backgroundSize: "cover",
+    backgroundSize: "cover !important",
   },
   cardContent: {
     backgroundColor: theme.palette.primary.main,

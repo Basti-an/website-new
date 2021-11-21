@@ -1,4 +1,3 @@
-import classNames from "classnames";
 import React, { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../contexts/store";
 import { memoryBankStyles } from "../../jss/synth";
@@ -18,14 +17,10 @@ const defaultPatches = {
     '{"erebus-knobs-lfo-rate":0.6,"erebus-knobs-lfo-amplitude":0.22857142857142856,"erebus-switches-lfo-waveform":false,"erebus-knobs-delay-time":0.13117683340132472,"erebus-knobs-delay-feedback":0.27035714285714285,"erebus-knobs-delay-wet":0.11071428571428571,"erebus-knobs-osc-mix":36.07142857142857,"erebus-knobs-osc-OSC 1-tuning":500,"erebus-switches-osc-octave-left":-1,"erebus-switches-osc-octave-right":-1,"erebus-knobs-osc-OSC 2-tuning":510.71428571428567,"erebus-knobs-osc-1-glide":1,"erebus-switches-osc-waveform-left":-1,"erebus-switches-osc-waveform-right":1,"erebus-knobs-osc-2-glide":1,"erebus-knobs-vcf-cutoff":305.81831989313855,"erebus-knobs-vcf-resonance":5.015068046830907,"erebus-knobs-vca-output":142.07500000000002,"erebus-knobs-vca-attack":0.04424058881750878,"erebus-knobs-vca-release":0.809332994255307,"erebus-knobs-adsr-a":1.160129386160163,"erebus-knobs-adsr-d":1.6579457579979706,"erebus-knobs-adsr-s":1.4535714285714285,"erebus-knobs-adsr-r":4.209217113231554,"erebus-knobs-adsr-depth":0.7892857142857143,"erebus-knobs-outputs-ENV-scaling":0.5642857142857143,"erebus-knobs-outputs-LFO-scaling":0.20357142857142857,"erebus-knobs-outputs-LFO2-scaling":0.07142857142857142,"erebus-outputs-ENV-connectedWith":5,"erebus-outputs-LFO-connectedWith":1,"erebus-outputs-LFO2-connectedWith":3}',
   swirl:
     '{"erebus-knobs-lfo-rate":0.6,"erebus-knobs-lfo-amplitude":0.3,"erebus-switches-lfo-waveform":false,"erebus-knobs-delay-time":0.5,"erebus-knobs-delay-feedback":0.25,"erebus-knobs-osc-mix":50,"erebus-knobs-osc-OSC 1-tuning":500,"erebus-switches-osc-octave-left":0,"erebus-switches-osc-octave-right":-1,"erebus-knobs-osc-OSC 2-tuning":510,"erebus-knobs-osc-1-glide":1,"erebus-switches-osc-waveform-left":1,"erebus-switches-osc-waveform-right":1,"erebus-knobs-osc-2-glide":1,"erebus-knobs-vcf-cutoff":56.82260526681803,"erebus-knobs-vcf-resonance":19.239801441324843,"erebus-knobs-vca-output":130.675,"erebus-knobs-vca-attack":0.01,"erebus-knobs-vca-release":0.42,"erebus-knobs-adsr-a":3.0015637003300233,"erebus-knobs-adsr-d":1.42,"erebus-knobs-adsr-s":1.5,"erebus-knobs-adsr-r":1.7,"erebus-knobs-adsr-depth":0.8642857142857143,"erebus-knobs-outputs-ENV-scaling":0.575,"erebus-knobs-outputs-LFO-scaling":0.8,"erebus-knobs-outputs-LFO2-scaling":0.8,"erebus-outputs-ENV-connectedWith":4,"erebus-outputs-LFO-connectedWith":2,"erebus-outputs-LFO2-connectedWith":3}',
-  o8:
-    '{"erebus-knobs-lfo-rate":0.6,"erebus-knobs-lfo-amplitude":0.3,"erebus-switches-lfo-waveform":false,"erebus-knobs-delay-time":0.5,"erebus-knobs-delay-feedback":0.25,"erebus-knobs-osc-mix":50,"erebus-switches-osc-octave-left":-1,"erebus-switches-osc-octave-right":-1,"erebus-knobs-osc-OSC 2-tuning":510,"erebus-knobs-osc-1-glide":1,"erebus-switches-osc-waveform-left":-1,"erebus-switches-osc-waveform-right":0,"erebus-knobs-osc-2-glide":1,"erebus-knobs-vcf-cutoff":92.62542485472468,"erebus-knobs-vcf-resonance":10.564584336907226,"erebus-knobs-vca-output":150,"erebus-knobs-vca-attack":0.01,"erebus-knobs-vca-release":0.7522713892445291,"erebus-knobs-adsr-a":1,"erebus-knobs-adsr-d":1.1853259871995527,"erebus-knobs-adsr-s":1.282142857142857,"erebus-knobs-adsr-r":1.1898297172551797,"erebus-knobs-adsr-depth":0.4,"erebus-knobs-outputs-ENV-scaling":0.8,"erebus-knobs-outputs-LFO-scaling":0.8,"erebus-knobs-outputs-LFO2-scaling":0.8,"erebus-outputs-ENV-connectedWith":0}',
+  o8: '{"erebus-knobs-lfo-rate":0.6,"erebus-knobs-lfo-amplitude":0.3,"erebus-switches-lfo-waveform":false,"erebus-knobs-delay-time":0.5,"erebus-knobs-delay-feedback":0.25,"erebus-knobs-osc-mix":50,"erebus-switches-osc-octave-left":-1,"erebus-switches-osc-octave-right":-1,"erebus-knobs-osc-OSC 2-tuning":510,"erebus-knobs-osc-1-glide":1,"erebus-switches-osc-waveform-left":-1,"erebus-switches-osc-waveform-right":0,"erebus-knobs-osc-2-glide":1,"erebus-knobs-vcf-cutoff":92.62542485472468,"erebus-knobs-vcf-resonance":10.564584336907226,"erebus-knobs-vca-output":150,"erebus-knobs-vca-attack":0.01,"erebus-knobs-vca-release":0.7522713892445291,"erebus-knobs-adsr-a":1,"erebus-knobs-adsr-d":1.1853259871995527,"erebus-knobs-adsr-s":1.282142857142857,"erebus-knobs-adsr-r":1.1898297172551797,"erebus-knobs-adsr-depth":0.4,"erebus-knobs-outputs-ENV-scaling":0.8,"erebus-knobs-outputs-LFO-scaling":0.8,"erebus-knobs-outputs-LFO2-scaling":0.8,"erebus-outputs-ENV-connectedWith":0}',
 };
 
-interface MemoryBankProps {
-  setStorePatch: (patchName: string) => void;
-  setLoadPatch: (patchName: string) => void;
-}
+// interface MemoryBankProps {}
 
 interface PatchSelectorProps {
   patches: string[];
@@ -80,11 +75,13 @@ function PatchSelector({
   );
 }
 
-export default function MemoryBank({ setStorePatch, setLoadPatch }: MemoryBankProps): JSX.Element {
+export default function MemoryBank(): JSX.Element {
   const classes = useStyles();
   const [newPatchName, setNewPatchName] = useState("");
   const [patches, setPatches] = useState(getPatchNameList());
   const storePatch = useContext(StoreContext);
+  const setStorePatch = storePatch.setStorePatchName;
+  const setLoadPatch = storePatch.setLoadPatchName;
   const [selectedPatch, setSelectedPatch] = useState("initital-patch");
 
   const changeNewPatchName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -119,6 +116,7 @@ export default function MemoryBank({ setStorePatch, setLoadPatch }: MemoryBankPr
     if (patches.indexOf(savePatchName) !== -1) {
       return;
     }
+
     addToLocalStoragePatchList(savePatchName);
     setPatches([...patches, savePatchName]);
   };

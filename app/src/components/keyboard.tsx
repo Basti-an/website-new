@@ -110,7 +110,7 @@ function onKeyDown(sendCVs: (cv1: Note, cv2: Note) => void, sendGate: (gate: boo
 
     e = e || window.event;
     const { key } = e;
-    const pressedKey = keyToNoteMap[key];
+    const pressedKey = keyToNoteMap[key.toLowerCase()];
 
     if (!pressedKey) {
       return;
@@ -122,7 +122,9 @@ function onKeyDown(sendCVs: (cv1: Note, cv2: Note) => void, sendGate: (gate: boo
     }
 
     pressedKeyEl.classList.add("pressed");
-    window.pressedKeys.push(pressedKey);
+    if (window.pressedKeys.indexOf(pressedKey) === -1) {
+      window.pressedKeys.push(pressedKey);
+    }
 
     sendCVs(window.pressedKeys[0], pressedKey);
     sendGate(true);
@@ -132,8 +134,9 @@ function onKeyDown(sendCVs: (cv1: Note, cv2: Note) => void, sendGate: (gate: boo
 function onKeyUp(sendCVs: (cv1: Note, cv2: Note) => void, sendGate: (gate: boolean) => void) {
   return (e: KeyboardEvent) => {
     e = e || window.event;
+
     const { key } = e;
-    const releasedKey = keyToNoteMap[key];
+    const releasedKey = keyToNoteMap[key.toLowerCase()];
 
     if (!releasedKey) {
       return;

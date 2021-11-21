@@ -31,18 +31,18 @@ const setLedAnimationDuration = (frequency: number) => {
 const lfoDescription =
   "an LFO (low frequency oscillator) generates a wave that can be used to modulate parameters of other synthesizer modules. The LFO is currently routed to the frequency of the filter.";
 
+const switchWaveform = (lfo: LFO) => (isSquare: boolean) => {
+  lfo.lfo.stop();
+  if (isSquare) {
+    lfo.lfo.type = "square";
+  } else {
+    lfo.lfo.type = "triangle";
+  }
+  lfo.lfo.start();
+};
+
 export default function LFOmodule({ lfo }: LfoProps): JSX.Element {
   const classes = useStyles();
-
-  function switchWaveform(isSquare: boolean) {
-    lfo.lfo.stop();
-    if (isSquare) {
-      lfo.lfo.type = "square";
-    } else {
-      lfo.lfo.type = "triangle";
-    }
-    lfo.lfo.start();
-  }
 
   return (
     <div className={classes.plate} title={lfoDescription}>
@@ -55,7 +55,7 @@ export default function LFOmodule({ lfo }: LfoProps): JSX.Element {
                 lfo.lforate.rampTo(value, 0);
               }}
               min={0.1}
-              max={200}
+              max={150}
               whileSweep={() => {
                 setLedAnimationDuration(lfo.lforate.value as number);
               }}
@@ -91,7 +91,7 @@ export default function LFOmodule({ lfo }: LfoProps): JSX.Element {
           src={`${Config.hostUrl}/images/waveform_square_bright.png`}
           alt="square wave"
         />
-        <Switch onInput={switchWaveform} name="lfo-waveform" />
+        <Switch onInput={switchWaveform(lfo)} name="lfo-waveform" />
         <img
           className={classes.waveform}
           src={`${Config.hostUrl}/images/waveform_triangle_bright.png`}

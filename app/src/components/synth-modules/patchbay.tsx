@@ -19,42 +19,41 @@ type Line = {
   connects?: { out: number; in: number };
 };
 
-const drawPolygon = (ctx: CanvasRenderingContext2D) => (vertices = 6) => (
-  origin: { x: number; y: number },
-  color = "grey",
-  width = 100,
-) => {
-  if (vertices < 3) {
-    return;
-  }
+const drawPolygon =
+  (ctx: CanvasRenderingContext2D) =>
+  (vertices = 6) =>
+  (origin: { x: number; y: number }, color = "grey", width = 100) => {
+    if (vertices < 3) {
+      return;
+    }
 
-  const SIZE = width / vertices;
-  const ANGLE = 360 / vertices;
-  let start = { x: origin.x + SIZE, y: origin.y };
+    const SIZE = width / vertices;
+    const ANGLE = 360 / vertices;
+    let start = { x: origin.x + SIZE, y: origin.y };
 
-  const initialColor = ctx.fillStyle;
+    const initialColor = ctx.fillStyle;
 
-  ctx.beginPath();
-  ctx.fillStyle = color;
-  ctx.moveTo(start.x, start.y);
+    ctx.beginPath();
+    ctx.fillStyle = color;
+    ctx.moveTo(start.x, start.y);
 
-  for (let i = 1; i < vertices + 1; i += 1) {
-    const { x, y } = start;
-    const tau = Math.PI * 2; // tau > pi, literally
-    const x2 = x + Math.cos((tau * ANGLE * i) / 360) * SIZE;
-    const y2 = y + Math.sin((tau * ANGLE * i) / 360) * SIZE;
+    for (let i = 1; i < vertices + 1; i += 1) {
+      const { x, y } = start;
+      const tau = Math.PI * 2; // tau > pi, literally
+      const x2 = x + Math.cos((tau * ANGLE * i) / 360) * SIZE;
+      const y2 = y + Math.sin((tau * ANGLE * i) / 360) * SIZE;
 
-    ctx.lineTo(x2, y2);
-    // ctx.stroke();
+      ctx.lineTo(x2, y2);
+      // ctx.stroke();
 
-    start = { x: x2, y: y2 };
-  }
+      start = { x: x2, y: y2 };
+    }
 
-  ctx.closePath();
-  ctx.fill();
+    ctx.closePath();
+    ctx.fill();
 
-  ctx.fillStyle = initialColor;
-};
+    ctx.fillStyle = initialColor;
+  };
 
 const drawSink = (ctx: CanvasRenderingContext2D) => (origin: { x: number; y: number }) => {
   const drawShape = drawPolygon(ctx);
@@ -95,13 +94,18 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
       ctx.lineWidth = 10;
       ctx.strokeStyle = color || "orange";
 
+      const drawShape = drawPolygon(ctx);
+      const drawCircle = drawShape(30);
+
       ctx.beginPath();
+      drawCircle({ x: x1, y: y1 }, color, 2);
       ctx.moveTo(x1, y1);
 
       const bezier1 = x1 + (x2 - x1) / 2; // makes cable "sag"
       const bezier2 = y1 + 200; // makes cable "sag"
       ctx.quadraticCurveTo(bezier1, bezier2, x2, y2);
       ctx.stroke();
+      drawCircle({ x: x2, y: y2 }, color, 2);
       ctx.closePath();
 
       ctx.lineWidth = initialLineWidth;
@@ -149,7 +153,7 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
     drawJacks();
 
     const x = 25 + (index % 3) * 50;
-    const y = 30 + Math.floor(index / 3) * 50;
+    const y = 35 + Math.floor(index / 3) * 50;
 
     // disconnect functionally
     output.output.disconnect();
@@ -234,7 +238,7 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
     outputs.forEach((output: Output, index: number) => {
       if (output.connectedWith !== undefined) {
         const x1 = 25 + (index % 3) * 50;
-        const y1 = 30 + Math.floor(index / 3) * 50;
+        const y1 = 35 + Math.floor(index / 3) * 50;
         const x2 = 25 + (output.connectedWith % 3) * 50;
         const y2 = 160 + Math.floor(output.connectedWith / 3) * 50;
         connections.push({
@@ -290,20 +294,22 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
   return (
     <div className={classes.patchbay}>
       <div className={classes.knobContainer}>
-        {outputs.map(({ output, label }: Output) => (
-          <div className={classes.miniknob}>
-            <Knob
-              min={0}
-              max={1}
-              initial={0.8}
-              onChange={(value: number) => {
-                output.max = value;
-              }}
-              isLinear
-              name={`outputs-${label}-scaling`}
-            />
-          </div>
-        ))}
+        {outputs
+          .filter((output) => !output.noAttenuator)
+          .map(({ output, label }: Output) => (
+            <div className={classes.miniknob}>
+              <Knob
+                min={0}
+                max={1}
+                initial={0.8}
+                onChange={(value: number) => {
+                  output.max = value;
+                }}
+                isLinear
+                name={`outputs-${label}-scaling`}
+              />
+            </div>
+          ))}
       </div>
 
       <canvas id="patchbay" width="150" height="250" />
@@ -324,7 +330,7 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
             <span className={classes.label}>{output.label}</span>
           </div>
         ))}
-        <div className={classes.separator} />
+        <div className={classes.separator} style={{ height: 32 }} />
         {inputs.map(({ label, connectInput }: Input, index: number) => (
           <div
             role="button"

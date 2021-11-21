@@ -1,7 +1,8 @@
+/* eslint-disable react/jsx-no-bind */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
 import { Typography } from "@material-ui/core";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import * as Tone from "tone";
 
 import Keyboard from "../components/keyboard";
@@ -19,7 +20,8 @@ import { synthStyles } from "../jss/synth";
 import { StoreContext } from "../contexts/store";
 import { LoadContext } from "../contexts/load";
 import MemoryBank from "../components/synth-modules/memoryBank";
-import { loadErebusPatchValue, Primitive } from "../utils";
+import { loadErebusPatchValue } from "../utils";
+import MemoryStoreProvider from "../contexts/MemoryProvider";
 
 declare global {
   interface Window {
@@ -47,8 +49,6 @@ interface SynthProps {
   setIsFlowing: (flowState: boolean) => void;
 }
 
-const Store: Record<string, Record<string, Primitive>> = {};
-
 function Synth({ setIsFlowing }: SynthProps): JSX.Element {
   const classes = useStyles();
   const [oscOctaveShift, setOscOctaveShift] = useState({ one: 0, two: 1 });
@@ -58,23 +58,8 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
 
   // every time storePatch is changed, all knobs/switches/outputs save their current values Store[storePatch]
   // adter that values are persisted to localStorage
-  const [storePatchName, setStorePatchName] = useState<string>("initial-patch");
-  // every time loadPatch is changed, all knobs/switches/outputs change their value to the values stored in localStorage
-  const [loadPatchName, setLoadPatchName] = useState<string>("initial-patch");
-
-  const MemoryStore = {
-    patchName: storePatchName,
-    getPatch: (name: string) => Store[name],
-    resetPatch: (name: string) => {
-      Store[name] = {};
-    },
-    addToPatch: (patch: string, key: string, value: Primitive) => {
-      if (!Store[patch]) {
-        Store[patch] = {};
-      }
-      Store[patch][key] = value;
-    },
-  };
+  const storePatch = useContext(StoreContext);
+  const loadPatch = useContext(LoadContext);
 
   useEffect(() => {
     /* commit all output values to new patch (storeName) */
@@ -83,18 +68,18 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
     }
     window.erebus.outputs.forEach((output) => {
       const { label, connectedWith } = output;
-      MemoryStore.addToPatch(
-        storePatchName,
+      storePatch.addToPatch(
+        storePatch.patchName,
         `erebus-outputs-${label}-connectedWith`,
         connectedWith,
       );
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [erebus, storePatchName]);
+  }, [erebus, storePatch.patchName]);
 
-  /* connect outputs to inputs according to values in localStorage when loadPatchName changes */
   useEffect(() => {
-    if (loadPatchName === "initial-patch") {
+    /* connect outputs to inputs according to values in localStorage when loadPatchName changes */
+    if (loadPatch === "initial-patch") {
       return;
     }
 
@@ -110,7 +95,7 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
     const newOutputs = window.erebus.outputs.map((output) => {
       const { label } = output;
       const connectedWith = loadErebusPatchValue(
-        loadPatchName,
+        loadPatch,
         `erebus-outputs-${label}-connectedWith`,
       );
       if (connectedWith !== null) {
@@ -126,7 +111,7 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
 
     setErebus(erebus);
     setOutputs(newOutputs);
-  }, [erebus, loadPatchName]);
+  }, [erebus, loadPatch]);
 
   useEffect(() => {
     // toggle expensive background animation off to free resources for synth
@@ -138,8 +123,6 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
     const context = new AudioContext();
     window.audioContext = context;
 
-    // await context.audioWorklet.addModule(`${Config.hostUrl}/wasm/wasm-worklet-processor.js`);
-    // const moogFilter = new AudioWorkletNode(context, "wasm-worklet-processor");
     window.erebus = new Erebus();
     setErebus(window.erebus);
     setOutputs(window.erebus.outputs);
@@ -184,88 +167,97 @@ function Synth({ setIsFlowing }: SynthProps): JSX.Element {
           }
         }}
       >
-        <StoreContext.Provider value={MemoryStore}>
-          <LoadContext.Provider value={loadPatchName}>
-            {!erebus && (
-              <div className={classes.erebusBox}>
-                <Typography variant="h5" color="inherit" className={classes.title}>
-                  Web-native digital implementation of the{" "}
-                  <a
-                    href="https://www.dreadbox-fx.com/erebus/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={classes.link}
-                  >
-                    Dreadbox Erebus V2 Synthesizer
-                  </a>
-                </Typography>
-                <Typography variant="h5" color="inherit" className={classes.title}>
-                  Click on this box to enable WebAudio and load the synth.
-                </Typography>
+        {!erebus && (
+          <div className={classes.erebusBox} style={{ cursor: "pointer" }}>
+            <Typography variant="h5" color="inherit" className={classes.title}>
+              Web-native semi-modular synthesizer based on the{" "}
+              <a
+                href="https://www.dreadbox-fx.com/erebus/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={classes.link}
+              >
+                Dreadbox Erebus
+              </a>{" "}
+            </Typography>
+            <div className={classes.spacer} />
+            <Typography variant="body1" color="inherit" className={classes.title}>
+              &quot;This is awesome, wow!&quot; - <i>Dimitra, Dreadbox</i>
+            </Typography>
+            <div className={classes.spacer} />
+            <Typography variant="body2" color="inherit" className={classes.title}>
+              Click on this box to enable WebAudio and load the synth.
+            </Typography>
+          </div>
+        )}
+        {erebus && (
+          <>
+            <div className={classes.erebusBox}>
+              <div className={classes.row}>
+                <LFOmodule lfo={erebus.lfo} />
+                <DelayModule delay={erebus.delay.delay} />
+                <NamePlate />
               </div>
-            )}
-            {erebus && (
-              <>
-                <div className={classes.erebusBox}>
-                  <div className={classes.row}>
-                    <LFOmodule lfo={erebus.lfo} />
-                    <DelayModule delay={erebus.delay.delay} />
-                    <NamePlate />
-                  </div>
-                  <div className={classes.row}>
+              <div className={classes.row}>
+                <div className={classes.row}>
+                  <div className={classes.column}>
                     <div className={classes.row}>
-                      <div className={classes.column}>
-                        <div className={classes.row}>
-                          <OSCModule
-                            oscillators={erebus.oscillators}
-                            changeOscOctave={changeOscOctave}
-                          />
-                          <Filtermodule filter={erebus.filter} />
-                          <Ampmodule
-                            setAmpEnv={({ attack, release }) => {
-                              if (attack) {
-                                erebus.vca.ampEnv.set({ attack });
-                              }
-                              if (release) {
-                                erebus.vca.ampEnv.set({ release });
-                              }
-                            }}
-                          />
-                        </div>
-                        <div className={classes.rowVertical}>
-                          <EnvelopeModule envelope={erebus.envelope} />
-                          <Oscilloscope erebus={erebus} />
-                        </div>
-                      </div>
-                      <PatchBay outputs={outputs} inputs={erebus.inputs} />
+                      <OSCModule
+                        oscillators={erebus.oscillators}
+                        changeOscOctave={changeOscOctave}
+                      />
+                      <Filtermodule filter={erebus.filter} />
+                      <Ampmodule
+                        setAmpEnv={({ attack, release }) => {
+                          if (attack) {
+                            erebus.vca.ampEnv.set({ attack });
+                          }
+                          if (release) {
+                            erebus.vca.ampEnv.set({ release });
+                          }
+                        }}
+                      />
+                    </div>
+                    <div className={classes.rowVertical}>
+                      <EnvelopeModule envelope={erebus.envelope} />
+                      <Oscilloscope erebus={erebus} />
                     </div>
                   </div>
+                  <PatchBay outputs={outputs} inputs={erebus.inputs} />
                 </div>
-                <div className={classes.rowCenter}>
-                  <MemoryBank setStorePatch={setStorePatchName} setLoadPatch={setLoadPatchName} />
-                  {/* <Sequencer erebus={erebus} sendCVs={sendCVs} /> */}
-                </div>
-                <div className={classes.keyboardContainer}>
-                  <Keyboard
-                    sendCVs={sendCVs}
-                    sendGate={(newgate) => {
-                      if (newgate) {
-                        erebus.vca.ampEnv.triggerAttack(undefined, 1.0);
-                        erebus.envelope.envelope.triggerAttack(undefined, 1.0);
-                      } else {
-                        erebus.vca.ampEnv.triggerRelease();
-                        erebus.envelope.envelope.triggerRelease();
-                      }
-                    }}
-                  />
-                </div>
-              </>
-            )}
-          </LoadContext.Provider>
-        </StoreContext.Provider>
+              </div>
+            </div>
+            <div className={classes.rowCenter}>
+              <MemoryBank />
+              {/* <Sequencer erebus={erebus} sendCVs={sendCVs} /> */}
+            </div>
+            <div className={classes.keyboardContainer}>
+              <Keyboard
+                sendCVs={sendCVs}
+                sendGate={(newgate) => {
+                  if (newgate) {
+                    erebus.vca.ampEnv.triggerAttack(undefined, 1.0);
+                    erebus.envelope.envelope.triggerAttack(undefined, 1.0);
+                  } else {
+                    erebus.vca.ampEnv.triggerRelease();
+                    erebus.envelope.envelope.triggerRelease();
+                  }
+                }}
+              />
+            </div>
+          </>
+        )}
       </div>
     </>
   );
 }
 
-export default Synth;
+function WrappedSynth({ setIsFlowing }: SynthProps): JSX.Element {
+  return (
+    <MemoryStoreProvider>
+      <Synth setIsFlowing={setIsFlowing} />
+    </MemoryStoreProvider>
+  );
+}
+
+export default WrappedSynth;

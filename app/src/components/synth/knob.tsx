@@ -20,6 +20,7 @@ import { LoadContext } from "../../contexts/load";
 const useStyles = knobStyles;
 
 interface KnobProps {
+  name: string;
   min: number;
   max: number;
   initial: number;
@@ -28,7 +29,6 @@ interface KnobProps {
   onChange: (value: number) => void;
   whileSweep?: (value: number) => void;
   afterSweep?: (value: number) => void;
-  name: string;
 }
 
 /**
@@ -36,18 +36,18 @@ interface KnobProps {
  * whenever the rotation changes, a corresponding value will be computated which maps
  * from the linear range of [-140, 140] to [min, max], either linearly or logarithmically
  * The Knob also provides a whileSweep function, which is called with the current knob value while the knob is being moved
- * and an afterSweep function, which is called with the knobs last value, 1 second after it was last moved
+ * and an afterSweep function, which is called with the knobs last value, 1 second after it was moved last
  */
 export default function Knob({
+  name,
   min,
   max,
-  initial = 0,
-  isBig,
+  initial,
+  isBig = false,
   isLinear = false,
   onChange,
   whileSweep,
   afterSweep,
-  name,
 }: KnobProps): JSX.Element {
   const knobEl = useRef<HTMLImageElement>(null);
   const classes = useStyles();
@@ -66,7 +66,9 @@ export default function Knob({
       ? getLinValue(currentValue, min, max)
       : getLogValue(currentValue, min, max);
 
+    // commit last knob value to localStorage
     storeErebusValue(`erebus-knobs-${name}`, value);
+
     setLastValue(value);
 
     if (typeof afterSweep === "function") {
@@ -101,7 +103,7 @@ export default function Knob({
     debouncedWhileSweep(currentValue);
 
     if (!skipAfterSweep) {
-      // on initial invocation for example, we do not want to have the side effects of the afterSweep,
+      // on initial invocation for example, we do not want to have the side effects of the afterSweep (localStorage save),
       // therefore we provide the option of skipping invocation of the debounced afterSweep function
       debouncedAfterSweep(currentValue);
     }
@@ -175,7 +177,6 @@ export default function Knob({
       return;
     }
 
-    console.log("storing knob");
     const { addToPatch, patchName } = storePatch;
     addToPatch(patchName, `erebus-knobs-${name}`, lastValue);
 

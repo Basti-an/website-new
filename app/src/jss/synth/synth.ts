@@ -78,6 +78,7 @@ export const synthStyles = makeStyles({
     padding: "0 1rem",
     fontFamily: "opal",
     marginBottom: "-1rem",
+    lineHeight: 1.25,
   },
   namePlateSubTitle: {
     fontSize: "18px",
@@ -105,5 +106,8 @@ export const synthStyles = makeStyles({
     boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.08)",
     borderRadius: 12,
     boxSizing: "border-box",
+  },
+  spacer: {
+    marginBottom: "2rem",
   },
 });

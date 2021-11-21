@@ -2,11 +2,12 @@ import * as Tone from "tone";
 import { PulseOscillator } from "tone";
 import { OmniOscillatorType } from "tone/build/esm/source/oscillator/OscillatorInterface";
 import { ModSource } from "../../types/modSource.d";
+import { SynthInputs } from "../../types/synthinputs";
 
 export default class Oscillator {
   oscillator: Tone.OmniOscillator<Tone.Oscillator>;
 
-  inputs: { frequency: (input: ModSource) => void; pulsewidth: (input: ModSource) => void };
+  inputs: SynthInputs;
 
   glide: number;
 
@@ -33,7 +34,7 @@ export default class Oscillator {
 
     this.setWaveform = (type: OmniOscillatorType) => {
       this.oscillator.type = type;
-      const osc = (this.oscillator as unknown) as PulseOscillator; // i'm so sorry
+      const osc = this.oscillator as unknown as PulseOscillator; // i'm so sorry
       if (type === "pulse") {
         this.pulsewidthInputScale.connect(osc.width);
       } else {

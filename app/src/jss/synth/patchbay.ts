@@ -23,7 +23,6 @@ export const patchbayStyles = makeStyles(() => ({
     cursor: "pointer",
   },
   separator: {
-    height: 80,
     width: "100%",
   },
   label: {

@@ -1,10 +1,11 @@
 import * as Tone from "tone";
 import { ModSource } from "../../types/modSource.d";
+import { SynthInputs } from "../../types/synthinputs";
 
 export default class Filter {
   filter: Tone.Filter;
 
-  inputs: { frequency: (input: ModSource) => void };
+  inputs: SynthInputs;
 
   frequency: Tone.Signal<"frequency">;
 
@@ -23,9 +24,12 @@ export default class Filter {
     const filterConnect = new Tone.Add();
     this.frequency.connect(filterConnect.addend);
     filterConnect.connect(this.filter.frequency);
+
     this.frequencyInputScale = new Tone.Scale(0, 5000);
     this.frequencyInputScale.connect(this.filter.detune);
 
-    this.inputs = { frequency: (input: ModSource) => input.connect(this.frequencyInputScale) };
+    this.inputs = {
+      frequency: (input: ModSource) => input.connect(this.frequencyInputScale),
+    };
   }
 }

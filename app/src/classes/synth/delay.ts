@@ -1,23 +1,25 @@
 import * as Tone from "tone";
-import { ModSource } from "../../types/modSource.d";
+import { Scale, ScaleOptions } from "tone";
+import { SynthInputs } from "../../types/synthinputs";
 
 export default class Delay {
   delay: Tone.FeedbackDelay;
 
-  inputs: { delayTime: (input: ModSource) => void };
+  inputs: SynthInputs;
 
   private inputSignal: Tone.Scale;
 
   constructor(delayTime?: number, feedback?: number) {
     this.delay = new Tone.FeedbackDelay(delayTime ?? 0.4, feedback ?? 0.3);
 
-    this.inputSignal = new Tone.Scale(0, 1);
-
     // setup delay to accept modulation sources
     const delayConnect = new Tone.Add();
+    this.inputSignal = new Tone.Scale(0, 1);
     this.inputSignal.connect(delayConnect.addend);
     delayConnect.connect(this.delay.delayTime);
 
-    this.inputs = { delayTime: (input: ModSource) => input.connect(this.inputSignal) };
+    this.inputs = {
+      delay: (input: Scale<ScaleOptions>) => input.connect(this.inputSignal),
+    };
   }
 }

@@ -142,7 +142,7 @@ export default function Navigation(): JSX.Element {
           </Link>
         </div>
       </Tooltip>
-      {/* <Tooltip title="CV / Work history">
+      <Tooltip title="CV">
         <div className="genie">
           <Link to="/cv">
             <img
@@ -152,7 +152,7 @@ export default function Navigation(): JSX.Element {
             />
           </Link>
         </div>
-      </Tooltip> */}
+      </Tooltip>
       <Tooltip title="Contact me via email">
         <div className="genie">
           <a href="mailto:sebastian@wiendlocha.org">

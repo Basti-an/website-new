@@ -157,22 +157,22 @@ function WaveformSwitch({
   );
 }
 
+const changeOsc1Frequency = (oscillators: Oscillators) => (value: number) => {
+  const { osc1, osc2 } = oscillators;
+  osc1.detune.value = value - 500;
+  osc2.detune.value = value - 500 - osc2.oscillator.detune.value;
+};
+
+const changeOsc2Frequency = (oscillators: Oscillators) => (value: number) => {
+  const { osc1, osc2 } = oscillators;
+  osc2.detune.value = value - 500;
+  const frequencyOsc1 = osc1.oscillator.detune.value;
+
+  osc2.detune.value -= frequencyOsc1;
+};
+
 export default function OSCModule({ oscillators, changeOscOctave }: OscProps): JSX.Element {
   const classes = useStyles();
-
-  function changeOsc1Frequency(value: number) {
-    const { osc1, osc2 } = oscillators;
-    osc1.detune.value = value - 500;
-    osc2.detune.value = value - 500 - osc2.oscillator.detune.value;
-  }
-
-  function changeOsc2Frequency(value: number) {
-    const { osc1, osc2 } = oscillators;
-    osc2.detune.value = value - 500;
-    const frequencyOsc1 = osc1.oscillator.detune.value;
-
-    osc2.detune.value -= frequencyOsc1;
-  }
 
   const toggleOscOctave = (oscillator: "one" | "two") => (state: Ternary) => {
     if (state === 1) {
@@ -204,7 +204,11 @@ export default function OSCModule({ oscillators, changeOscOctave }: OscProps): J
 
       <div className={classes.tuneKnobs}>
         <div className={classes.leftOsc}>
-          <OscillatorKnob headerText="OSC 1" subText="tune" onChangeInput={changeOsc1Frequency} />
+          <OscillatorKnob
+            headerText="OSC 1"
+            subText="tune"
+            onChangeInput={changeOsc1Frequency(oscillators)}
+          />
 
           <OctaveSwitch
             onToggle={toggleOscOctave("one")}
@@ -222,7 +226,7 @@ export default function OSCModule({ oscillators, changeOscOctave }: OscProps): J
           <OscillatorKnob
             headerText="OSC 2"
             subText="detune"
-            onChangeInput={changeOsc2Frequency}
+            onChangeInput={changeOsc2Frequency(oscillators)}
             initial={510}
           />
         </div>

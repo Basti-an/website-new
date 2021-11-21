@@ -7,8 +7,13 @@ import LFO from "./lfo";
 import Oscillators from "./oscillators";
 import VCA from "./vca";
 
-type TargetFunction = (input: ModSource) => void;
-export type Output = { label: string; output: ModSource; connectedWith?: number };
+export type Output = {
+  label: string;
+  output: ModSource;
+  connectedWith?: number;
+  noAttenuator?: boolean;
+};
+
 export type Input = {
   label: string;
   connectInput: (output: ModSource) => void;
@@ -27,10 +32,6 @@ export default class Erebus {
 
   vca: VCA;
 
-  lfoTarget: TargetFunction | undefined;
-
-  envelopeTarget: TargetFunction | undefined;
-
   output: Tone.Gain;
 
   inputs: Input[];
@@ -39,13 +40,16 @@ export default class Erebus {
 
   analyser: Tone.Analyser;
 
-  keyboard: { cv1: Tone.Signal<"frequency">; cv2: Tone.Signal<"frequency"> };
+  keyboard: {
+    cv1: Tone.Signal<"frequency">;
+    cv2: Tone.Signal<"frequency">;
+    output1: Tone.Scale;
+    output2: Tone.Scale;
+  };
 
   private noise: Tone.Noise;
 
   private limiter: Tone.Limiter;
-
-  private distortion: Tone.Distortion;
 
   constructor() {
     // reduce latency
@@ -63,8 +67,6 @@ export default class Erebus {
     this.output = new Tone.Gain(0.9);
     this.limiter = new Tone.Limiter(-6);
 
-    this.distortion = new Tone.Distortion(0.0777);
-
     this.analyser = new Tone.Analyser("waveform", 4096);
 
     // lfo, envelope -> filter freq
@@ -81,7 +83,6 @@ export default class Erebus {
 
     // amp out + distortion -> delay
     this.vca.output.connect(this.delay.delay);
-    this.distortion.connect(this.delay.delay);
 
     // delay -> limiter -> output
     this.delay.delay.connect(this.limiter);
@@ -99,17 +100,27 @@ export default class Erebus {
         value: "C2",
         units: "frequency",
       }),
+      output1: new Tone.Scale(0, 1),
+      output2: new Tone.Scale(0, 1),
     };
+
     this.keyboard.cv1.connect(this.oscillators.osc1.frequency);
     this.keyboard.cv2.connect(this.oscillators.osc2.frequency);
 
-    // configure internal cv routing
-    this.lfoTarget = this.filter.inputs.frequency;
+    // scale down the frequency range to [0, 1] approximately for output
+    const multiply1 = new Tone.Multiply(1 / 220);
+    const multiply2 = new Tone.Multiply(1 / 220);
+    this.keyboard.cv1.connect(multiply1);
+    this.keyboard.cv2.connect(multiply2);
+    multiply1.connect(this.keyboard.output1);
+    multiply2.connect(this.keyboard.output2);
 
     this.outputs = [
       { label: "ENV", output: this.envelope.output },
       { label: "LFO", output: this.lfo.output, connectedWith: 2 },
       { label: "LFO2", output: this.lfo.output2, connectedWith: 5 },
+      { label: "CV1", output: this.keyboard.output1, noAttenuator: true },
+      { label: "CV2", output: this.keyboard.output2, noAttenuator: true },
     ];
 
     this.inputs = [
@@ -131,19 +142,10 @@ export default class Erebus {
           this.filter.inputs.frequency(output);
         },
       },
-      // {
-      //  TODO: in order to change cv, I will have to scale the input [0,1] into like 3-5 octaves
-      //        so the scaling will have to be something like [0,1] -> [1200 (cents) per octave]
-
-      //   label: "CV",
-      //   connectInput: (output: ModSource) => {
-      //     this.filter.inputs.frequency(output);
-      //   },
-      // },
       {
         label: "ECHO",
         connectInput: (output: ModSource) => {
-          window.erebus.delay.inputs.delayTime(output);
+          window.erebus.delay.inputs.delay(output);
         },
       },
       // {

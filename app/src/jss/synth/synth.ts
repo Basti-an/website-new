@@ -78,7 +78,7 @@ export const synthStyles = makeStyles({
     padding: "0 1rem",
     fontFamily: "opal",
     marginBottom: "-1rem",
-    lineHeight: 1.25,
+    lineHeight: "100px",
   },
   namePlateSubTitle: {
     fontSize: "18px",

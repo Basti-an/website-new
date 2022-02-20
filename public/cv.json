@@ -1,6 +1,18 @@
 {
   "2021": [
     {
+      "duration": "12/2021 - Today",
+      "title": "Prototyper @ OBI squared",
+      "url": "https://squared.obi.de/",
+      "image": {
+        "title": "squared, the innovation factory by OBI",
+        "fullWidth": false,
+        "url": "icon_obi_squared_logo.svg",
+        "background": "#000"
+      },
+      "description": "Technically bootstrapping & pioneering new ventures in the DIY market"
+    },
+    {
       "duration": "01/2021 - 07/2021",
       "title": "Software Engineer @ sipgate",
       "url": "https://sipgate.de/",

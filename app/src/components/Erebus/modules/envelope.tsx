@@ -1,9 +1,9 @@
-import classNames from "classnames";
 import React from "react";
-import { envelopeStyles } from "../../jss/synth";
-import Envelope from "../../classes/synth/envelope";
+import classNames from "classnames";
+import { envelopeStyles } from "../../../jss/synth";
+import Envelope from "../../../classes/synth/envelope";
 
-import Knob from "../synth/knob";
+import Knob from "../components/knob";
 
 const useStyles = envelopeStyles;
 

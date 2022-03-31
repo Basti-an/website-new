@@ -1,10 +1,10 @@
 import React from "react";
-import Knob from "../synth/knob";
-import Switch from "../synth/switch";
+import Knob from "../components/knob";
+import Switch from "../components/switch";
 
-import { lfoStyles } from "../../jss/synth";
-import Config from "../../config";
-import LFO from "../../classes/synth/lfo";
+import { lfoStyles } from "../../../jss/synth";
+import Config from "../../../config";
+import LFO from "../../../classes/synth/lfo";
 
 const useStyles = lfoStyles;
 

@@ -1,0 +1,9 @@
+export { default as DelayModule } from "./delay";
+export { default as Filtermodule } from "./filter";
+export { default as LFOmodule } from "./lfo";
+export { default as OSCModule } from "./osc";
+export { default as Ampmodule } from "./vca";
+export { default as EnvelopeModule } from "./envelope";
+export { default as PatchBay } from "./patchbay";
+export { default as Oscilloscope } from "./oscilloscope";
+export { default as MemoryBank } from "./memoryBank";

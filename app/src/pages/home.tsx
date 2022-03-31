@@ -15,7 +15,7 @@ function Home(): JSX.Element {
           Hello There :) I&apos;m a Fullstack Software Developer from Cologne, Germany
         </Typography>
         <Typography className={classes.headline} variant="h3">
-          Check out this <Link to="/synth">Synthesizer</Link> I&apos;ve built for the web!
+          Check out this <Link to="/synth">Synthesizer</Link> I&apos;ve built using toneJS !
         </Typography>
       </Paper>
     </Grid>

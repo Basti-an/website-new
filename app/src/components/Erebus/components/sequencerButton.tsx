@@ -1,5 +1,5 @@
 import React from "react";
-import { sequencerStyles } from "../../jss/synth";
+import { sequencerStyles } from "../../../jss/synth";
 
 const useStyles = sequencerStyles;
 

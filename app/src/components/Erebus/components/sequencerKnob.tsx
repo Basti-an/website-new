@@ -1,6 +1,6 @@
 import classnames from "classnames";
 import React from "react";
-import { sequencerStyles } from "../../jss/synth";
+import { sequencerStyles } from "../../../jss/synth";
 
 import Knob from "./knob";
 

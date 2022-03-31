@@ -1,7 +1,7 @@
 import React from "react";
-import { filterStyles } from "../../jss/synth";
-import Filter from "../../classes/synth/filter";
-import Knob from "../synth/knob";
+import { filterStyles } from "../../../jss/synth";
+import Filter from "../../../classes/synth/filter";
+import Knob from "../components/knob";
 
 const useStyles = filterStyles;
 

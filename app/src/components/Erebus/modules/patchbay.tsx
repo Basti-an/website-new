@@ -1,10 +1,10 @@
 /* eslint-disable react/no-unused-prop-types */
 import React, { useEffect, useState, useCallback } from "react";
-import { Input, Output } from "../../classes/synth/erebus";
-import { patchbayStyles } from "../../jss/synth";
-import { ModSource } from "../../types/modSource.d";
-import { getRandomColor } from "../../utils";
-import Knob from "../synth/knob";
+import { Input, Output } from "../../../classes/synth/erebus";
+import { patchbayStyles } from "../../../jss/synth";
+import { ModSource } from "../../../types/modSource";
+import { getRandomColor } from "../../../utils";
+import Knob from "../components/knob";
 
 const useStyles = patchbayStyles;
 

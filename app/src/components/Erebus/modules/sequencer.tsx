@@ -1,18 +1,20 @@
 import classnames from "classnames";
 import React, { useEffect, useState } from "react";
 import * as Tone from "tone";
-import { sequencerStyles } from "../../jss/synth";
-import Erebus from "../../classes/synth/erebus";
-import { allSequencerNotes } from "../../utils";
+import { sequencerStyles } from "../../../jss/synth";
+import Erebus from "../../../classes/synth/erebus";
+import { allSequencerNotes } from "../../../utils";
 
-import Knob from "../synth/knob";
-import { Led } from "../synth/led";
-import { SequencerButton } from "../synth/sequencerButton";
-import { SequencerKnob } from "../synth/sequencerKnob";
+import Knob from "../components/knob";
+import { Led } from "../components/led";
+import { SequencerButton } from "../components/sequencerButton";
+import { SequencerKnob } from "../components/sequencerKnob";
 
 const useStyles = sequencerStyles;
 
 const sequencerDescription = "";
+
+// @TODO: implement sequencer stuff in window and state to decouple trigger function from react rerenders
 
 const defaultSequence = [
   // bass sequence for Giorgio Moroders "chase"
@@ -39,6 +41,19 @@ interface SequencerProps {
   sendCVs: (cv1: string, cv2: string) => void;
 }
 
+declare global {
+  interface Window {
+    sequencer: {
+      steps: string[];
+      currentStep: number;
+      gateLength: number;
+      tempo: number;
+    };
+  }
+}
+
+window.sequencer = { currentStep: 0, steps: [], gateLength: 50, tempo: 120 };
+
 export default function Sequencer({ erebus, sendCVs }: SequencerProps): JSX.Element {
   const classes = useStyles();
   const [tempo, setTempo] = useState<number>(120);
@@ -47,10 +62,10 @@ export default function Sequencer({ erebus, sendCVs }: SequencerProps): JSX.Elem
   const [sequencerNotes, setSequencerNotes] = useState<string[]>(defaultSequence);
   const [activeStep, setActiveStep] = useState<number>(-1);
 
-  const trigger = (gateValue: number, step: number) => (time: number | undefined, note: string) => {
+  const trigger = (time: number | undefined, note: string) => {
     sendCVs(note, note);
 
-    const gateLength = (1 / (tempo / 60)) * (gateValue / 100);
+    const gateLength = (1 / (window.sequencer.tempo / 60)) * (window.sequencer.gateLength / 100);
 
     if (time === undefined) {
       // play note immediately
@@ -67,10 +82,12 @@ export default function Sequencer({ erebus, sendCVs }: SequencerProps): JSX.Elem
     erebus.envelope.envelope.triggerRelease(time + gateLength);
 
     // update UI LED
-    if (step < sequencerNotes.length - 1) {
-      setActiveStep(step + 1);
+    if (window.sequencer.currentStep < sequencerNotes.length - 1) {
+      setActiveStep(window.sequencer.currentStep + 1);
+      window.sequencer.currentStep += 1;
     } else {
       setActiveStep(0);
+      window.sequencer.currentStep = 0;
     }
   };
 
@@ -86,12 +103,13 @@ export default function Sequencer({ erebus, sendCVs }: SequencerProps): JSX.Elem
     sequence?.stop();
 
     // makes it easier to dial in notes by playing them while changing pitch
-    trigger(50, -1)(undefined, newNote);
+    trigger(undefined, newNote);
   };
 
   useEffect(() => {
-    const newLoop = new Tone.Sequence(trigger(gate, activeStep), sequencerNotes, "8n");
+    const newLoop = new Tone.Sequence(trigger, sequencerNotes, "8n");
     setSequence(newLoop);
+    window.sequencer = { currentStep: 0, steps: sequencerNotes, gateLength: gate, tempo };
 
     return () => {
       Tone.Transport.stop();
@@ -104,7 +122,7 @@ export default function Sequencer({ erebus, sendCVs }: SequencerProps): JSX.Elem
     if (!sequence) {
       return;
     }
-    Tone.context.lookAhead = 0.05;
+    Tone.context.lookAhead = 0.003;
     Tone.Transport.start();
     sequence.start(0);
   };
@@ -123,16 +141,17 @@ export default function Sequencer({ erebus, sendCVs }: SequencerProps): JSX.Elem
 
   useEffect(() => {
     Tone.Transport.bpm.rampTo(tempo);
+    window.sequencer.tempo = tempo;
   }, [tempo]);
 
-  useEffect(() => {
-    if (!sequence) {
-      return;
-    }
-    // inject current state into tone.sequence callback function
-    sequence.set({ callback: trigger(gate, activeStep) });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gate, activeStep]);
+  // useEffect(() => {
+  //   if (!sequence) {
+  //     return;
+  //   }
+  //   // inject current state into tone.sequence callback function
+  //   sequence.set({ callback: trigger(gate, activeStep) });
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [gate, activeStep]);
 
   useEffect(() => {
     if (!sequence) {
@@ -164,6 +183,7 @@ export default function Sequencer({ erebus, sendCVs }: SequencerProps): JSX.Elem
             value={gate}
             onChange={(input: number) => {
               setGate(Math.floor(input));
+              window.sequencer.gateLength = Math.floor(input);
             }}
             min={1}
             max={100}

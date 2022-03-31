@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
-import { synthStyles } from "../../jss/synth";
-import Erebus from "../../classes/synth/erebus";
+import { synthStyles } from "../../../jss/synth";
+import Erebus from "../../../classes/synth/erebus";
 
 const useStyles = synthStyles;
 

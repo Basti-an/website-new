@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
-import Config from "../../config";
-import { LoadContext } from "../../contexts/load";
-import { StoreContext } from "../../contexts/store";
-import { switchStyles } from "../../jss/synth";
-import { loadErebusPatchValue, loadErebusValue, storeErebusValue } from "../../utils";
+import Config from "../../../config";
+import { LoadContext } from "../../../contexts/load";
+import { StoreContext } from "../../../contexts/store";
+import { switchStyles } from "../../../jss/synth";
+import { loadErebusPatchValue, loadErebusValue, storeErebusValue } from "../../../utils";
 
 const useStyles = switchStyles;
 

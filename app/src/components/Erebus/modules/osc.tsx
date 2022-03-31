@@ -1,11 +1,11 @@
 import React from "react";
 import classnames from "classnames";
 import { OmniOscillatorType } from "tone/build/esm/source/oscillator/OscillatorInterface";
-import Knob from "../synth/knob";
-import Config from "../../config";
-import { oscStyles } from "../../jss/synth";
-import ThreeWaySwitch, { Ternary } from "../synth/switch3way";
-import Oscillators from "../../classes/synth/oscillators";
+import Knob from "../components/knob";
+import Config from "../../../config";
+import { oscStyles } from "../../../jss/synth";
+import ThreeWaySwitch, { Ternary } from "../components/switch3way";
+import Oscillators from "../../../classes/synth/oscillators";
 
 const useStyles = oscStyles;
 

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import { StoreContext } from "../../contexts/store";
-import { memoryBankStyles } from "../../jss/synth";
+import { StoreContext } from "../../../contexts/store";
+import { memoryBankStyles } from "../../../jss/synth";
 
 const useStyles = memoryBankStyles;
 

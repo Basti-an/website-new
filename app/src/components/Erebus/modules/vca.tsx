@@ -1,7 +1,7 @@
 import React from "react";
-import Knob from "../synth/knob";
+import Knob from "../components/knob";
 
-import { vcaStyles } from "../../jss/synth";
+import { vcaStyles } from "../../../jss/synth";
 
 const useStyles = vcaStyles;
 

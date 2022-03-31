@@ -1,7 +1,7 @@
 import React from "react";
 import Tone from "tone";
-import Knob from "../synth/knob";
-import { delayStyles } from "../../jss/synth";
+import Knob from "../components/knob";
+import { delayStyles } from "../../../jss/synth";
 
 const useStyles = delayStyles;
 

@@ -2,8 +2,8 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import ZingTouch from "zingtouch";
 import { debounce } from "lodash";
 
-import Config from "../../config";
-import { knobStyles } from "../../jss/synth";
+import Config from "../../../config";
+import { knobStyles } from "../../../jss/synth";
 import {
   getIsMobileDevice,
   getLinValue,
@@ -13,9 +13,9 @@ import {
   loadErebusPatchValue,
   loadErebusValue,
   storeErebusValue,
-} from "../../utils";
-import { StoreContext } from "../../contexts/store";
-import { LoadContext } from "../../contexts/load";
+} from "../../../utils";
+import { StoreContext } from "../../../contexts/store";
+import { LoadContext } from "../../../contexts/load";
 
 const useStyles = knobStyles;
 
@@ -55,11 +55,11 @@ export default function Knob({
   const loadPatch = useContext(LoadContext);
   const [lastValue, setLastValue] = useState<number | null>(null);
 
-  function handleInputChange(value: number) {
+  const handleInputChange = (value: number) => {
     // takes a value between [0, 280] and remaps it to [min, max]
     const remappedValue = isLinear ? getLinValue(value, min, max) : getLogValue(value, min, max);
     onChange(remappedValue);
-  }
+  };
 
   function executeAfterSweep(currentValue: number) {
     const value = isLinear
@@ -113,7 +113,6 @@ export default function Knob({
     if (!knobEl.current) {
       return;
     }
-
     const knob = knobEl.current;
 
     const localStorageValue = loadErebusValue(`erebus-knobs-${name}`);
@@ -122,7 +121,7 @@ export default function Knob({
       initialValue = localStorageValue as number;
     }
 
-    let initialAngle = isLinear
+    const initialAngle = isLinear
       ? getSliderValueForLinValue(initialValue, min, max)
       : getSliderValueForLogValue(initialValue, min, max);
 
@@ -133,9 +132,7 @@ export default function Knob({
       const region = new ZingTouch.Region(knob);
 
       region.bind(knob, "rotate", (e) => {
-        initialAngle += e.detail.distanceFromLast;
-
-        doKnobStuff(knob, initialAngle);
+        doKnobStuff(knob, initialAngle + e.detail.distanceFromLas);
       });
       return;
     }

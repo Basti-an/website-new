@@ -45,10 +45,11 @@ export default function Oscilloscope({ erebus }: OscilloscopeProps): JSX.Element
       canvasCtx.beginPath();
 
       const buffer = erebus.analyser.getValue() as Float32Array;
-      const amplitude = window.erebus.vca.output.gain.value;
 
-      // setup vars for ramp detection in order to quasi phase-align the oscilloscope
-      const treshold = 0.64 * amplitude;
+      // setup vars for "ramp" detection in order to quasi
+      // phase-align the oscilloscope with the wave we are drawing
+      const avg = buffer.reduce((acc, x) => acc + Math.abs(x), 0) / buffer.length;
+      const treshold = 0.64 * avg;
       let lastSample: undefined | number;
       let start = false;
 

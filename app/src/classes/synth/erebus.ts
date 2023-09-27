@@ -82,9 +82,12 @@ export default class Erebus {
     this.noise.connect(this.filter.filter);
     // this.oscillators.oscMixOut.connect(this.filter.filter);
 
-    // filter -> amp in
-    this.oscillators.oscMixOut.connect(this.ladderNode);
+    const pregain = new Tone.Gain(2);
 
+    // filter -> amp in
+    this.oscillators.oscMixOut.connect(pregain);
+
+    pregain.connect(this.ladderNode);
     Tone.connect(this.ladderNode, this.vca.ampEnv);
     // this.filter.filter.connect(this.vca.ampEnv);
 

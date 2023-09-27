@@ -31,13 +31,33 @@ import { loadErebusPatchValue } from "../../utils";
 declare global {
   interface Window {
     erebus: Erebus;
-    prohibitFlowing: boolean;
     audioContext: AudioContext;
     webkitAudioContext?: AudioContext;
   }
 }
 
 const useStyles = synthStyles;
+
+async function setupFilter() {
+  await window.audioContext.audioWorklet.addModule(
+    "https://localhost:8080/wasm-worklet-processor.js",
+    {},
+  );
+  const ladderNode = new AudioWorkletNode(window.audioContext, "wasm-worklet-processor", {
+    channelCount: 2,
+    channelInterpretation: "speakers",
+    channelCountMode: "explicit",
+  });
+
+  //  Gets WeAssembly bytcode from file
+  const response = await fetch("https://localhost:8080/filterKernel.wasm");
+  const byteCode = await response.arrayBuffer();
+
+  //  Sends bytecode to the AudioWorkletProcessor for instanciation
+  ladderNode.port.postMessage({ webassembly: byteCode });
+
+  return ladderNode;
+}
 
 function NamePlate(): JSX.Element {
   const classes = useStyles();
@@ -50,7 +70,7 @@ function NamePlate(): JSX.Element {
   );
 }
 
-export default function Synth(): JSX.Element {
+function Synth(): JSX.Element {
   const classes = useStyles();
 
   const [oscOctaveShift, setOscOctaveShift] = useState({ one: 0, two: 1 });
@@ -64,6 +84,8 @@ export default function Synth(): JSX.Element {
   const storePatch = useContext(StoreContext);
   const loadPatch = useContext(LoadContext);
 
+  const { addToPatch, patchName } = storePatch;
+
   useEffect(() => {
     /* commit all output values to new patch (storeName) */
     if (!erebus) {
@@ -72,20 +94,18 @@ export default function Synth(): JSX.Element {
 
     erebus.outputs.forEach((output) => {
       const { label, connectedWith } = output;
-      storePatch.addToPatch(
-        storePatch.patchName,
-        `erebus-outputs-${label}-connectedWith`,
-        connectedWith,
-      );
+      addToPatch(patchName, `erebus-outputs-${label}-connectedWith`, connectedWith);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [erebus, storePatch.patchName]);
+  }, [erebus, patchName]);
 
   useEffect(() => {
     /* connect outputs to inputs according to values in localStorage when loadPatchName changes */
     if (loadPatch === "initial-patch") {
       return;
     }
+
+    console.log("wtf");
 
     if (!erebus) {
       return;
@@ -110,22 +130,36 @@ export default function Synth(): JSX.Element {
       return output;
     });
 
-    // window.erebus.outputs = newOutputs;
-    erebus.outputs = newOutputs;
+    console.log(newOutputs);
 
-    setErebus(erebus);
+    // window.erebus.outputs = newOutputs;
+    erebus.setOutputs(newOutputs);
+
     setOutputs(newOutputs);
-  }, [erebus, loadPatch]);
+    // setErebus(erebus);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loadPatch]);
 
   async function initializeAudio() {
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     const context = new AudioContext();
     window.audioContext = context;
+    Tone.setContext(context);
 
-    window.erebus = new Erebus();
+    const ladderNode = await setupFilter();
+    // eslint-disable-next-line no-debugger
+    window.erebus = new Erebus(ladderNode);
     setErebus(window.erebus);
     setOutputs(window.erebus.outputs);
   }
+
+  useEffect(() => {
+    (async () => {
+      await Tone.start();
+      initializeAudio();
+      setInit(true);
+    })();
+  }, []);
 
   function changeOscOctave(osc: "one" | "two", value: number) {
     oscOctaveShift[osc] = osc === "one" ? value - 1 : value;
@@ -155,21 +189,80 @@ export default function Synth(): JSX.Element {
 
   return (
     <>
+      {erebus && (
+        <>
+          <div className={classes.erebusBox}>
+            <div className={classes.row}>
+              <LFOmodule lfo={erebus.lfo} />
+              <DelayModule delay={erebus.delay.delay} />
+              <NamePlate />
+            </div>
+            <div className={classes.row}>
+              <div className={classes.row}>
+                <div className={classes.column}>
+                  <div className={classes.row}>
+                    <OSCModule oscillators={erebus.oscillators} changeOscOctave={changeOscOctave} />
+                    <Filtermodule filter={erebus.filter} />
+                    <Ampmodule
+                      setAmpEnv={({ attack, release }) => {
+                        if (attack) {
+                          erebus.vca.ampEnv.set({ attack });
+                        }
+                        if (release) {
+                          erebus.vca.ampEnv.set({ release });
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className={classes.rowVertical}>
+                    <EnvelopeModule envelope={erebus.envelope} />
+                    <Oscilloscope erebus={erebus} />
+                  </div>
+                </div>
+                <PatchBay outputs={outputs} inputs={erebus.inputs} />
+              </div>
+            </div>
+          </div>
+          <div className={classes.rowCenter}>
+            <MemoryBank />
+          </div>
+          <div className={classes.keyboardContainer}>
+            <Keyboard
+              sendCVs={sendCVs}
+              sendGate={(newgate) => {
+                if (newgate) {
+                  erebus.vca.ampEnv.triggerAttack(undefined, 1.0);
+                  erebus.envelope.envelope.triggerAttack(undefined, 1.0);
+                } else {
+                  erebus.vca.ampEnv.triggerRelease();
+                  erebus.envelope.envelope.triggerRelease();
+                }
+              }}
+            />
+          </div>
+        </>
+      )}
+    </>
+  );
+}
+
+export default function SynthWrapper(): JSX.Element {
+  const classes = useStyles();
+  const [hasClicked, setHasClicked] = useState(false);
+
+  return (
+    <>
       {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
       <div
         className={classes.synth}
-        onClick={async () => {
-          if (!init) {
-            await Tone.start();
-            initializeAudio();
-            setInit(true);
-          }
+        onClick={() => {
+          setHasClicked(true);
         }}
       >
-        {!erebus && (
+        {!hasClicked && (
           <div className={classes.erebusBox} style={{ cursor: "pointer" }}>
             <Typography variant="h5" color="inherit" className={classes.title}>
-              Web-native semi-modular synthesizer based on the{" "}
+              Semi-modular synthesizer based on the{" "}
               <a
                 href="https://www.dreadbox-fx.com/erebus/"
                 target="_blank"
@@ -189,61 +282,10 @@ export default function Synth(): JSX.Element {
             </Typography>
           </div>
         )}
-        {erebus && (
+        {hasClicked && (
           <>
             <MemoryStoreProvider>
-              <div className={classes.erebusBox}>
-                <div className={classes.row}>
-                  <LFOmodule lfo={erebus.lfo} />
-                  <DelayModule delay={erebus.delay.delay} />
-                  <NamePlate />
-                </div>
-                <div className={classes.row}>
-                  <div className={classes.row}>
-                    <div className={classes.column}>
-                      <div className={classes.row}>
-                        <OSCModule
-                          oscillators={erebus.oscillators}
-                          changeOscOctave={changeOscOctave}
-                        />
-                        <Filtermodule filter={erebus.filter} />
-                        <Ampmodule
-                          setAmpEnv={({ attack, release }) => {
-                            if (attack) {
-                              erebus.vca.ampEnv.set({ attack });
-                            }
-                            if (release) {
-                              erebus.vca.ampEnv.set({ release });
-                            }
-                          }}
-                        />
-                      </div>
-                      <div className={classes.rowVertical}>
-                        <EnvelopeModule envelope={erebus.envelope} />
-                        <Oscilloscope erebus={erebus} />
-                      </div>
-                    </div>
-                    <PatchBay outputs={outputs} inputs={erebus.inputs} />
-                  </div>
-                </div>
-              </div>
-              <div className={classes.rowCenter}>
-                <MemoryBank />
-              </div>
-              <div className={classes.keyboardContainer}>
-                <Keyboard
-                  sendCVs={sendCVs}
-                  sendGate={(newgate) => {
-                    if (newgate) {
-                      erebus.vca.ampEnv.triggerAttack(undefined, 1.0);
-                      erebus.envelope.envelope.triggerAttack(undefined, 1.0);
-                    } else {
-                      erebus.vca.ampEnv.triggerRelease();
-                      erebus.envelope.envelope.triggerRelease();
-                    }
-                  }}
-                />
-              </div>
+              <Synth />
             </MemoryStoreProvider>
           </>
         )}

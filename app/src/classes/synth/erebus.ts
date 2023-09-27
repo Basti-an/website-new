@@ -51,9 +51,13 @@ export default class Erebus {
 
   private limiter: Tone.Limiter;
 
-  constructor() {
+  ladderNode: AudioWorkletNode;
+
+  constructor(ladderNode: AudioWorkletNode) {
     // reduce latency
-    Tone.context.lookAhead = 0.003; // 3ms;
+    Tone.context.lookAhead = 0.006; // 6ms;
+
+    this.ladderNode = ladderNode;
 
     this.filter = new Filter();
     this.oscillators = new Oscillators();
@@ -76,10 +80,13 @@ export default class Erebus {
 
     // osc´s + white noise -> filter
     this.noise.connect(this.filter.filter);
-    this.oscillators.oscMixOut.connect(this.filter.filter);
+    // this.oscillators.oscMixOut.connect(this.filter.filter);
 
     // filter -> amp in
-    this.filter.filter.connect(this.vca.ampEnv);
+    this.oscillators.oscMixOut.connect(this.ladderNode);
+
+    Tone.connect(this.ladderNode, this.vca.ampEnv);
+    // this.filter.filter.connect(this.vca.ampEnv);
 
     // amp out + distortion -> delay
     this.vca.output.connect(this.delay.delay);
@@ -173,5 +180,9 @@ export default class Erebus {
       //   },
       // },
     ];
+  }
+
+  setOutputs(outputs: Output[]) {
+    this.outputs = outputs;
   }
 }

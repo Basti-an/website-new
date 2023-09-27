@@ -26,6 +26,7 @@ export default function FilterModule({ filter }: IFilterProps): JSX.Element {
         <Knob
           onChange={(value: number) => {
             filter.frequency.rampTo(value, 0);
+            window.erebus.ladderNode.port.postMessage({ cutoff: value });
           }}
           min={10}
           max={20000}
@@ -40,10 +41,11 @@ export default function FilterModule({ filter }: IFilterProps): JSX.Element {
         <Knob
           onChange={(value: number) => {
             filter.filter.Q.value = value;
+            window.erebus.ladderNode.port.postMessage({ resonance: value });
           }}
-          min={3}
-          max={33}
-          initial={7}
+          min={0.1}
+          max={2}
+          initial={1}
           name="vcf-resonance"
         />
       </div>

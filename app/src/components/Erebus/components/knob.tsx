@@ -62,17 +62,17 @@ export default function Knob({
   };
 
   function executeAfterSweep(currentValue: number) {
-    const value = isLinear
+    const newValue = isLinear
       ? getLinValue(currentValue, min, max)
       : getLogValue(currentValue, min, max);
 
-    // commit last knob value to localStorage
-    storeErebusValue(`erebus-knobs-${name}`, value);
+    // commit last knob newValue to localStorage
+    storeErebusValue(`erebus-knobs-${name}`, newValue);
 
-    setLastValue(value);
+    setLastValue(newValue);
 
     if (typeof afterSweep === "function") {
-      afterSweep(value);
+      afterSweep(newValue);
     }
   }
 
@@ -132,7 +132,8 @@ export default function Knob({
       const region = new ZingTouch.Region(knob);
 
       region.bind(knob, "rotate", (e) => {
-        doKnobStuff(knob, initialAngle + e.detail.distanceFromLas);
+        console.log(e);
+        doKnobStuff(knob, initialAngle + e.detail.distanceFromLast);
       });
       return;
     }
@@ -165,8 +166,10 @@ export default function Knob({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const { patchName, addToPatch } = storePatch;
+
   useEffect(() => {
-    if (storePatch.patchName === "initial-patch") {
+    if (patchName === "initial-patch") {
       return;
     }
 
@@ -174,11 +177,10 @@ export default function Knob({
       return;
     }
 
-    const { addToPatch, patchName } = storePatch;
     addToPatch(patchName, `erebus-knobs-${name}`, lastValue);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [storePatch.patchName]);
+  }, [patchName]);
 
   useEffect(() => {
     if (loadPatch === "initial-patch") {

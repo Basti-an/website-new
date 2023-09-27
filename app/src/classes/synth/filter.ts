@@ -16,6 +16,7 @@ export default class Filter {
       frequency,
       Q,
       rolloff: -12,
+      gain: 15,
     });
 
     this.frequency = new Tone.Signal(0, "frequency");

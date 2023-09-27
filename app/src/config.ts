@@ -5,7 +5,7 @@ let host = `https://wiendlocha.org`;
 const env = process.env.NODE_ENV;
 
 if (env === "development" || hostname === "localhost") {
-  host = `http://${hostname}:8080`;
+  host = `https://${hostname}:8080`;
 }
 
 const Config = {

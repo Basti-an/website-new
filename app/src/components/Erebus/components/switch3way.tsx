@@ -98,12 +98,6 @@ export default function ThreeWaySwitch({ onInput, initialState, name }: SwitchPr
   };
 
   useEffect(() => {
-    const { addToPatch, patchName } = storePatch;
-    addToPatch(patchName, `erebus-switches-${name}`, state);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [storePatch.patchName]);
-
-  useEffect(() => {
     const value = loadErebusPatchValue(loadPatch, `erebus-switches-${name}`);
     if (value === null) {
       return;
@@ -113,6 +107,12 @@ export default function ThreeWaySwitch({ onInput, initialState, name }: SwitchPr
     onInput(value as Ternary);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadPatch]);
+
+  const { addToPatch, patchName } = storePatch;
+  useEffect(() => {
+    addToPatch(patchName, `erebus-switches-${name}`, state);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [patchName]);
 
   return (
     <button

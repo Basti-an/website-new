@@ -1,28 +1,23 @@
 import { Theme, makeStyles } from "@material-ui/core";
-import Config from "../config";
-import { getIsMobileOS } from "../utils";
+// import Config from "../config";
+// import { getIsMobileOS } from "../utils";
 
-const { hostUrl } = Config;
+// const { hostUrl } = Config;
 
-const isMobile = getIsMobileOS();
+// const isMobile = getIsMobileOS();
 
 export const appStyles = makeStyles((theme: Theme) => ({
   root: {
     width: "100vw",
     marginTop: 0,
     zIndex: 1,
-    backgroundImage: isMobile
-      ? `url("${hostUrl}/images/mobileBg.jpg")`
-      : `url("${hostUrl}/images/mainBg.jpg")`,
     backgroundAttachment: "fixed",
     backgroundSize: "cover",
     minHeight: "100vh",
     textAlign: "center",
   },
   titlebar: {
-    transform: "translate3d(0,0,0)",
-    backgroundColor: "rgba(42,42,42,0.5)",
-    backdropFilter: "blur(28px)",
+    backgroundColor: "rgb(42,42,42)",
     color: theme.palette.primary.contrastText,
     zIndex: 10000,
     position: "fixed",
@@ -69,8 +64,8 @@ export const appStyles = makeStyles((theme: Theme) => ({
     fontSize: "16pt",
   },
   boxed: {
-    backgroundColor: "initial",
-    backdropFilter: "blur(18px)",
+    backgroundColor: "#333",
+    // backdropFilter: "blur(18px)",
     borderRadius: "4px",
     padding: "1rem",
     fontWeight: 300,

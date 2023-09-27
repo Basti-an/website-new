@@ -24,6 +24,8 @@ export const cvStyles = makeStyles((theme: Theme) => ({
   grid: {
     paddingBottom: "1rem !important",
     paddingTop: "1rem !important",
+    perspective: 2000,
+    transformStyle: "preserve-3d",
   },
   spacer: {
     width: "100%",

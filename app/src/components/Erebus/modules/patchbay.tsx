@@ -321,7 +321,6 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
             className={classes.jack}
             onMouseDown={onJackDown(index, output)}
             onKeyPress={(e: React.KeyboardEvent<HTMLElement>) => {
-              console.log(e.key);
               if (e.key === "Enter") {
                 onJackDown(index, output)();
               }

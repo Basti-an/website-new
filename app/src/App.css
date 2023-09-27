@@ -3,6 +3,11 @@
   src: url("./fonts/Opal.ttf");
 }
 
+@font-face {
+  font-family: "florentine";
+  src: url("./fonts/OPTIFlorentine.otf");
+}
+
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 40vmin;
@@ -353,12 +358,13 @@ a {
   -ms-transform: translateZ(0);
   -o-transform: translateZ(0);
   transform: translateZ(0);
-  transition: width 0.2s ease-out, height 0.2s ease-out;
+  transform-origin: bottom;
+  /* transition: width 0.2s ease-out, height 0.2s ease-out; */
   margin: 0 0.5rem;
-  min-height: 68px;
-  min-width: 68px;
-  width: 68px;
-  height: 68px;
+  /* min-height: 68px;
+  min-width: 68px; */
+  width: 54px;
+  height: 54px;
   display: inline-block;
   border-radius: 12px;
 }
@@ -384,9 +390,108 @@ a {
 #innerStage {
   position: absolute;
   bottom: 10px;
-  width: 344px;
-  height: 89px;
-  backdrop-filter: blur(14px);
-  background-color: rgba(0, 0, 0, 0.2);
+  width: 290px;
+  height: 74px;
+  backdrop-filter: blur(20px);
+  background-color: rgba(0, 0, 0, 0.36);
   border-radius: 12px;
+  transition: width 0.05s, height 0.05s;
+}
+
+#SpaceFillingCurve {
+  padding: 0.5rem;
+  position: absolute;
+  left: 50%;
+  border-radius: 33px;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 100%;
+  stroke-linejoin: bevel;
+  paint-order: stroke;
+  stroke: url(#gradient);
+}
+
+@media (prefers-color-scheme: dark) {
+  #SpaceFillingCurve {
+    /* background: #333; */
+    stroke: #888;
+    /* stroke: url(#gradient); */
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  #SpaceFillingCurve {
+    /* LMAO I'm not gonna support light mode */
+  }
+}
+
+@media (prefers-reduced-motion) {
+  #SpaceFillingCurve {
+    animation: none;
+    stroke-dasharray: none;
+    stroke-dashoffset: none;
+  }
+}
+
+.draw2 {
+  /* animation: snake 20s ease-in-out 1; */
+  animation-fill-mode: forwards;
+}
+@keyframes snake {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+#cologne {
+  position: fixed;
+  bottom: 0;
+  width: 100vw;
+  left: 0;
+}
+
+.frasier-text {
+  display: inline;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-46%);
+  padding: 1rem;
+  margin: 0;
+  top: 0;
+  font-family: "florentine";
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 38px;
+  font-weight: 400;
+  text-shadow: 2px 2px 0px #000000;
+}
+
+.frasier-text > p {
+  margin: 0;
+}
+
+.frasier-text > p:first-of-type {
+  margin-right: 7rem;
+}
+
+.frasier-text > p::first-letter {
+  font-size: 50px;
+}
+
+.name-container {
+  position: relative;
+  width: 310px;
+  height: 140px;
+}
+
+@keyframes color {
+  to {
+    background: hsl(260, 45%, 40%);
+  }
+}
+
+#root,
+html {
+  background: hsl(172, 34%, 40%);
+  animation: color 60s linear forwards;
 }

@@ -78,16 +78,17 @@ export default function Switch({ onInput, initialState, name }: SwitchProps): JS
     }
   };
 
+  const { addToPatch, patchName } = storePatch;
+
   useEffect(() => {
-    if (storePatch.patchName === "inital-patch") {
+    if (patchName === "inital-patch") {
       return;
     }
 
-    const { addToPatch, patchName } = storePatch;
     addToPatch(patchName, `erebus-switches-${name}`, active);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [storePatch.patchName]);
+  }, [patchName]);
 
   useEffect(() => {
     if (loadPatch === "inital-patch") {

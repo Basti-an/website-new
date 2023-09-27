@@ -6,7 +6,7 @@ const useStyles = memoryBankStyles;
 
 const defaultPatches = {
   default:
-    '{"erebus-knobs-lfo-rate":0.6,"erebus-knobs-lfo-amplitude":0.3,"erebus-switches-lfo-waveform":false,"erebus-knobs-delay-time":0.5,"erebus-knobs-delay-feedback":0.25,"erebus-knobs-osc-mix":50,"erebus-knobs-osc-OSC 1-tuning":500,"erebus-switches-osc-octave-left":-1,"erebus-switches-osc-octave-right":-1,"erebus-knobs-osc-OSC 2-tuning":510,"erebus-knobs-osc-1-glide":1,"erebus-switches-osc-waveform-left":-1,"erebus-switches-osc-waveform-right":1,"erebus-knobs-osc-2-glide":1,"erebus-knobs-vcf-cutoff":70,"erebus-knobs-vcf-resonance":7,"erebus-knobs-vca-output":150,"erebus-knobs-vca-attack":0.01,"erebus-knobs-vca-release":0.42,"erebus-knobs-adsr-a":1,"erebus-knobs-adsr-d":1.42,"erebus-knobs-adsr-s":1.5,"erebus-knobs-adsr-r":1.7,"erebus-knobs-adsr-depth":0.4,"erebus-knobs-outputs-ENV-scaling":0.8,"erebus-knobs-outputs-LFO-scaling":0.8,"erebus-knobs-outputs-LFO2-scaling":0.8,"erebus-outputs-LFO-connectedWith":2,"erebus-outputs-LFO2-connectedWith":5}',
+    '{"erebus-knobs-lfo-rate":0.6,"erebus-knobs-lfo-amplitude":0.3,"erebus-switches-lfo-waveform":false,"erebus-knobs-delay-time":0.5,"erebus-knobs-delay-feedback":0.25,"erebus-knobs-osc-mix": 15,"erebus-knobs-osc-OSC 1-tuning":500,"erebus-switches-osc-octave-left":-1,"erebus-switches-osc-octave-right":-1,"erebus-knobs-osc-OSC 2-tuning":510,"erebus-knobs-osc-1-glide":1,"erebus-switches-osc-waveform-left":-1,"erebus-switches-osc-waveform-right":1,"erebus-knobs-osc-2-glide":1,"erebus-knobs-vcf-cutoff":70,"erebus-knobs-vcf-resonance":7,"erebus-knobs-vca-output":150,"erebus-knobs-vca-attack":0.01,"erebus-knobs-vca-release":0.42,"erebus-knobs-adsr-a":1,"erebus-knobs-adsr-d":1.42,"erebus-knobs-adsr-s":1.5,"erebus-knobs-adsr-r":1.7,"erebus-knobs-adsr-depth":0.4,"erebus-knobs-outputs-ENV-scaling":0.8,"erebus-knobs-outputs-LFO-scaling":0.8,"erebus-knobs-outputs-LFO2-scaling":0.8,"erebus-outputs-LFO-connectedWith":2,"erebus-outputs-LFO2-connectedWith":5}',
   castles:
     '{"erebus-knobs-lfo-rate":0.6,"erebus-knobs-lfo-amplitude":0.3964285714285714,"erebus-switches-lfo-waveform":false,"erebus-knobs-delay-time":0.223872113856834,"erebus-knobs-delay-feedback":0.33464285714285713,"erebus-knobs-delay-wet":0.11071428571428571,"erebus-knobs-osc-mix":20.357142857142858,"erebus-knobs-osc-OSC 1-tuning":496.42857142857144,"erebus-switches-osc-octave-left":-1,"erebus-switches-osc-octave-right":1,"erebus-knobs-osc-OSC 2-tuning":500,"erebus-knobs-osc-1-glide":1,"erebus-switches-osc-waveform-left":-1,"erebus-switches-osc-waveform-right":1,"erebus-knobs-osc-2-glide":1,"erebus-knobs-vcf-cutoff":331.76584715160124,"erebus-knobs-vcf-resonance":5.145583248450762,"erebus-knobs-vca-output":150,"erebus-knobs-vca-attack":0.01,"erebus-knobs-vca-release":0.42,"erebus-knobs-adsr-a":2.8565736250567033,"erebus-knobs-adsr-d":1.42,"erebus-knobs-adsr-s":1.5,"erebus-knobs-adsr-r":1.7,"erebus-knobs-adsr-depth":0.7,"erebus-knobs-outputs-ENV-scaling":0.32857142857142857,"erebus-knobs-outputs-LFO-scaling":0.6964285714285714,"erebus-knobs-outputs-LFO2-scaling":0.28214285714285714,"erebus-outputs-ENV-connectedWith":4,"erebus-outputs-LFO-connectedWith":2,"erebus-outputs-LFO2-connectedWith":5}',
   uboot:
@@ -80,8 +80,7 @@ export default function MemoryBank(): JSX.Element {
   const [newPatchName, setNewPatchName] = useState("");
   const [patches, setPatches] = useState(getPatchNameList());
   const storePatch = useContext(StoreContext);
-  const setStorePatch = storePatch.setStorePatchName;
-  const setLoadPatch = storePatch.setLoadPatchName;
+  const { setStorePatchName, setLoadPatchName } = storePatch;
   const [selectedPatch, setSelectedPatch] = useState("initital-patch");
 
   const changeNewPatchName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,21 +94,22 @@ export default function MemoryBank(): JSX.Element {
     }
 
     let savePatchName = newPatchName;
+    const { resetPatch, getPatch } = storePatch;
 
     if (!newPatchName) {
       // save patch under currently selected patch
       savePatchName = selectedPatch;
-      storePatch.resetPatch(savePatchName);
+      resetPatch(savePatchName);
     }
 
     // triggers knobs to save their values under the patch name
-    setStorePatch(savePatchName);
+    setStorePatchName(savePatchName);
 
     // give all components time to save their values before committing values to localStorage
     setTimeout(() => {
       localStorage.setItem(
         `erebus-patches-${savePatchName}`,
-        JSON.stringify(storePatch.getPatch(savePatchName)),
+        JSON.stringify(getPatch(savePatchName)),
       );
     }, 1000);
 
@@ -140,7 +140,7 @@ export default function MemoryBank(): JSX.Element {
     <div className={classes.plate}>
       <p className={classes.headerText}>Memory Bank</p>
 
-      <PatchSelector {...{ patches, setLoadPatch, setSelectedPatch }} />
+      <PatchSelector {...{ patches, setLoadPatch: setLoadPatchName, setSelectedPatch }} />
       <div className={classes.flex}>
         <p className={classes.headerText}>Save patch</p>
         <input

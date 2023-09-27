@@ -21,13 +21,13 @@ export default function Navigation(): JSX.Element {
     }
 
     // bounding box for mouse events
-    const fallOffX = 220;
+    const fallOffX = 190;
     const fallOffY = 42;
 
-    const maxMagnification = 0.6;
+    const maxMagnification = 0.7;
 
-    const defaultWidth = 68;
-    const defaultHeight = 68;
+    const defaultWidth = 54;
+    const defaultHeight = 54;
 
     function getDistance(rect: HTMLElement, mouseX: number, mouseY: number): [number, number] {
       const boundingRect: DOMRect = rect.getBoundingClientRect();
@@ -131,14 +131,14 @@ export default function Navigation(): JSX.Element {
       <Tooltip title="Home">
         <div className="genie">
           <Link to="/">
-            <img className="app-icon" alt="Home icon" src={`${hostUrl}/images/home.png`} />
+            <img className="app-icon" alt="Home icon" src={`${hostUrl}/images/finder-icon.svg`} />
           </Link>
         </div>
       </Tooltip>
       <Tooltip title="Synthesizer">
         <div className="genie">
           <Link to="/synth">
-            <img className="app-icon" alt="Home icon" src={`${hostUrl}/images/erebus_knob.png`} />
+            <img className="app-icon" alt="Home icon" src={`${hostUrl}/images/synth-icon.svg`} />
           </Link>
         </div>
       </Tooltip>
@@ -148,7 +148,7 @@ export default function Navigation(): JSX.Element {
             <img
               className="app-icon"
               alt="icon of a popular app for creating documents"
-              src={`${hostUrl}/images/pages.png`}
+              src={`${hostUrl}/images/cv-icon.svg`}
             />
           </Link>
         </div>
@@ -159,7 +159,7 @@ export default function Navigation(): JSX.Element {
             <img
               className="app-icon"
               alt="contact book icon"
-              src={`${hostUrl}/images/contact.png`}
+              src={`${hostUrl}/images/mail-icon.svg`}
             />
           </a>
         </div>

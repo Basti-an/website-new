@@ -5,95 +5,18 @@ const browser = detect();
 export type Primitive = number | boolean | string | undefined;
 
 function getIsMobileOS(): boolean {
-  if (!browser) {
-    return false;
-  }
-
-  const { os } = browser;
-  if (!os) {
-    return false;
-  }
-
   const mobileOSes = ["iOS", "Android OS", "BlackBerry OS", "Windows Mobile"];
-  if (mobileOSes.includes(os)) {
-    return true;
-  }
-
-  return false;
+  return mobileOSes.includes(browser?.os || "");
 }
 
-function getIsGoodBrowser(): boolean {
-  if (!browser) {
-    return false;
-  }
-
-  const { name } = browser;
-
-  const goodBrowsers = ["chrome", "safari", "samsung"];
-
-  if (goodBrowsers.includes(name) || getIsMobileOS()) {
-    return true;
-  }
-
-  return false;
-}
-
-function checkForDevicePerformance(setFancyAnimations: React.Dispatch<boolean>): void {
-  // count fps and stop background animation if fps dips below 24, based on:
-  // https://www.growingwiththeweb.com/2017/12/fast-simple-js-fps-counter.html (Daniel Imms)
-  let lastCalledTime: number;
-  let fps: number;
-  let done = false;
-
-  // calculates fps based on time elapsed since last frame
-  function refreshLoop() {
-    window.requestAnimationFrame(() => {
-      if (!lastCalledTime) {
-        lastCalledTime = performance.now();
-        fps = 0;
-        refreshLoop();
-        return;
-      }
-
-      const delta = (performance.now() - lastCalledTime) / 1000;
-      lastCalledTime = performance.now();
-      fps = 1 / delta;
-
-      if (!done) {
-        refreshLoop();
-      }
-    });
-  }
-
-  // start fps counter
-  refreshLoop();
-
-  // sample FPS after component had time to ramp up rendering
-  const cookFor = 3000;
-  setTimeout(() => {
-    done = true;
-    console.log(`FPS after ${Math.floor(cookFor / 1000)} seconds:`, Math.floor(fps));
-
-    // disable "flowing" background
-    if (getIsMobileOS()) {
-      // mobile animation uses different turbulence values and still looks nice™ at lower fps
-      if (fps < 10) {
-        setFancyAnimations(false);
-        window.prohibitFlowing = true;
-      }
-    } else if (fps < 15) {
-      setFancyAnimations(false);
-    }
-  }, cookFor);
+function getIsGoodBrowser() {
+  return ["chrome", "safari", "samsung"].includes(browser?.name || "");
 }
 
 function getLinValue(sliderValue: number, min: number, max: number): number {
-  const maxp = 280;
-  const linVal = sliderValue / maxp;
   const range = max - min;
-  const inRangeVal = linVal * range;
-
-  return min + inRangeVal;
+  const linVal = (sliderValue / 280) * range + min;
+  return linVal;
 }
 
 function getLogRemapped(
@@ -134,14 +57,12 @@ function getSliderValueForLogValue(value: number, min: number, max: number): num
   return (valueLog / maxLog) * 280 - 140;
 }
 
+function clamp(x: number, minmax: number) {
+  return x > minmax ? minmax : x < -minmax ? -minmax : x;
+}
+
 function getSliderValueForLinValue(value: number, min: number, max: number): number {
-  if (value <= min) {
-    return -140;
-  }
-  if (value >= max) {
-    return 140;
-  }
-  return ((value - min) / (max - min)) * 280 - 140;
+  return clamp(((value - min) / (max - min)) * 280 - 140, 140);
 }
 
 function getIsMobileDevice(): boolean {
@@ -338,10 +259,16 @@ function loadErebusValue(componenName: string): Primitive | null {
   return JSON.parse(localValue);
 }
 
+const isSafari = navigator.userAgent.indexOf("Safari") > -1;
+const isFirefox = navigator.userAgent.indexOf("Firefox") > -1;
+
+function sortDescending(a: string, b: string) {
+  return parseInt(b, 10) - parseInt(a, 10);
+}
+
 export {
   getIsMobileOS,
   getIsGoodBrowser,
-  checkForDevicePerformance,
   getLinValue,
   getLogValue,
   getLogRemapped,
@@ -354,4 +281,8 @@ export {
   loadErebusPatchValue,
   storeErebusValue,
   loadErebusValue,
+  isSafari,
+  isFirefox,
+  sortDescending,
+  clamp,
 };

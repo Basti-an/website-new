@@ -195,7 +195,7 @@ export default function OSCModule({ oscillators, changeOscOctave }: OscProps): J
             isLinear
             min={0}
             max={100}
-            initial={50}
+            initial={0}
             name="osc-mix"
           />
         </div>

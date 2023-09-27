@@ -40,6 +40,7 @@ module.exports = {
     camelcase: 1,
     quotes: 0,
     "no-undef": 0,
+    "one-var": 0,
     "no-trailing-spaces": 0,
     "import/no-extraneous-dependencies": 0,
   },

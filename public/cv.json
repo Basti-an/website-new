@@ -18,7 +18,7 @@
       "url": "https://sipgate.de/",
       "image": {
         "title": "sipgate",
-        "fullWidth": false,
+        "fullWidth": true,
         "url": "sipgate.jpg",
         "background": "#000"
       },
@@ -63,7 +63,7 @@
     },
     {
       "duration": "09/2015 - 05/2016",
-      "title": "Software Dev @  Latzko Websoftware",
+      "title": "Software Dev @ Latzko Websoftware",
       "url": "https://www.latzko-websoftware.de",
       "image": {
         "title": "Latzko Websoftware GmbH",
@@ -100,9 +100,9 @@
       "title": "\"Applied Computer Science\" @ RUB",
       "duration": "10/2013-03/2014",
       "image": {
-        "url": "rub-new.png",
+        "url": "rub.jpg",
         "title": "Ruhr Universität Bochum",
-        "fullWidth": false
+        "fullWidth": true
       },
       "url": "http://studienangebot.ruhr-uni-bochum.de/de/angewandte-informatik/bachelor-1-fach"
     },

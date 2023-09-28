@@ -75,20 +75,24 @@ export default class Erebus {
 
     // lfo, envelope -> filter freq
     // this.filter.inputs.frequency(this.lfo.output);
-    // this.oscillators.osc1.inputs.pulsewidth(this.lfo.output2);
-    this.filter.inputs.frequency(this.envelope.filterOutput);
+    // this.filter.inputs.frequency(this.envelope.filterOutput);
 
     // osc´s + white noise -> filter
-    this.noise.connect(this.filter.filter);
+    // this.noise.connect(this.filter.filter);
     // this.oscillators.oscMixOut.connect(this.filter.filter);
 
-    const pregain = new Tone.Gain(2);
+    const postgain = new Tone.Gain(1.2);
 
     // filter -> amp in
-    this.oscillators.oscMixOut.connect(pregain);
+    this.oscillators.oscMixOut.connect(this.ladderNode);
+    this.noise.connect(this.ladderNode);
 
-    pregain.connect(this.ladderNode);
-    Tone.connect(this.ladderNode, this.vca.ampEnv);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.lfo.output.connect(this.ladderNode.parameters.get("detune")!);
+    this.envelope.filterOutput.connect(this.ladderNode.parameters.get("detune")!);
+
+    Tone.connect(this.ladderNode, postgain);
+    postgain.connect(this.vca.ampEnv);
     // this.filter.filter.connect(this.vca.ampEnv);
 
     // amp out + distortion -> delay

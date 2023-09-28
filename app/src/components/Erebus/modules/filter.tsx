@@ -25,7 +25,7 @@ export default function FilterModule({ filter }: IFilterProps): JSX.Element {
       <div className={classes.freqKnob}>
         <Knob
           onChange={(value: number) => {
-            filter.frequency.rampTo(value, 0);
+            // filter.frequency.rampTo(value, 0);
             window.erebus.ladderNode.port.postMessage({ cutoff: value });
           }}
           min={10}
@@ -40,7 +40,7 @@ export default function FilterModule({ filter }: IFilterProps): JSX.Element {
       <div className={classes.resKnob} title={resonanceDescription}>
         <Knob
           onChange={(value: number) => {
-            filter.filter.Q.value = value;
+            // filter.filter.Q.value = value;
             window.erebus.ladderNode.port.postMessage({ resonance: value });
           }}
           min={0.1}

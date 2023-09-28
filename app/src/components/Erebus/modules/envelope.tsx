@@ -59,7 +59,7 @@ export default function EnvelopeModule({ envelope }: EnvelopeProps): JSX.Element
           <ADSRButton
             onChange={changeADSR("attack")}
             min={1}
-            max={4}
+            max={8}
             initial={1}
             text="A"
             name="adsr-a"
@@ -84,7 +84,7 @@ export default function EnvelopeModule({ envelope }: EnvelopeProps): JSX.Element
           <ADSRButton
             onChange={changeADSR("release")}
             min={1}
-            max={6.5}
+            max={12}
             initial={1.7}
             text="R"
             name="adsr-r"

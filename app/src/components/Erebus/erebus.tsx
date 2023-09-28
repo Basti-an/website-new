@@ -55,6 +55,9 @@ async function setupFilter() {
 
   //  Sends bytecode to the AudioWorkletProcessor for instanciation
   ladderNode.port.postMessage({ webassembly: byteCode });
+  window.addEventListener("processorerror", (event) => {
+    console.error(event);
+  });
 
   return ladderNode;
 }
@@ -105,8 +108,6 @@ function Synth(): JSX.Element {
       return;
     }
 
-    console.log("wtf");
-
     if (!erebus) {
       return;
     }
@@ -129,8 +130,6 @@ function Synth(): JSX.Element {
       }
       return output;
     });
-
-    console.log(newOutputs);
 
     // window.erebus.outputs = newOutputs;
     erebus.setOutputs(newOutputs);

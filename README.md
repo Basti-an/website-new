@@ -1,10 +1,8 @@
 # Homepage 🏠
 
-My personal Website (currently containing my CV and a fully featured semi-modular WebAudio Synthesizer ) build with React, Material-UI for React, NodeJS, and Typescript ❤️.
+My personal Website (currently containing my CV and a fully featured semi-modular WebAudio Synthesizer) build with React, Material-UI for React, NodeJS, and Typescript ❤️.
 
-Currently hosted on [Google App Engine for Python](https://cloud.google.com/appengine/docs/standard/python3) at [sebastian.wiendlocha.org](https://sebastian.wiendlocha.org).
-
-MIT License so knock your heart out :)
+[sebastian.wiendlocha.org](https://sebastian.wiendlocha.org).
 
 ## Prerequisites
 
@@ -26,23 +24,8 @@ build static site for node and python webapp2 (Google App Engine) environment:
 
 `yarn build`
 
-### stats
+## next todos:
 
-current [CLOC](http://cloc.sourceforge.net/) stats:
-
-```
--------------------------------------------------------------------------------
-Language                     files          blank        comment           code
--------------------------------------------------------------------------------
-TypeScript                      65            593            274           4504
-CSS                              3             40              7            358
-JSON                             8              0              0            305
-JavaScript                      12             18             42            190
-Markdown                         2             21              0             51
-YAML                             2             10             14             50
-HTML                             2              2              1             22
-SVG                              2              0              0              8
--------------------------------------------------------------------------------
-SUM:                            96            684            338           5488 LOC
--------------------------------------------------------------------------------
-```
+- compile wasm moog filter that accepts frequency as input instead of [0,1]
+- refactor wasm moog filter integration to work like the normal filter.ts
+- implement erebus.init(filterType?: "webaudio" | "wasm-moog")

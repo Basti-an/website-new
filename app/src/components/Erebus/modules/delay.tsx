@@ -28,7 +28,7 @@ export default function DelayModule({
         <div className={classes.button}>
           <Knob
             onChange={(value) => {
-              delay.delayTime.rampTo(value, window.erebus.output.blockTime * 42);
+              delay.delayTime.rampTo(value, window.erebus.analyser.blockTime * 42);
             }}
             min={0.1}
             max={1.0}

@@ -38,30 +38,6 @@ declare global {
 
 const useStyles = synthStyles;
 
-async function setupFilter() {
-  await window.audioContext.audioWorklet.addModule(
-    "https://localhost:8080/wasm-worklet-processor.js",
-    {},
-  );
-  const ladderNode = new AudioWorkletNode(window.audioContext, "wasm-worklet-processor", {
-    channelCount: 2,
-    channelInterpretation: "speakers",
-    channelCountMode: "explicit",
-  });
-
-  //  Gets WeAssembly bytcode from file
-  const response = await fetch("https://localhost:8080/filterKernel.wasm");
-  const byteCode = await response.arrayBuffer();
-
-  //  Sends bytecode to the AudioWorkletProcessor for instanciation
-  ladderNode.port.postMessage({ webassembly: byteCode });
-  window.addEventListener("processorerror", (event) => {
-    console.error(event);
-  });
-
-  return ladderNode;
-}
-
 function NamePlate(): JSX.Element {
   const classes = useStyles();
 
@@ -140,14 +116,8 @@ function Synth(): JSX.Element {
   }, [loadPatch]);
 
   async function initializeAudio() {
-    window.AudioContext = window.AudioContext || window.webkitAudioContext;
-    const context = new AudioContext();
-    window.audioContext = context;
-    Tone.setContext(context);
-
-    const ladderNode = await setupFilter();
-    // eslint-disable-next-line no-debugger
-    window.erebus = new Erebus(ladderNode);
+    window.erebus = new Erebus();
+    await window.erebus.init();
     setErebus(window.erebus);
     setOutputs(window.erebus.outputs);
   }

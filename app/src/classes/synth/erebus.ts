@@ -19,6 +19,27 @@ export type Input = {
   connectInput: (output: ModSource) => void;
 };
 
+async function setupFilter(audioContext: AudioContext) {
+  await audioContext.audioWorklet.addModule("https://localhost:8080/wasm-worklet-processor.js", {});
+  const ladderNode = new AudioWorkletNode(audioContext, "wasm-worklet-processor", {
+    channelCount: 2,
+    channelInterpretation: "speakers",
+    channelCountMode: "explicit",
+  });
+
+  //  Gets WeAssembly bytcode from file
+  const response = await fetch("https://localhost:8080/filterKernel.wasm");
+  const byteCode = await response.arrayBuffer();
+
+  //  Sends bytecode to the AudioWorkletProcessor for instanciation
+  ladderNode.port.postMessage({ webassembly: byteCode });
+  window.addEventListener("processorerror", (event) => {
+    console.error(event);
+  });
+
+  return ladderNode;
+}
+
 export default class Erebus {
   filter: Filter;
 
@@ -32,13 +53,13 @@ export default class Erebus {
 
   vca: VCA;
 
-  output: Tone.Gain;
-
   inputs: Input[];
 
   outputs: Output[];
 
   analyser: Tone.Analyser;
+
+  audioContext: AudioContext;
 
   keyboard: {
     cv1: Tone.Signal<"frequency">;
@@ -51,13 +72,19 @@ export default class Erebus {
 
   private limiter: Tone.Limiter;
 
-  ladderNode: AudioWorkletNode;
+  wasmMoogFilter: AudioWorkletNode | undefined;
 
-  constructor(ladderNode: AudioWorkletNode) {
+  constructor() {
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+    this.audioContext = new AudioContext({ latencyHint: 0 });
+    window.audioContext = this.audioContext;
+    Tone.setContext(this.audioContext);
+
     // reduce latency
-    Tone.context.lookAhead = 0.006; // 6ms;
+    Tone.context.lookAhead = 0.003; // 3ms;
 
-    this.ladderNode = ladderNode;
+    // wasmMoogFilter is initialized async in init()
+    this.wasmMoogFilter = undefined;
 
     this.filter = new Filter();
     this.oscillators = new Oscillators();
@@ -68,8 +95,7 @@ export default class Erebus {
 
     this.noise = new Tone.Noise("white").start();
     this.noise.volume.value = -55;
-    this.output = new Tone.Gain(0.9);
-    this.limiter = new Tone.Limiter(-6);
+    this.limiter = new Tone.Limiter(-12);
 
     this.analyser = new Tone.Analyser("waveform", 4096);
 
@@ -81,28 +107,7 @@ export default class Erebus {
     // this.noise.connect(this.filter.filter);
     // this.oscillators.oscMixOut.connect(this.filter.filter);
 
-    const postgain = new Tone.Gain(1.2);
-
     // filter -> amp in
-    this.oscillators.oscMixOut.connect(this.ladderNode);
-    this.noise.connect(this.ladderNode);
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.lfo.output.connect(this.ladderNode.parameters.get("detune")!);
-    this.envelope.filterOutput.connect(this.ladderNode.parameters.get("detune")!);
-
-    Tone.connect(this.ladderNode, postgain);
-    postgain.connect(this.vca.ampEnv);
-    // this.filter.filter.connect(this.vca.ampEnv);
-
-    // amp out + distortion -> delay
-    this.vca.output.connect(this.delay.delay);
-
-    // delay -> limiter -> output
-    this.delay.delay.connect(this.limiter);
-    this.limiter.connect(this.output);
-    this.output.connect(this.analyser);
-    this.analyser.toDestination();
 
     // setup keyboard
     this.keyboard = {
@@ -117,9 +122,6 @@ export default class Erebus {
       output1: new Tone.Scale(0, 1),
       output2: new Tone.Scale(0, 1),
     };
-
-    this.keyboard.cv1.connect(this.oscillators.osc1.frequency);
-    this.keyboard.cv2.connect(this.oscillators.osc2.frequency);
 
     // scale down the frequency range to [0, 1] approximately for output
     const multiply1 = new Tone.Multiply(1 / 220);
@@ -191,5 +193,30 @@ export default class Erebus {
 
   setOutputs(outputs: Output[]) {
     this.outputs = outputs;
+  }
+
+  async init() {
+    this.wasmMoogFilter = await setupFilter(this.audioContext);
+
+    this.oscillators.output.connect(this.wasmMoogFilter);
+    // this.noise.connect(this.wasmMoogFilter);
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.lfo.output.connect(this.wasmMoogFilter.parameters.get("detune")!);
+    this.envelope.filterOutput.connect(this.wasmMoogFilter.parameters.get("detune")!);
+
+    Tone.connect(this.wasmMoogFilter, this.vca.ampEnv);
+    // this.filter.filter.connect(this.vca.ampEnv);
+
+    // amp out + distortion -> delay
+    this.vca.output.connect(this.delay.delay);
+
+    // delay -> limiter -> output
+    this.delay.delay.connect(this.limiter);
+    this.limiter.connect(this.analyser);
+    this.analyser.toDestination();
+
+    this.keyboard.cv1.connect(this.oscillators.osc1.frequency);
+    this.keyboard.cv2.connect(this.oscillators.osc2.frequency);
   }
 }

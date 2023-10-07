@@ -173,11 +173,7 @@ export default function Knob({
       return;
     }
 
-    if (!lastValue) {
-      return;
-    }
-
-    addToPatch(patchName, `erebus-knobs-${name}`, lastValue);
+    addToPatch(patchName, `erebus-knobs-${name}`, lastValue ?? initial);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [patchName]);

@@ -156,7 +156,7 @@ export default class Erebus {
       {
         label: "VCF",
         connectInput: (output: ModSource) => {
-          this.filter.inputs.frequency(output);
+          this.wasmMoogFilter?.inputs.frequency(output);
         },
       },
       {
@@ -223,3 +223,5 @@ export default class Erebus {
     this.keyboard.cv2.connect(this.oscillators.osc2.frequency);
   }
 }
+
+// @TODO: investigate why erebus-knobs-adsr-depth is not saved on patch save

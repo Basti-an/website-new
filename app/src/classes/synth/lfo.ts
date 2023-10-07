@@ -32,7 +32,7 @@ export default class LFO {
     this.lforate.connect(adder.addend);
     adder.connect(this.lfo.frequency);
 
-    this.lforateInputScale = new Tone.ScaleExp(0, 50, Math.E);
+    this.lforateInputScale = new Tone.ScaleExp(0, 150, Math.E);
     this.lforateInputScale.connect(adder);
 
     this.inputs = {

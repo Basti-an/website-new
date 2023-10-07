@@ -6,6 +6,7 @@ import Filter from "./filter";
 import LFO from "./lfo";
 import Oscillators from "./oscillators";
 import VCA from "./vca";
+import MoogWasmFilter from "./moogWasmFilter";
 
 export type Output = {
   label: string;
@@ -72,7 +73,7 @@ export default class Erebus {
 
   private limiter: Tone.Limiter;
 
-  wasmMoogFilter: AudioWorkletNode | undefined;
+  wasmMoogFilter: MoogWasmFilter | undefined;
 
   constructor() {
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -196,16 +197,18 @@ export default class Erebus {
   }
 
   async init() {
-    this.wasmMoogFilter = await setupFilter(this.audioContext);
+    const audioWorkletNode = await setupFilter(this.audioContext);
+    this.wasmMoogFilter = new MoogWasmFilter(audioWorkletNode);
 
-    this.oscillators.output.connect(this.wasmMoogFilter);
+    this.oscillators.output.connect(this.wasmMoogFilter.filter);
     // this.noise.connect(this.wasmMoogFilter);
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.lfo.output.connect(this.wasmMoogFilter.parameters.get("detune")!);
-    this.envelope.filterOutput.connect(this.wasmMoogFilter.parameters.get("detune")!);
 
-    Tone.connect(this.wasmMoogFilter, this.vca.ampEnv);
+    this.wasmMoogFilter.inputs.frequency(this.lfo.output);
+    this.wasmMoogFilter.inputs.frequency(this.envelope.filterOutput);
+
+    Tone.connect(this.wasmMoogFilter.filter, this.vca.ampEnv);
     // this.filter.filter.connect(this.vca.ampEnv);
 
     // amp out + distortion -> delay

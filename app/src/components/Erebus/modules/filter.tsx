@@ -26,7 +26,8 @@ export default function FilterModule({ filter }: IFilterProps): JSX.Element {
         <Knob
           onChange={(value: number) => {
             // filter.frequency.rampTo(value, 0);
-            window.erebus.wasmMoogFilter?.port.postMessage({ cutoff: value });
+            // window.erebus.wasmMoogFilter?.port.postMessage({ cutoff: value });
+            window.erebus.wasmMoogFilter?.frequency.rampTo(value, 0);
           }}
           min={10}
           max={20000}
@@ -41,7 +42,7 @@ export default function FilterModule({ filter }: IFilterProps): JSX.Element {
         <Knob
           onChange={(value: number) => {
             // filter.filter.Q.value = value;
-            window.erebus.wasmMoogFilter?.port.postMessage({ resonance: value });
+            window.erebus.wasmMoogFilter?.filter.port.postMessage({ resonance: value });
           }}
           min={0.1}
           max={2}

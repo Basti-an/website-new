@@ -2,15 +2,7 @@ import "./App.css";
 import React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { useTheme } from "@material-ui/core/styles";
-import {
-  // AppBar,
-  Grid,
-  // Toolbar,
-  // Typography,
-  // FormControlLabel,
-  // Switch,
-  // Tooltip,
-} from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import Background from "./components/background";
 import Navigation from "./components/navigation";
 import { appStyles } from "./jss";

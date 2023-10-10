@@ -67,8 +67,8 @@ export default function Oscilloscope({ erebus }: OscilloscopeProps): JSX.Element
 
         const sliceWidth = (WIDTH * 1.0) / bufferLength;
 
-        const v = sample + 1;
-        const y = (v * HEIGHT) / 2;
+        const v = sample * 1.8;
+        const y = v * HEIGHT + HEIGHT / 2;
 
         if (index === 0) {
           canvasCtx.moveTo(x, y);

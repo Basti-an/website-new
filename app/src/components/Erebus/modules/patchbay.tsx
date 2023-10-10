@@ -33,19 +33,17 @@ const drawPolygon =
 
     const initialColor = ctx.fillStyle;
 
-    ctx.beginPath();
     ctx.fillStyle = color;
+    ctx.beginPath();
     ctx.moveTo(start.x, start.y);
 
     for (let i = 1; i < vertices + 1; i += 1) {
       const { x, y } = start;
-      const tau = Math.PI * 2; // tau > pi, literally
+      const tau = Math.PI * 2; // tau > pi
       const x2 = x + Math.cos((tau * ANGLE * i) / 360) * SIZE;
       const y2 = y + Math.sin((tau * ANGLE * i) / 360) * SIZE;
 
       ctx.lineTo(x2, y2);
-      // ctx.stroke();
-
       start = { x: x2, y: y2 };
     }
 
@@ -81,7 +79,8 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
   const drawCurve = useCallback(
     (line: Line) => {
       /**
-       * draws a simple parable between two patch holes to simulate a cable connection
+       * draws a simple parable between two patch holes to
+       * simulate a cable connection
        */
       if (!ctx) {
         return;
@@ -106,6 +105,7 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
       ctx.quadraticCurveTo(bezier1, bezier2, x2, y2);
       ctx.stroke();
       drawCircle({ x: x2, y: y2 }, color, 2);
+
       ctx.closePath();
 
       ctx.lineWidth = initialLineWidth;

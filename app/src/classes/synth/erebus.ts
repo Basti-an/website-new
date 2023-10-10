@@ -205,7 +205,7 @@ export default class Erebus {
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 
-    this.wasmMoogFilter.inputs.frequency(this.lfo.output);
+    // this.wasmMoogFilter.inputs.frequency(this.lfo.output);
     this.wasmMoogFilter.inputs.frequency(this.envelope.filterOutput);
 
     Tone.connect(this.wasmMoogFilter.filter, this.vca.ampEnv);
@@ -223,5 +223,3 @@ export default class Erebus {
     this.keyboard.cv2.connect(this.oscillators.osc2.frequency);
   }
 }
-
-// @TODO: investigate why erebus-knobs-adsr-depth is not saved on patch save

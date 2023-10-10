@@ -28,7 +28,7 @@ export default class MoogWasmFilter {
 
     this.filterConnect.connect(this.filter.parameters.get("cutoff")!);
 
-    this.frequencyInputScale = new Tone.Scale(0, 1200 * 4);
+    this.frequencyInputScale = new Tone.Scale(0, 1200 * 5);
     this.frequencyInputScale.connect(this.detune);
 
     this.inputs = {

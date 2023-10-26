@@ -8,19 +8,24 @@ export default class Oscillators {
 
   setOscMix: (input: number) => void;
 
-  output: Tone.CrossFade;
+  crossfade: Tone.CrossFade;
+
+  output: Tone.Gain;
 
   constructor() {
     this.osc1 = new Oscillator("pulse", ["sawtooth", "pulse"], "C1");
     this.osc2 = new Oscillator("sawtooth", ["sawtooth", "triangle"], "C2");
 
-    this.output = new Tone.CrossFade(0.5);
+    this.crossfade = new Tone.CrossFade(0.5);
+    this.output = new Tone.Gain(0.666);
 
-    this.osc1.oscillator.connect(this.output.a);
-    this.osc2.oscillator.connect(this.output.b);
+    this.osc1.oscillator.connect(this.crossfade.a);
+    this.osc2.oscillator.connect(this.crossfade.b);
+
+    this.crossfade.connect(this.output);
 
     this.setOscMix = (input: number) => {
-      this.output.fade.value = input / 100;
+      this.crossfade.fade.value = input / 100;
     };
   }
 }

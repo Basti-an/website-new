@@ -29,6 +29,20 @@ handlers:
       Access-Control-Allow-Origin: "*"
     secure: always
 
+  - url: /filterKernelOb.wasm
+    mime_type: application/wasm
+    static_dir: public/filterKernelOb.wasm
+    http_headers:
+      Access-Control-Allow-Origin: "*"
+    secure: always
+
+  - url: /wasm-worklet-processor.js
+    mime_type: text/javascript
+    static_dir: public/wasm-worklet-processor.js
+    http_headers:
+      Access-Control-Allow-Origin: "*"
+    secure: always
+
   - url: /cv/
     static_files: www/index.html
     upload: www/index.html

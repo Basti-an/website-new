@@ -21,7 +21,6 @@ class WorkletProcessor extends AudioWorkletProcessor {
       switch (key) {
         case "webassembly":
           WebAssembly.instantiate(value, this.importObject).then((result) => {
-            console.log("created instance");
             const exports = result.instance.exports;
 
             this.inputStart = exports.inputBufferPtr();

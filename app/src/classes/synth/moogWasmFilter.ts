@@ -26,9 +26,10 @@ export default class MoogWasmFilter {
     this.frequency.connect(this.filterConnect);
     this.detune.connect(this.filterConnect.addend);
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.filterConnect.connect(this.filter.parameters.get("cutoff")!);
 
-    this.frequencyInputScale = new Tone.Scale(0, 1200 * 5);
+    this.frequencyInputScale = new Tone.ScaleExp(0, 1200 * 5, Math.E);
     this.frequencyInputScale.connect(this.detune);
 
     this.inputs = {

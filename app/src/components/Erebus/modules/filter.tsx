@@ -29,7 +29,7 @@ export default function FilterModule({ filter }: IFilterProps): JSX.Element {
             // window.erebus.wasmMoogFilter?.port.postMessage({ cutoff: value });
             window.erebus.wasmMoogFilter?.frequency.rampTo(value, 0);
           }}
-          min={10}
+          min={20}
           max={20000}
           initial={70}
           isBig
@@ -45,8 +45,9 @@ export default function FilterModule({ filter }: IFilterProps): JSX.Element {
             window.erebus.wasmMoogFilter?.filter.port.postMessage({ resonance: value });
           }}
           min={0.1}
-          max={2}
-          initial={1}
+          max={0.99}
+          initial={0.3}
+          isLinear
           name="vcf-resonance"
         />
       </div>

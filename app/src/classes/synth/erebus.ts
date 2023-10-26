@@ -20,16 +20,30 @@ export type Input = {
   connectInput: (output: ModSource) => void;
 };
 
-async function setupFilter(audioContext: AudioContext) {
-  await audioContext.audioWorklet.addModule("https://localhost:8080/wasm-worklet-processor.js", {});
-  const ladderNode = new AudioWorkletNode(audioContext, "wasm-worklet-processor", {
+async function setupFilter() {
+  // using Tone audio context instead of native context because Tone uses cross browser audio context implementation
+  // await audioContext.audioWorklet.addModule("https://localhost:8080/wasm-worklet-processor.js", {});
+  const audioContext = Tone.getContext();
+  await audioContext.addAudioWorkletModule(
+    "https://localhost:8080/wasm-worklet-processor.js",
+    "wasm-filter",
+  );
+  const ladderNode = audioContext.createAudioWorkletNode("wasm-worklet-processor", {
     channelCount: 2,
     channelInterpretation: "speakers",
     channelCountMode: "explicit",
+    numberOfInputs: 2,
+    numberOfOutputs: 1,
+    outputChannelCount: [2],
   });
+  // const ladderNode = new AudioWorkletNode(audioContext, "wasm-worklet-processor", {
+  //   channelCount: 2,
+  //   channelInterpretation: "speakers",
+  //   channelCountMode: "explicit",
+  // });
 
   //  Gets WeAssembly bytcode from file
-  const response = await fetch("https://localhost:8080/filterKernel.wasm");
+  const response = await fetch("https://localhost:8080/filterKernelOb.wasm");
   const byteCode = await response.arrayBuffer();
 
   //  Sends bytecode to the AudioWorkletProcessor for instanciation
@@ -60,7 +74,7 @@ export default class Erebus {
 
   analyser: Tone.Analyser;
 
-  audioContext: AudioContext;
+  // audioContext: Tone.Context; // AudioContext;
 
   keyboard: {
     cv1: Tone.Signal<"frequency">;
@@ -76,10 +90,10 @@ export default class Erebus {
   wasmMoogFilter: MoogWasmFilter | undefined;
 
   constructor() {
-    window.AudioContext = window.AudioContext || window.webkitAudioContext;
-    this.audioContext = new AudioContext({ latencyHint: 0 });
-    window.audioContext = this.audioContext;
-    Tone.setContext(this.audioContext);
+    // window.AudioContext = window.AudioContext || window.webkitAudioContext;
+    // this.audioContext = new Tone.Context({ latencyHint: "interactive" }); // new AudioContext({ latencyHint: 0 });
+    // this.audioContext.resume();
+    // Tone.setContext(this.audioContext);
 
     // reduce latency
     Tone.context.lookAhead = 0.003; // 3ms;
@@ -197,7 +211,9 @@ export default class Erebus {
   }
 
   async init() {
-    const audioWorkletNode = await setupFilter(this.audioContext);
+    await Tone.start();
+
+    const audioWorkletNode = await setupFilter();
     this.wasmMoogFilter = new MoogWasmFilter(audioWorkletNode);
 
     this.oscillators.output.connect(this.wasmMoogFilter.filter);
@@ -208,7 +224,10 @@ export default class Erebus {
     // this.wasmMoogFilter.inputs.frequency(this.lfo.output);
     this.wasmMoogFilter.inputs.frequency(this.envelope.filterOutput);
 
-    Tone.connect(this.wasmMoogFilter.filter, this.vca.ampEnv);
+    const filterLimiter = new Tone.Limiter(-24);
+
+    Tone.connect(this.wasmMoogFilter.filter, filterLimiter);
+    filterLimiter.connect(this.vca.ampEnv);
     // this.filter.filter.connect(this.vca.ampEnv);
 
     // amp out + distortion -> delay

@@ -3,7 +3,7 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
 import { Typography } from "@material-ui/core";
 import React, { useState, useEffect, useContext } from "react";
-import * as Tone from "tone";
+import { start } from "tone";
 
 import {
   DelayModule,
@@ -120,14 +120,11 @@ function Synth(): JSX.Element {
     await window.erebus.init();
     setErebus(window.erebus);
     setOutputs(window.erebus.outputs);
+    setInit(true);
   }
 
   useEffect(() => {
-    (async () => {
-      await Tone.start();
-      initializeAudio();
-      setInit(true);
-    })();
+    initializeAudio();
   }, []);
 
   function changeOscOctave(osc: "one" | "two", value: number) {
@@ -223,8 +220,10 @@ export default function SynthWrapper(): JSX.Element {
     <>
       {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
       <div
+        id="audiocontext-trigger"
         className={classes.synth}
-        onClick={() => {
+        onClick={async () => {
+          await start();
           setHasClicked(true);
         }}
       >

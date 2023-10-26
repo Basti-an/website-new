@@ -7,6 +7,9 @@ import LFO from "./lfo";
 import Oscillators from "./oscillators";
 import VCA from "./vca";
 import MoogWasmFilter from "./moogWasmFilter";
+import Config from "../../config";
+
+const { hostUrl } = Config;
 
 export type Output = {
   label: string;
@@ -24,10 +27,7 @@ async function setupFilter() {
   // using Tone audio context instead of native context because Tone uses cross browser audio context implementation
   // await audioContext.audioWorklet.addModule("https://localhost:8080/wasm-worklet-processor.js", {});
   const audioContext = Tone.getContext();
-  await audioContext.addAudioWorkletModule(
-    "https://localhost:8080/wasm-worklet-processor.js",
-    "wasm-filter",
-  );
+  await audioContext.addAudioWorkletModule(`${hostUrl}/wasm-worklet-processor.js`, "wasm-filter");
   const ladderNode = audioContext.createAudioWorkletNode("wasm-worklet-processor", {
     channelCount: 2,
     channelInterpretation: "speakers",
@@ -43,7 +43,7 @@ async function setupFilter() {
   // });
 
   //  Gets WeAssembly bytcode from file
-  const response = await fetch("https://localhost:8080/filterKernelOb.wasm");
+  const response = await fetch(`${hostUrl}/filterKernelOb.wasm`);
   const byteCode = await response.arrayBuffer();
 
   //  Sends bytecode to the AudioWorkletProcessor for instanciation

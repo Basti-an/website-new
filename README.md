@@ -1,18 +1,23 @@
 # Homepage 🏠
 
-My personal Website (currently containing my CV and a fully featured semi-modular WebAudio Synthesizer) build with React, Material-UI for React, NodeJS, and Typescript ❤️.
+Code for my personal homepage @ [sebastian.wiendlocha.org](https://sebastian.wiendlocha.org).
+Website currently contains a CV page and a fully-featured semi-modular WebAudio-based Synthesizer.
 
-[sebastian.wiendlocha.org](https://sebastian.wiendlocha.org).
+Build with React, Material-UI for React, NodeJS, ToneJS and Typescript ❤️.
 
-## Prerequisites
+Roadmap:
 
-- [yarn](https://yarnpkg.com/en/)
+- fix some cross-browser-related bugs
+- refactor old hacky code
+- ditch [Material UI for React](https://mui.com/) in favor of good old SCSS or Tailwind maybe
+- ditch React for [SolidJS](https://www.solidjs.com/)
+
+## Setup locally
+
+###  deps
+
+- [yarn](https://yarnpkg.com/en/) or [npm](https://www.npmjs.com/)
 - [nodeJS](https://nodejs.org/en/)
-- optionally (for deploying or GAE local python server), [python gcloud + python libraries](https://cloud.google.com/appengine/docs/standard/python/tools/using-local-server)
-
-## Install:
-
-`yarn setup`
 
 ## Run:
 

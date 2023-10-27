@@ -14,7 +14,7 @@ export default class Delay {
 
     // setup delay to accept modulation sources
     const delayConnect = new Tone.Add();
-    this.inputSignal = new Tone.Scale(0, 1);
+    this.inputSignal = new Tone.Scale(0.0, 2.0);
     this.inputSignal.connect(delayConnect.addend);
     delayConnect.connect(this.delay.delayTime);
 

@@ -28,9 +28,3 @@ Roadmap:
 build static site for node and python webapp2 (Google App Engine) environment:
 
 `yarn build`
-
-## next todos:
-
-- compile wasm moog filter that accepts frequency as input instead of [0,1]
-- refactor wasm moog filter integration to work like the normal filter.ts
-- implement erebus.init(filterType?: "webaudio" | "wasm-moog")

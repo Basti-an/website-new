@@ -31,12 +31,9 @@ export default function Oscilloscope({ erebus }: OscilloscopeProps): JSX.Element
         return;
       }
 
-      canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
-
       requestAnimationFrame(draw);
 
-      // only change this value in tandem with erebus.analyser.fftsize
-      const bufferLength = 2048;
+      canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
 
       canvasCtx.fillStyle = "rgb(35, 42, 50)";
       canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
@@ -45,39 +42,49 @@ export default function Oscilloscope({ erebus }: OscilloscopeProps): JSX.Element
       canvasCtx.beginPath();
 
       const buffer = erebus.analyser.getValue() as Float32Array;
+      const bufferLength = buffer.length;
 
-      // setup vars for "ramp" detection in order to quasi
       // phase-align the oscilloscope with the wave we are drawing
-      const avg = buffer.reduce((acc, x) => acc + Math.abs(x), 0) / buffer.length;
-      const treshold = 0.64 * avg;
-      let lastSample: undefined | number;
-      let start = false;
+      // by finding the lowest sample in the area around the middle of the buffer
+      // ([bufferLength/4 : bufferLength/4 * 3])
+      // we then draw bufferLength/2 samples around the lowest sample we found
 
-      let x = 0;
-      buffer.forEach((sample: number, index: number) => {
-        // detect ramps
-        if (!start) {
-          if (sample < -1 * treshold) {
-            lastSample = sample;
-          } else if (sample > treshold && lastSample !== undefined) {
-            start = true;
-          }
-          return;
+      // we find the lowest sample by starting in the middle of the buffer
+      // walking in both sides until
+      // we've reached 3/4 of the buffer length
+      const midIdx = bufferLength / 2;
+      let lowest = [midIdx, buffer[midIdx]];
+      for (let i = 0; i < bufferLength / 4; i += 1) {
+        // right
+        if (buffer[midIdx + i] < lowest[1]) {
+          lowest = [midIdx + i, buffer[midIdx + i]];
         }
+        // left
+        if (buffer[midIdx - i] < lowest[1]) {
+          lowest = [midIdx - i, buffer[midIdx - i]];
+        }
+      }
+      const lowestSampleIndex = lowest[0];
+      const sliceWidth = (WIDTH * 1.0) / (bufferLength / 2);
 
-        const sliceWidth = (WIDTH * 1.0) / bufferLength;
-
-        const v = sample * 1.8;
+      // draw around the lowest sample
+      let x = 0;
+      for (
+        let i = lowestSampleIndex - bufferLength / 4;
+        i < lowestSampleIndex + bufferLength / 4;
+        i += 1
+      ) {
+        const v = buffer[i] * 1.8 * -1;
         const y = v * HEIGHT + HEIGHT / 2;
 
-        if (index === 0) {
+        if (i === 0) {
           canvasCtx.moveTo(x, y);
         } else {
           canvasCtx.lineTo(x, y);
         }
 
         x += sliceWidth;
-      });
+      }
 
       canvasCtx.lineTo(WIDTH, HEIGHT / 2);
       canvasCtx.stroke();

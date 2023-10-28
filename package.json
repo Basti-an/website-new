@@ -2,6 +2,8 @@
   "name": "template-full-stack",
   "scripts": {
     "analyze": "source-map-explorer 'app/build/static/js/*.js'",
+    "dev:app": "cd app && yarn run dev",
+    "dev:api": "cd backend_node && node server.js",
     "start": "concurrently -r --kill-others \"yarn run dev:app\" \"yarn run dev:api\"",
     "cleanup": "rm -rf ./backend_python/www && rm -rf ./backend_node/build && rm -rf ./backend_python/public && rm -rf ./backend_node/public",
     "copy:build": "cp -r ./app/build ./backend_python/www && cp -r ./app/build ./backend_node/build",

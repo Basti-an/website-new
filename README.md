@@ -3,7 +3,7 @@
 Code for my personal homepage @ [sebastian.wiendlocha.org](https://sebastian.wiendlocha.org).
 Website currently contains a CV page and a fully-featured semi-modular WebAudio-based Synthesizer.
 
-Build with React, Material-UI for React, NodeJS, ToneJS and Typescript ❤️.
+Build with React, NodeJS, ToneJS, WebAssembly and Typescript ❤️.
 
 Roadmap:
 
@@ -14,7 +14,7 @@ Roadmap:
 
 ## Setup locally
 
-###  deps
+### deps
 
 - [yarn](https://yarnpkg.com/en/) or [npm](https://www.npmjs.com/)
 - [nodeJS](https://nodejs.org/en/)

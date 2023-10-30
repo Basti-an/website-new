@@ -9,3 +9,4 @@
 .DS_Store
 /app/.eslintcache
 .eslintcache
+yarn.lock

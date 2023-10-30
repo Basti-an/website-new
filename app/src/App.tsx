@@ -3,18 +3,17 @@ import React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { useTheme } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
-import Background from "./components/background";
 import Navigation from "./components/navigation";
 import { appStyles } from "./jss";
 
-// const isMobile = getIsMobileOS();
-
-// @TODO externalize JSS classes
 const useStyles = appStyles;
 
 const views = {
   "/cv": { name: "CV", Component: React.lazy(() => import("./pages/cv")) },
-  "/synth": { name: "Synthesizer", Component: React.lazy(() => import("./pages/synth")) },
+  "/synth": {
+    name: "Synthesizer",
+    Component: React.lazy(() => import("./pages/synth")),
+  },
   "/": { name: "Home", Component: React.lazy(() => import("./pages/home")) },
 };
 
@@ -24,7 +23,6 @@ function App(): JSX.Element {
 
   return (
     <div className={classes.root}>
-      <Background />
       <React.Suspense fallback={<></>}>
         <Router>
           <>
@@ -39,7 +37,12 @@ function App(): JSX.Element {
                         const { Component, name } = view;
 
                         return (
-                          <Route key={`${name}`} path={path} exact render={() => <Component />} />
+                          <Route
+                            key={`${name}`}
+                            path={path}
+                            exact
+                            render={() => <Component />}
+                          />
                         );
                       })}
                     </Grid>

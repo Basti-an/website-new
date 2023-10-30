@@ -1,8 +1,5 @@
-/* eslint-disable react/jsx-no-bind */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/mouse-events-have-key-events */
 import { Typography } from "@material-ui/core";
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { start } from "tone";
 
 import {
@@ -53,8 +50,6 @@ function Synth(): JSX.Element {
   const classes = useStyles();
 
   const [oscOctaveShift, setOscOctaveShift] = useState({ one: 0, two: 1 });
-  const [init, setInit] = useState(false);
-
   const [erebus, setErebus] = useState<Erebus | null>(null);
   const [outputs, setOutputs] = useState<Output[]>([]);
 
@@ -73,7 +68,11 @@ function Synth(): JSX.Element {
 
     erebus.outputs.forEach((output) => {
       const { label, connectedWith } = output;
-      addToPatch(patchName, `erebus-outputs-${label}-connectedWith`, connectedWith);
+      addToPatch(
+        patchName,
+        `erebus-outputs-${label}-connectedWith`,
+        connectedWith
+      );
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [erebus, patchName]);
@@ -97,7 +96,7 @@ function Synth(): JSX.Element {
       const { label } = output;
       const connectedWith = loadErebusPatchValue(
         loadPatch,
-        `erebus-outputs-${label}-connectedWith`,
+        `erebus-outputs-${label}-connectedWith`
       );
       if (connectedWith !== null) {
         output.connectedWith = connectedWith as number | undefined;
@@ -120,7 +119,6 @@ function Synth(): JSX.Element {
     await window.erebus.init();
     setErebus(window.erebus);
     setOutputs(window.erebus.outputs);
-    setInit(true);
   }
 
   useEffect(() => {
@@ -138,9 +136,11 @@ function Synth(): JSX.Element {
     }
 
     const osc1Frequency =
-      cv1.substring(0, cv1.length - 1) + (parseInt(cv1[cv1.length - 1], 10) + oscOctaveShift.one);
+      cv1.substring(0, cv1.length - 1) +
+      (parseInt(cv1[cv1.length - 1], 10) + oscOctaveShift.one);
     const osc2Frequency =
-      cv2.substring(0, cv2.length - 1) + (parseInt(cv2[cv2.length - 1], 10) + oscOctaveShift.two);
+      cv2.substring(0, cv2.length - 1) +
+      (parseInt(cv2[cv2.length - 1], 10) + oscOctaveShift.two);
 
     const { keyboard, oscillators } = erebus;
 
@@ -167,7 +167,10 @@ function Synth(): JSX.Element {
               <div className={classes.row}>
                 <div className={classes.column}>
                   <div className={classes.row}>
-                    <OSCModule oscillators={erebus.oscillators} changeOscOctave={changeOscOctave} />
+                    <OSCModule
+                      oscillators={erebus.oscillators}
+                      changeOscOctave={changeOscOctave}
+                    />
                     <Filtermodule filter={erebus.filter} />
                     <Ampmodule
                       setAmpEnv={({ attack, release }) => {
@@ -241,11 +244,19 @@ export default function SynthWrapper(): JSX.Element {
               </a>{" "}
             </Typography>
             <div className={classes.spacer} />
-            <Typography variant="body1" color="inherit" className={classes.title}>
+            <Typography
+              variant="body1"
+              color="inherit"
+              className={classes.title}
+            >
               &quot;This is awesome, wow!&quot; - <i>Dimitra, Dreadbox</i>
             </Typography>
             <div className={classes.spacer} />
-            <Typography variant="body2" color="inherit" className={classes.title}>
+            <Typography
+              variant="body2"
+              color="inherit"
+              className={classes.title}
+            >
               Click on this box to enable WebAudio and load the synth.
             </Typography>
           </div>

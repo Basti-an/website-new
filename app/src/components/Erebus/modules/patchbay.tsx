@@ -7,6 +7,8 @@ import { getRandomColor } from "../../../utils";
 import Knob from "../components/knob";
 
 const useStyles = patchbayStyles;
+const WIDTH = 150;
+const HEIGHT = 250;
 
 type Line = {
   srcIndex: number;
@@ -53,23 +55,27 @@ const drawPolygon =
     ctx.fillStyle = initialColor;
   };
 
-const drawSink = (ctx: CanvasRenderingContext2D) => (origin: { x: number; y: number }) => {
-  const drawShape = drawPolygon(ctx);
+const drawSink =
+  (ctx: CanvasRenderingContext2D) => (origin: { x: number; y: number }) => {
+    const drawShape = drawPolygon(ctx);
 
-  const drawHexagon = drawShape(6);
-  const drawCircle = drawShape(30); // render a circle like its the 90s
+    const drawHexagon = drawShape(6);
+    const drawCircle = drawShape(30); // render a circle like its the 90s
 
-  drawHexagon(origin, "grey");
-  drawCircle({ x: origin.x + 7, y: origin.y + 3 }, "darkgrey", 74);
-  drawCircle({ x: origin.x + 7, y: origin.y + 5 }, "black", 60);
-};
+    drawHexagon(origin, "grey");
+    drawCircle({ x: origin.x + 7, y: origin.y + 3 }, "darkgrey", 74);
+    drawCircle({ x: origin.x + 7, y: origin.y + 5 }, "black", 60);
+  };
 
 interface PatchbayProps {
   inputs: Input[];
   outputs: Output[];
 }
 
-export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Element {
+export default function PatchBay({
+  inputs,
+  outputs,
+}: PatchbayProps): JSX.Element {
   const classes = useStyles();
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
@@ -111,7 +117,7 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
       ctx.lineWidth = initialLineWidth;
       ctx.strokeStyle = initialStrokeStyle;
     },
-    [ctx],
+    [ctx]
   );
 
   const drawJacks = useCallback(() => {
@@ -139,7 +145,6 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
     });
   }, [ctx, inputs, outputs]);
 
-  // @TODO: add erebus.output as an argument, then setCurrentOutput(erebus.output)
   const onJackDown = (index: number, output: Output) => () => {
     /**
      * Event handler for when an output is selected
@@ -159,7 +164,9 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
     output.output.disconnect();
 
     // disconnect visually
-    setStoredLines(storedLines.filter((line: Line) => !(line.srcIndex === index)));
+    setStoredLines(
+      storedLines.filter((line: Line) => !(line.srcIndex === index))
+    );
     storedLines.forEach((line: Line) => drawCurve(line));
 
     setCurrentLine({
@@ -188,33 +195,38 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
     drawCurve({ ...currentLine, x2: x, y2: y });
   };
 
-  // @TODO: setErebus(erebus.outputs.output.connectedWith = index)
-  const onJackUp = (index: number, connectInput: (output: ModSource) => void) => () => {
-    if (!ctx || !canvas || !currentLine) {
-      return;
-    }
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    drawJacks();
-
-    connectInput(currentLine.output.output);
-    // update state in window
-    window.erebus.outputs = window.erebus.outputs.map((output) => {
-      if (output.label === currentLine.output.label) {
-        output.connectedWith = index;
+  const onJackUp =
+    (index: number, connectInput: (output: ModSource) => void) => () => {
+      if (!ctx || !canvas || !currentLine) {
+        return;
       }
-      return output;
-    });
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const x = 25 + (index % 3) * 50;
-    const y = 160 + Math.floor(index / 3) * 50;
-    setStoredLines([
-      ...storedLines,
-      { ...currentLine, x2: x, y2: y, color: JSON.parse(JSON.stringify(currentLine.color)) },
-    ]);
-    storedLines.forEach((line: Line) => drawCurve(line));
-    setCurrentLine(null);
-  };
+      drawJacks();
+
+      connectInput(currentLine.output.output);
+      // update state in window
+      window.erebus.outputs = window.erebus.outputs.map((output) => {
+        if (output.label === currentLine.output.label) {
+          output.connectedWith = index;
+        }
+        return output;
+      });
+
+      const x = 25 + (index % 3) * 50;
+      const y = 160 + Math.floor(index / 3) * 50;
+      setStoredLines([
+        ...storedLines,
+        {
+          ...currentLine,
+          x2: x,
+          y2: y,
+          color: JSON.parse(JSON.stringify(currentLine.color)),
+        },
+      ]);
+      storedLines.forEach((line: Line) => drawCurve(line));
+      setCurrentLine(null);
+    };
 
   useEffect(() => {
     if (!ctx || !canvas) {
@@ -275,7 +287,9 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
 
   const disconnectInput = (index: number) => () => {
     // disconnect visually
-    setStoredLines(storedLines.filter((line: Line) => line.output.connectedWith !== index));
+    setStoredLines(
+      storedLines.filter((line: Line) => line.output.connectedWith !== index)
+    );
 
     window.erebus.outputs = window.erebus.outputs.map((output: Output) => {
       if (output.connectedWith === index) {
@@ -283,7 +297,7 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
         output.connectedWith = undefined;
         localStorage.setItem(
           `erebus-outputs-${output.label}-connectedWith`,
-          JSON.stringify(output.connectedWith),
+          JSON.stringify(output.connectedWith)
         );
       }
       return output;
@@ -312,7 +326,7 @@ export default function PatchBay({ inputs, outputs }: PatchbayProps): JSX.Elemen
           ))}
       </div>
 
-      <canvas id="patchbay" width="150" height="250" />
+      <canvas id="patchbay" width={WIDTH} height={HEIGHT} />
       <div className={classes.jacks} onMouseMove={onMove}>
         {outputs.map((output: Output, index: number) => (
           <div

@@ -1,5 +1,5 @@
 import classnames from "classnames";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import * as Tone from "tone";
 import { sequencerStyles } from "../../../jss/synth";
 import Erebus from "../../../classes/synth/erebus";
@@ -54,18 +54,23 @@ declare global {
 
 window.sequencer = { currentStep: 0, steps: [], gateLength: 50, tempo: 120 };
 
-export default function Sequencer({ erebus, sendCVs }: SequencerProps): JSX.Element {
+export default function Sequencer({
+  erebus,
+  sendCVs,
+}: SequencerProps): JSX.Element {
   const classes = useStyles();
   const [tempo, setTempo] = useState<number>(120);
   const [gate, setGate] = useState<number>(50);
   const [sequence, setSequence] = useState<Tone.Sequence | null>(null);
-  const [sequencerNotes, setSequencerNotes] = useState<string[]>(defaultSequence);
+  const [sequencerNotes, setSequencerNotes] =
+    useState<string[]>(defaultSequence);
   const [activeStep, setActiveStep] = useState<number>(-1);
 
   const trigger = (time: number | undefined, note: string) => {
     sendCVs(note, note);
 
-    const gateLength = (1 / (window.sequencer.tempo / 60)) * (window.sequencer.gateLength / 100);
+    const gateLength =
+      (1 / (window.sequencer.tempo / 60)) * (window.sequencer.gateLength / 100);
 
     if (time === undefined) {
       // play note immediately
@@ -109,7 +114,12 @@ export default function Sequencer({ erebus, sendCVs }: SequencerProps): JSX.Elem
   useEffect(() => {
     const newLoop = new Tone.Sequence(trigger, sequencerNotes, "8n");
     setSequence(newLoop);
-    window.sequencer = { currentStep: 0, steps: sequencerNotes, gateLength: gate, tempo };
+    window.sequencer = {
+      currentStep: 0,
+      steps: sequencerNotes,
+      gateLength: gate,
+      tempo,
+    };
 
     return () => {
       Tone.Transport.stop();
@@ -196,16 +206,21 @@ export default function Sequencer({ erebus, sendCVs }: SequencerProps): JSX.Elem
         </div>
       </div>
       <div className={classnames(classes.row, classes.sequence)}>
-        {sequencerNotes.map((note, index) => {
+        {sequencerNotes.map((_note, index) => {
           return (
             // eslint-disable-next-line react/no-array-index-key
-            <div key={`step-${index}`} className={classnames(classes.column, classes.padded)}>
+            <div
+              key={`step-${index}`}
+              className={classnames(classes.column, classes.padded)}
+            >
               <Led on={index === activeStep} />
               <Knob
                 isLinear
                 min={0}
                 max={24}
-                initial={allSequencerNotes.findIndex((val) => val === sequencerNotes[index])}
+                initial={allSequencerNotes.findIndex(
+                  (val) => val === sequencerNotes[index]
+                )}
                 onChange={changeSequenceAtIndex(index)}
                 name={`erebus-knobs-sequencer-${index}`}
               />

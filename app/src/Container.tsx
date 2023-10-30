@@ -1,6 +1,5 @@
 import { ThemeProvider } from "@material-ui/styles";
 import { createMuiTheme, ThemeOptions } from "@material-ui/core/styles";
-import React from "react";
 import App from "./App";
 import { palette } from "./theme";
 

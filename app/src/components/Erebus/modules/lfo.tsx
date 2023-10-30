@@ -29,7 +29,8 @@ const setLedAnimationDuration = (frequency: number) => {
 };
 
 const lfoDescription =
-  "an LFO (low frequency oscillator) generates a wave that can be used to modulate parameters of other synthesizer modules. The LFO is currently routed to the frequency of the filter.";
+  'a LFO ("Low frequency oscillator") generates a wave that can be used to continually change the value of an audio parameter.' +
+  "Try routing the LFO to the filter frequency by connecting the LFO or LFO2 output with the VCF input in the patchbay on the right or explore how the LFO affects the other inputs.";
 
 const switchWaveform = (lfo: LFO) => (isSquare: boolean) => {
   lfo.lfo.stop();

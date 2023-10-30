@@ -11,10 +11,9 @@ interface DelayProps {
 }
 
 const delayDescription =
-  "The delay feeds the signal back into itself with a timed delay, creating an echo. " +
+  "The echo or delay feeds the audio signal back into itself with a timed delay, creating an echo effect. " +
   "The feedback adjusts the amount of signal that get fed back, while the mix knob determines how much of the delayed signal is mixed into the audio output";
 
-// @TODO: implement CV Input to filter frequency
 export default function DelayModule({
   evaluateConnection = () => {},
   delay,

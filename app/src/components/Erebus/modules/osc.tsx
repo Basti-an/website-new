@@ -1,6 +1,6 @@
-import React from "react";
 import classnames from "classnames";
 import { OmniOscillatorType } from "tone/build/esm/source/oscillator/OscillatorInterface";
+
 import Knob from "../components/knob";
 import Config from "../../../config";
 import { oscStyles } from "../../../jss/synth";
@@ -67,7 +67,11 @@ function OctaveSwitch({
       <div className={classes.justifyMid}>
         {placement === "right" && (
           <div className={classes.switchRight}>
-            <ThreeWaySwitch onInput={onToggle} initialState={-1} name="osc-octave-right" />
+            <ThreeWaySwitch
+              onInput={onToggle}
+              initialState={-1}
+              name="osc-octave-right"
+            />
           </div>
         )}
         <div className={classes.octaves}>
@@ -75,8 +79,10 @@ function OctaveSwitch({
             <span
               key={`octave-${octave}`}
               className={classnames(
-                placement === "left" ? classes.octaveTextLeft : classes.octaveTextRight,
-                classes.brightText,
+                placement === "left"
+                  ? classes.octaveTextLeft
+                  : classes.octaveTextRight,
+                classes.brightText
               )}
             >
               {octave}
@@ -85,7 +91,11 @@ function OctaveSwitch({
         </div>
         {placement === "left" && (
           <div className={classes.switchLeft}>
-            <ThreeWaySwitch onInput={onToggle} initialState={-1} name="osc-octave-left" />
+            <ThreeWaySwitch
+              onInput={onToggle}
+              initialState={-1}
+              name="osc-octave-left"
+            />
           </div>
         )}
       </div>
@@ -126,7 +136,11 @@ function WaveformSwitch({
   return (
     <div
       className={classes.waveform}
-      style={position === "left" ? { marginLeft: -20 } : { marginRight: -20, marginLeft: 3 }}
+      style={
+        position === "left"
+          ? { marginLeft: -20 }
+          : { marginRight: -20, marginLeft: 3 }
+      }
     >
       <div className={classes.row}>
         {position === "left" && (
@@ -135,7 +149,9 @@ function WaveformSwitch({
         <div className={classes.column}>
           <img
             className={classes.waveformLabel}
-            src={`${Config.hostUrl}/images/${waveforms[osc.possibleWaveforms[0]]}`}
+            src={`${Config.hostUrl}/images/${
+              waveforms[osc.possibleWaveforms[0]]
+            }`}
             alt="waveform"
           />
           <ThreeWaySwitch
@@ -145,7 +161,9 @@ function WaveformSwitch({
           />
           <img
             className={classes.waveformLabel}
-            src={`${Config.hostUrl}/images/${waveforms[osc.possibleWaveforms[1]]}`}
+            src={`${Config.hostUrl}/images/${
+              waveforms[osc.possibleWaveforms[1]]
+            }`}
             alt="waveform"
           />
         </div>
@@ -171,7 +189,10 @@ const changeOsc2Frequency = (oscillators: Oscillators) => (value: number) => {
   osc2.detune.value -= frequencyOsc1;
 };
 
-export default function OSCModule({ oscillators, changeOscOctave }: OscProps): JSX.Element {
+export default function OSCModule({
+  oscillators,
+  changeOscOctave,
+}: OscProps): JSX.Element {
   const classes = useStyles();
 
   const toggleOscOctave = (oscillator: "one" | "two") => (state: Ternary) => {

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 import { synthStyles } from "../../../jss/synth";
 import Erebus from "../../../classes/synth/erebus";
@@ -12,7 +12,9 @@ interface OscilloscopeProps {
 const WIDTH = 205;
 const HEIGHT = 115;
 
-export default function Oscilloscope({ erebus }: OscilloscopeProps): JSX.Element {
+export default function Oscilloscope({
+  erebus,
+}: OscilloscopeProps): JSX.Element {
   const classes = useStyles();
 
   useEffect(() => {
@@ -92,5 +94,12 @@ export default function Oscilloscope({ erebus }: OscilloscopeProps): JSX.Element
     draw();
   }, [erebus]);
 
-  return <canvas className={classes.osc} id="oscilloscope" width={WIDTH} height={HEIGHT} />;
+  return (
+    <canvas
+      className={classes.osc}
+      id="oscilloscope"
+      width={WIDTH}
+      height={HEIGHT}
+    />
+  );
 }

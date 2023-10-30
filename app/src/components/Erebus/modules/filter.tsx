@@ -1,7 +1,6 @@
-import React from "react";
 import { filterStyles } from "../../../jss/synth";
-import Filter from "../../../classes/synth/filter";
 import Knob from "../components/knob";
+import MoogWasmFilter from "../../../classes/synth/moogWasmFilter";
 
 const useStyles = filterStyles;
 
@@ -12,7 +11,7 @@ const resonanceDescription =
   "The resonance is the amount of filter signal that is fed back into the filter - creating a feedback around the cutoff frequency.";
 
 interface IFilterProps {
-  filter: Filter;
+  filter: MoogWasmFilter | undefined;
 }
 
 export default function FilterModule({ filter }: IFilterProps): JSX.Element {
@@ -27,7 +26,7 @@ export default function FilterModule({ filter }: IFilterProps): JSX.Element {
           onChange={(value: number) => {
             // filter.frequency.rampTo(value, 0);
             // window.erebus.wasmMoogFilter?.port.postMessage({ cutoff: value });
-            window.erebus.wasmMoogFilter?.frequency.rampTo(value, 0);
+            filter?.frequency.rampTo(value, 0);
           }}
           min={20}
           max={20000}
@@ -42,7 +41,9 @@ export default function FilterModule({ filter }: IFilterProps): JSX.Element {
         <Knob
           onChange={(value: number) => {
             // filter.filter.Q.value = value;
-            window.erebus.wasmMoogFilter?.filter.port.postMessage({ resonance: value });
+            filter?.filter.port.postMessage({
+              resonance: value,
+            });
           }}
           min={0.1}
           max={0.99}

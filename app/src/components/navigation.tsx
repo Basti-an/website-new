@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Tooltip } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import Config from "../config";
@@ -29,7 +29,11 @@ export default function Navigation(): JSX.Element {
     const defaultWidth = 54;
     const defaultHeight = 54;
 
-    function getDistance(rect: HTMLElement, mouseX: number, mouseY: number): [number, number] {
+    function getDistance(
+      rect: HTMLElement,
+      mouseX: number,
+      mouseY: number
+    ): [number, number] {
       const boundingRect: DOMRect = rect.getBoundingClientRect();
       let { x, y } = boundingRect;
       const { width, height } = boundingRect;
@@ -53,7 +57,8 @@ export default function Navigation(): JSX.Element {
       if (y > fallOffY) {
         genie.style.transition = "width 0.2s ease-out, height 0.2s ease-out";
         if (innerStage) {
-          innerStage.style.transition = "width 0.2s ease-out, height 0.2s ease-out";
+          innerStage.style.transition =
+            "width 0.2s ease-out, height 0.2s ease-out";
         }
         genie.style.width = `${defaultWidth}px`;
         genie.style.height = `${defaultHeight}px`;
@@ -85,7 +90,8 @@ export default function Navigation(): JSX.Element {
           genie.style.height = `${defaultHeight}px`;
           genie.style.transition = "width 0.2s ease-out, height 0.2s ease-out";
           if (innerStage) {
-            innerStage.style.transition = "width 0.2s ease-out, height 0.2s ease-out";
+            innerStage.style.transition =
+              "width 0.2s ease-out, height 0.2s ease-out";
           }
           genieWidths += defaultWidth;
           return;
@@ -131,14 +137,22 @@ export default function Navigation(): JSX.Element {
       <Tooltip title="Home">
         <div className="genie">
           <Link to="/">
-            <img className="app-icon" alt="Home icon" src={`${hostUrl}/images/finder-icon.svg`} />
+            <img
+              className="app-icon"
+              alt="Home icon"
+              src={`${hostUrl}/images/finder-icon.svg`}
+            />
           </Link>
         </div>
       </Tooltip>
       <Tooltip title="Synthesizer">
         <div className="genie">
           <Link to="/synth">
-            <img className="app-icon" alt="Home icon" src={`${hostUrl}/images/synth-icon.svg`} />
+            <img
+              className="app-icon"
+              alt="Home icon"
+              src={`${hostUrl}/images/synth-icon.svg`}
+            />
           </Link>
         </div>
       </Tooltip>

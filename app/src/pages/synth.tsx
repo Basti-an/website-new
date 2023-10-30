@@ -1,4 +1,3 @@
-import React from "react";
 import Erebus from "../components/Erebus";
 
 function Synthesizer(): JSX.Element {

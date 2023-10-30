@@ -1,4 +1,3 @@
-import React from "react";
 import { Grid } from "@material-ui/core";
 // import { appStyles } from "../jss";
 // import SpaceFillingCurve from "../components/spaceFillingCurve";
@@ -25,7 +24,11 @@ function Home(): JSX.Element {
           <p>Sebastian</p> <p>Wiendlocha</p>
         </h1>
       </div>
-      <img id="cologne" src={`${Config.hostUrl}/images/cologne-skyline.svg`} alt="" />
+      <img
+        id="cologne"
+        src={`${Config.hostUrl}/images/cologne-skyline.svg`}
+        alt=""
+      />
     </Grid>
   );
 }

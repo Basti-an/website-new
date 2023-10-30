@@ -1,5 +1,5 @@
-import React from "react";
 import Tone from "tone";
+
 import Knob from "../components/knob";
 import { delayStyles } from "../../../jss/synth";
 
@@ -27,7 +27,10 @@ export default function DelayModule({
         <div className={classes.button}>
           <Knob
             onChange={(value) => {
-              delay.delayTime.rampTo(value, window.erebus.analyser.blockTime * 42);
+              delay.delayTime.rampTo(
+                value,
+                window.erebus.analyser.blockTime * 42
+              );
             }}
             min={0.1}
             max={1.0}

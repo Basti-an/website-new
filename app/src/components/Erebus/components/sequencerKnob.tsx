@@ -1,5 +1,4 @@
 import classnames from "classnames";
-import React from "react";
 import { sequencerStyles } from "../../../jss/synth";
 
 import Knob from "./knob";
@@ -27,7 +26,14 @@ export function SequencerKnob({
   return (
     <div className={classnames(classes.column, classes.padded)}>
       <p className={classes.noteTextBright}>{label}</p>
-      <Knob onChange={onChange} isLinear min={min} max={max} initial={initial} name={name} />
+      <Knob
+        onChange={onChange}
+        isLinear
+        min={min}
+        max={max}
+        initial={initial}
+        name={name}
+      />
       <p className={classes.noteTextBright}>{value}</p>
     </div>
   );

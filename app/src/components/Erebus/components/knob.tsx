@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import ZingTouch from "zingtouch";
 import { debounce } from "lodash";
 
@@ -57,7 +57,9 @@ export default function Knob({
 
   const handleInputChange = (value: number) => {
     // takes a value between [0, 280] and remaps it to [min, max]
-    const remappedValue = isLinear ? getLinValue(value, min, max) : getLogValue(value, min, max);
+    const remappedValue = isLinear
+      ? getLinValue(value, min, max)
+      : getLogValue(value, min, max);
     onChange(remappedValue);
   };
 
@@ -79,15 +81,23 @@ export default function Knob({
   function executeWhileSweep(currentValue: number) {
     if (typeof whileSweep === "function") {
       whileSweep(
-        isLinear ? getLinValue(currentValue, min, max) : getLogValue(currentValue, min, max),
+        isLinear
+          ? getLinValue(currentValue, min, max)
+          : getLogValue(currentValue, min, max)
       );
     }
   }
 
   const debouncedWhileSweep = debounce(executeWhileSweep, 333);
-  const debouncedAfterSweep = debounce(executeAfterSweep, 1000, { trailing: true });
+  const debouncedAfterSweep = debounce(executeAfterSweep, 1000, {
+    trailing: true,
+  });
 
-  function doKnobStuff(knob: HTMLImageElement, currentAngle: number, skipAfterSweep?: boolean) {
+  function doKnobStuff(
+    knob: HTMLImageElement,
+    currentAngle: number,
+    skipAfterSweep?: boolean
+  ) {
     // do not allow knob rotation beyond 140 degrees
     if (currentAngle > 140 || currentAngle < -140) {
       return;
@@ -141,7 +151,10 @@ export default function Knob({
     const moveKnob = (e: MouseEvent) => {
       e.preventDefault();
 
-      let angle = parseInt(knob.style.transform.split("(")[1].split("d").join(), 10);
+      let angle = parseInt(
+        knob.style.transform.split("(")[1].split("d").join(),
+        10
+      );
       angle -= e.movementY;
 
       doKnobStuff(knob, angle);
@@ -189,7 +202,10 @@ export default function Knob({
       return;
     }
 
-    const value = loadErebusPatchValue(loadPatch, `erebus-knobs-${name}`) as number;
+    const value = loadErebusPatchValue(
+      loadPatch,
+      `erebus-knobs-${name}`
+    ) as number;
 
     const angle = isLinear
       ? getSliderValueForLinValue(value, min, max)

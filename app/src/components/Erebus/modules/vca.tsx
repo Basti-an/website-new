@@ -1,4 +1,3 @@
-import React from "react";
 import Knob from "../components/knob";
 
 import { vcaStyles } from "../../../jss/synth";

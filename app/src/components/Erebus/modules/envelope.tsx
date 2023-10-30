@@ -1,5 +1,5 @@
-import React from "react";
 import classNames from "classnames";
+
 import { envelopeStyles } from "../../../jss/synth";
 import Envelope from "../../../classes/synth/envelope";
 
@@ -26,7 +26,15 @@ type ADSRPhase = "attack" | "decay" | "sustain" | "release";
 const envelopeDescription =
   "The envelope gets triggered every time a note is played and consists of four phases - attack, decay, sustain, release. Hit up ADSR on wikipedia to learn more";
 
-function ADSRButton({ min, max, initial, onChange, text, isLinear, name }: ADSRButtonProps) {
+function ADSRButton({
+  min,
+  max,
+  initial,
+  onChange,
+  text,
+  isLinear,
+  name,
+}: ADSRButtonProps) {
   const classes = useStyles();
   return (
     <div className={classes.buttonContainer}>
@@ -35,12 +43,18 @@ function ADSRButton({ min, max, initial, onChange, text, isLinear, name }: ADSRB
       <div className={classes.button}>
         <Knob onChange={onChange} {...{ min, max, initial, isLinear, name }} />
       </div>
-      <p className={text === "depth" ? classes.knobTextBright : classes.knobText}>{text}</p>
+      <p
+        className={text === "depth" ? classes.knobTextBright : classes.knobText}
+      >
+        {text}
+      </p>
     </div>
   );
 }
 
-export default function EnvelopeModule({ envelope }: EnvelopeProps): JSX.Element {
+export default function EnvelopeModule({
+  envelope,
+}: EnvelopeProps): JSX.Element {
   const classes = useStyles();
 
   const changeADSR = (property: ADSRPhase) => (eventInput: number) => {

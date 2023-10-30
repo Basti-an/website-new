@@ -10,3 +10,4 @@
 /app/.eslintcache
 .eslintcache
 yarn.lock
+package-lock.json

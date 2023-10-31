@@ -3,7 +3,7 @@
 Code for my personal homepage @ [sebastian.wiendlocha.org](https://sebastian.wiendlocha.org).
 Website currently contains a CV page and a fully-featured semi-modular WebAudio-based Synthesizer.
 
-Build with React, NodeJS, ToneJS, WebAssembly and Typescript ❤️.
+Build with React, Vite, ToneJS, WebAssembly and Typescript ❤️
 
 Roadmap:
 
